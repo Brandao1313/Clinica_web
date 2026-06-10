@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/validacao.php';
 require_once __DIR__ . '/../utils/seguranca.php';
 require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
@@ -18,192 +19,10 @@ $pagina = intval($_GET['pagina'] ?? 1);
 $itens_por_pagina = 10;
 $offset = ($pagina - 1) * $itens_por_pagina;
 
+$base_url = '../../';
+$titulo_pagina = 'Painel Admin - Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Clínica</title>
-    <link rel="stylesheet" href="../../estilo.css">
-    <style>
-        .admin-container {
-            max-width: 1400px;
-            margin: 100px auto 40px;
-            padding: 0 20px;
-        }
-
-        .admin-container h2 {
-            color: #007b83;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #007b83;
-            padding-bottom: 10px;
-        }
-
-        .admin-menu {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .admin-btn {
-            padding: 10px 20px;
-            background: #007b83;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .admin-btn.active {
-            background: #005a60;
-        }
-
-        .admin-btn:hover {
-            background: #005a60;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .admin-table th {
-            background: #007b83;
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        .admin-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .admin-table tr:hover {
-            background: #f9f9f9;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
-        .badge-info { background: #d1ecf1; color: #0c5460; }
-
-        .action-btn {
-            padding: 5px 10px;
-            margin-right: 5px;
-            font-size: 12px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .action-edit {
-            background: #007b83;
-            color: white;
-        }
-
-        .action-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .pagination {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .pagination a, .pagination span {
-            padding: 8px 12px;
-            margin: 0 5px;
-            background: #f0f0f0;
-            border-radius: 3px;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .pagination a:hover {
-            background: #007b83;
-            color: white;
-        }
-
-        .pagination .active {
-            background: #007b83;
-            color: white;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .stat-card h3 {
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            color: #007b83;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .admin-table {
-                font-size: 12px;
-            }
-
-            .admin-table th, .admin-table td {
-                padding: 8px;
-            }
-
-            .action-btn {
-                padding: 3px 6px;
-                font-size: 10px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav>
-        <ul>
-            <li><a href="../../index.html"><img src="../../imagens/logo.png" alt="Logo"></a></li>
-            <li><a href="../../exames.php">Exames</a></li>
-            <li><a href="../../especialidades.php">Especialidades</a></li>
-            <a href="../auth/deslogar.php" class="meu-btn">Sair (Admin)</a>
-        </ul>
-    </nav>
 
     <div class="admin-container">
         <h2>⚙️ Painel Administrativo</h2>
@@ -368,7 +187,7 @@ $offset = ($pagina - 1) * $itens_por_pagina;
                             <td><?php echo htmlspecialchars($ag['item_nome']); ?></td>
                             <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                             <td>
-                                <span class="badge <?php echo 'badge-' . get_classe_status($ag['status']); ?>">
+                                <span class="badge <?php echo get_classe_status($ag['status']); ?>">
                                     <?php echo get_status_agendamento($ag['status']); ?>
                                 </span>
                             </td>
@@ -468,6 +287,4 @@ $offset = ($pagina - 1) * $itens_por_pagina;
         <?php endif; ?>
     </div>
 
-</body>
-
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

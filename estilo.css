@@ -1,95 +1,28 @@
-nav ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    gap: 70px;
-    padding: 20px;
-    background-color: #4e939c;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #B0E0E6;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* ====================================================
+   ARQUIVO: estilo.css
+   Descrição: Design system da Clínica Saúde & Bem-Estar
+   ==================================================== */
+
+/* ---------- Variáveis globais ---------- */
+:root {
+    --cor-primaria: #007b83;
+    --cor-primaria-escura: #005a60;
+    --cor-destaque: #27ae60;
+    --cor-destaque-escura: #1e8449;
+    --cor-perigo: #dc3545;
+    --cor-perigo-escura: #c82333;
+    --cor-texto: #2c3e50;
+    --cor-texto-claro: #5b6b73;
+    --cor-fundo: #eef7f6;
+    --cor-card: #ffffff;
+    --cor-borda: #e0e0e0;
+    --sombra: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --raio: 8px;
+    --nav-altura: 80px;
 }
 
-body {
-    padding-top: 80px;
-    background-color: #adfcfd;
-}
-
-
-nav a {
-    text-decoration: none;
-    color: #2c3e50;
-    font-family: Arial, sans-serif;
-    font-weight: 500;
-}
-
-nav a:hover {
-    color: #27ae60;
-}
-
-nav img {
-    height: 80px;
-    display: block;
-}
-body{
-    background-color: rgb(152, 191, 178);
-}
-
-.item-cadastro {
-    margin-left: auto;
-}
-
-.meu-btn {
-    background-color: #27ae60;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-family: Arial, sans-serif;
-}
-
-.meu-btn:hover {
-    background-color: #000100;
-}
-.p{
-background-color: rgb(189, 220, 247);
-width: 500px;
-height: 350px;
-display: flex;
-flex-direction: row;
-gap: 20px;
-justify-content: center;
-border-radius: 2%;
-}
-.imagen {
-padding: 20px;
-width: 900px;
-height: 350px;
-display: flex;
-border-radius: 2%;
-justify-content: center;
-align-items: center;
-overflow: hidden;
-}
-.Div {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch; /* faz as divs ficarem da mesma altura */
-  gap: 20px; /* espaço entre elas */
-}
-.Div imagen{
-   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.inicial{
-    border-radius: 2%;
-}
-
-/* Configurações Gerais */
+/* ---------- Reset geral ---------- */
 * {
     margin: 0;
     padding: 0;
@@ -97,34 +30,166 @@ overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
-    background-color: #d4efe6; /* Fundo claro e confortável */
-    color: #333;
+html {
+    scroll-behavior: smooth;
 }
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    padding-top: var(--nav-altura);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main, .pagina-conteudo {
+    flex: 1;
+}
+
+a {
+    color: var(--cor-primaria);
+}
+
+img {
+    max-width: 100%;
+}
+
+/* ====================================================
+   NAVBAR
+   ==================================================== */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
 nav ul {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     list-style: none;
-    padding: 20px 5%;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    gap: 40px;
+    padding: 0 5%;
+    height: var(--nav-altura);
 }
 
-nav ul li a {
+nav ul li:first-child {
+    margin-right: auto;
+}
+
+nav a {
     text-decoration: none;
-    color: #2c3e50;
+    color: var(--cor-texto);
     font-weight: 600;
+    transition: color 0.2s ease;
 }
 
-/* Banner Inicial */
+nav a:hover {
+    color: var(--cor-destaque);
+}
+
+nav img {
+    height: 56px;
+    display: block;
+}
+
+.meu-btn {
+    background-color: var(--cor-destaque);
+    color: #ffffff !important;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.meu-btn:hover {
+    background-color: var(--cor-destaque-escura);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+/* ====================================================
+   BOTÕES GERAIS
+   ==================================================== */
+.btn,
+.btn-action,
+.btn-agendar,
+.btn-solicitar,
+.btn-sobre,
+.admin-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    background: var(--cor-primaria);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: var(--raio);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 123, 131, 0.15);
+}
+
+.btn:hover,
+.btn-action:hover,
+.btn-agendar:hover,
+.btn-solicitar:hover,
+.btn-sobre:hover,
+.admin-btn:hover {
+    background: var(--cor-primaria-escura);
+    transform: translateY(-2px);
+}
+
+.btn-secondary,
+.action-edit.btn-secondary,
+.painel-conteudo .secondary {
+    background: #eef1f1;
+    color: var(--cor-texto);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: #dde3e3;
+}
+
+.btn-action.secondary {
+    background: #eef1f1;
+    color: var(--cor-texto);
+    box-shadow: none;
+}
+
+.btn-action.secondary:hover {
+    background: #dde3e3;
+}
+
+.btn-login,
+.btn-perigo {
+    background: var(--cor-perigo);
+    color: #ffffff;
+}
+
+.btn-login:hover,
+.btn-perigo:hover {
+    background: var(--cor-perigo-escura);
+}
+
+.admin-btn.active {
+    background: var(--cor-primaria-escura);
+}
+
+/* ====================================================
+   PÁGINA INICIAL
+   ==================================================== */
 .inicial img {
     width: 100%;
     height: auto;
     display: block;
 }
 
-/* Seção Sobre */
 .sobre-clinica {
     max-width: 1200px;
     margin: 60px auto;
@@ -132,17 +197,16 @@ nav ul li a {
     display: flex;
     gap: 50px;
     align-items: center;
-    flex-wrap: wrap; /* Garante que fique responsivo em telas menores */
+    flex-wrap: wrap;
 }
 
-/* Bloco de Texto */
 .conteudo-texto {
     flex: 1;
     min-width: 300px;
 }
 
 .conteudo-texto h2 {
-    color: #007b83; /* Tom verde-água medicinal */
+    color: var(--cor-primaria);
     font-size: 2rem;
     margin-bottom: 20px;
     line-height: 1.3;
@@ -151,65 +215,75 @@ nav ul li a {
 .conteudo-texto p {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #555;
+    color: var(--cor-texto-claro);
     margin-bottom: 20px;
 }
 
-/* Botão "Sobre Nós" */
-.btn-sobre {
-    display: inline-block;
-    padding: 12px 30px;
-    background-color: #007b83;
-    color: #ffffff;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 123, 131, 0.2);
-}
-
-.btn-sobre:hover {
-    background-color: #005a60;
-    transform: translateY(-2px);
-}
-
-/* Galeria de Fotos Adicionais */
 .galeria-fotos {
     flex: 1;
     min-width: 300px;
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Divide as fotos adicionais em duas colunas */
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
 .galeria-fotos img {
     width: 100%;
     height: 220px;
-    object-fit: cover; /* Recorta a imagem para caber perfeitamente sem distorcer */
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    object-fit: cover;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
 }
 
-/* Responsividade para Celulares */
-@media (max-width: 768px) {
-    .sobre-clinica {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .galeria-fotos {
-        grid-template-columns: 1fr; /* Em telas pequenas, as fotos ficam uma embaixo da outra */
-    }
+/* Cards de destaque (links rápidos na home) */
+.destaques {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
 }
 
-/*Sobre/*
-/* ==========================================
-   PÁGINA SOBRE NÓS
-   ========================================== */
+.destaque-card {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 30px;
+    text-align: center;
+    box-shadow: var(--sombra);
+    text-decoration: none;
+    color: var(--cor-texto);
+    border-top: 5px solid var(--cor-primaria);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-/* Cabeçalho da página */
+.destaque-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-hover);
+}
+
+.destaque-card .icone {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.destaque-card h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+.destaque-card p {
+    color: var(--cor-texto-claro);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ====================================================
+   PÁGINA SOBRE
+   ==================================================== */
 .sobre-header {
-    background-color: #007b83; /* Cor institucional */
+    background-color: var(--cor-primaria);
     color: white;
     text-align: center;
     padding: 60px 20px;
@@ -226,7 +300,6 @@ nav ul li a {
     opacity: 0.9;
 }
 
-/* Seção de História */
 .sobre-historia {
     max-width: 1200px;
     margin: 0 auto 60px auto;
@@ -243,7 +316,7 @@ nav ul li a {
 }
 
 .historia-texto h2 {
-    color: #2c3e50;
+    color: var(--cor-texto);
     font-size: 2rem;
     margin-bottom: 20px;
 }
@@ -251,7 +324,7 @@ nav ul li a {
 .historia-texto p {
     font-size: 1.1rem;
     line-height: 1.8;
-    color: #555;
+    color: var(--cor-texto-claro);
     margin-bottom: 15px;
 }
 
@@ -264,11 +337,10 @@ nav ul li a {
     width: 100%;
     height: 350px;
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
 }
 
-/* Seção Missão, Visão e Valores (Cards) */
 .valores-container {
     max-width: 1200px;
     margin: 40px auto 80px auto;
@@ -279,17 +351,17 @@ nav ul li a {
 }
 
 .valor-card {
-    background: #ffffff;
+    background: var(--cor-card);
     padding: 40px 30px;
-    border-radius: 8px;
+    border-radius: var(--raio);
     text-align: center;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-top: 5px solid #007b83; /* Linha com a cor da clínica no topo de cada card */
+    border-top: 5px solid var(--cor-primaria);
     transition: transform 0.3s ease;
 }
 
 .valor-card:hover {
-    transform: translateY(-5px); /* Efeito suave de levitar ao passar o mouse */
+    transform: translateY(-5px);
 }
 
 .valor-card .icone {
@@ -298,24 +370,595 @@ nav ul li a {
 }
 
 .valor-card h3 {
-    color: #2c3e50;
+    color: var(--cor-texto);
     font-size: 1.4rem;
     margin-bottom: 15px;
 }
 
 .valor-card p {
-    color: #666;
+    color: var(--cor-texto-claro);
     font-size: 1rem;
     line-height: 1.6;
 }
 
-/* Responsividade para Telas Menores */
+/* ====================================================
+   ESPECIALIDADES / EXAMES
+   ==================================================== */
+.especialidades-container,
+.exames-container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.especialidades-container h2,
+.exames-container h2 {
+    text-align: center;
+    color: var(--cor-primaria);
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.especialidades-grid,
+.exames-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.especialidade-card,
+.exame-card {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.especialidade-card:hover,
+.exame-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-hover);
+}
+
+.especialidade-card h3,
+.exame-card h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.especialidade-card p,
+.exame-card p {
+    color: var(--cor-texto-claro);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.preco {
+    font-size: 1.5rem;
+    color: var(--cor-destaque);
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.btn-login {
+    display: inline-block;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: var(--raio);
+    margin-top: 20px;
+}
+
+.nenhum {
+    text-align: center;
+    color: var(--cor-texto-claro);
+    font-size: 1.1rem;
+    padding: 40px;
+}
+
+/* ====================================================
+   ALERTAS / BADGES
+   ==================================================== */
+.alert {
+    padding: 15px;
+    border-radius: var(--raio);
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+}
+
+.alert p {
+    margin: 5px 0;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-error,
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-success { background: #d4edda; color: #155724; }
+.badge-warning { background: #fff3cd; color: #856404; }
+.badge-danger { background: #f8d7da; color: #721c24; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-secondary { background: #e2e3e5; color: #383d41; }
+
+/* ====================================================
+   PAINÉIS (CLIENTE / ADMIN)
+   ==================================================== */
+.painel-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    flex: 1;
+    width: 100%;
+}
+
+.painel-sidebar {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 20px;
+    box-shadow: var(--sombra);
+    height: fit-content;
+    position: sticky;
+    top: calc(var(--nav-altura) + 20px);
+}
+
+.painel-sidebar h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.menu-item {
+    display: block;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: var(--cor-texto);
+    border-radius: 5px;
+    background: #f5f5f5;
+    transition: all 0.3s;
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.painel-conteudo {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 30px;
+    box-shadow: var(--sombra);
+}
+
+.painel-conteudo h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+}
+
+.info-card {
+    background: #f9f9f9;
+    border-left: 4px solid var(--cor-primaria);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.info-card strong {
+    color: var(--cor-primaria);
+}
+
+/* Formulários dos painéis */
+.painel-conteudo form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.painel-conteudo form input,
+.painel-conteudo form select,
+.painel-conteudo form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.painel-conteudo form textarea {
+    min-height: 100px;
+}
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--cor-card);
+}
+
+table th {
+    background: var(--cor-primaria);
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+table tr:hover {
+    background: #f5f5f5;
+}
+
 @media (max-width: 768px) {
+    .painel-container {
+        grid-template-columns: 1fr;
+    }
+    .painel-sidebar {
+        position: relative;
+        top: 0;
+    }
+}
+
+/* ---------- Painel Admin ---------- */
+.admin-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    flex: 1;
+    width: 100%;
+}
+
+.admin-container h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+}
+
+.admin-menu {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--cor-card);
+    box-shadow: var(--sombra);
+    border-radius: var(--raio);
+    overflow: hidden;
+}
+
+.admin-table th {
+    background: var(--cor-primaria);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table tr:hover {
+    background: #f9f9f9;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.action-edit {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.action-delete {
+    background: var(--cor-perigo);
+    color: white;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    margin: 0 5px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.pagination a:hover {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.pagination .active {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--cor-card);
+    padding: 20px;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    color: var(--cor-primaria);
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .admin-table {
+        font-size: 12px;
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 8px;
+    }
+
+    .action-btn {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+}
+
+/* ====================================================
+   PÁGINAS DE AUTENTICAÇÃO (login / cadastro / senha)
+   ==================================================== */
+.auth-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.auth-card h1 {
+    color: var(--cor-destaque);
+    margin-bottom: 10px;
+    font-size: 32px;
+}
+
+.auth-card h2 {
+    color: #555;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+.auth-card p {
+    color: #555;
+    margin-bottom: 18px;
+}
+
+.auth-card form {
+    text-align: left;
+}
+
+.auth-card label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--cor-texto);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.auth-card input,
+.auth-card textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+}
+
+.auth-card input:focus,
+.auth-card textarea:focus {
+    outline: none;
+    border-color: var(--cor-destaque);
+    box-shadow: 0 0 5px rgba(39, 174, 96, 0.2);
+}
+
+.auth-card .button-group,
+.auth-card .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.auth-card .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.auth-card button[type="submit"],
+.auth-card .btn-primary {
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
+    color: white;
+    transition: all 0.3s;
+}
+
+.auth-card button[type="submit"]:hover,
+.auth-card .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 131, 0.4);
+}
+
+.auth-card .link-button,
+.auth-card .btn-secondary {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    color: var(--cor-texto);
+    font-weight: 500;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.auth-card .link-button:hover,
+.auth-card .btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.auth-card .note {
+    font-size: 13px;
+    color: #888;
+    margin-top: 16px;
+}
+
+/* ====================================================
+   RODAPÉ
+   ==================================================== */
+footer {
+    background: var(--cor-texto);
+    color: #d7e4e6;
+    text-align: center;
+    padding: 25px 20px;
+    margin-top: 60px;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ====================================================
+   RESPONSIVIDADE GERAL
+   ==================================================== */
+@media (max-width: 768px) {
+    nav ul {
+        gap: 18px;
+        padding: 0 4%;
+    }
+
+    nav img {
+        height: 44px;
+    }
+
+    .meu-btn {
+        padding: 8px 14px;
+    }
+
+    .sobre-clinica,
     .sobre-historia {
-        flex-direction: column-reverse; /* Foto fica em cima do texto no celular */
+        flex-direction: column;
         text-align: center;
     }
-    
+
+    .sobre-historia {
+        flex-direction: column-reverse;
+    }
+
+    .galeria-fotos {
+        grid-template-columns: 1fr;
+    }
+
+    .especialidades-container h2,
+    .exames-container h2 {
+        font-size: 1.8rem;
+    }
+
+    .especialidades-grid,
+    .exames-grid {
+        grid-template-columns: 1fr;
+    }
+
     .sobre-header h1 {
         font-size: 2rem;
     }

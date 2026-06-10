@@ -1,38 +1,63 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saúde e Bem Estar 👩‍⚕️</title>
-    <link rel="stylesheet" href="estilo.css">
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="index.php"><img src="imagens/logo.png" alt="Logo"></a></li>
-            <li><a href="especialidades.php">Especialidades</a></li>
-            <li><a href="exames.php">Exames</a></li>
-            <li><a href="cadastro/login.html" class="meu-btn">Login</a></li>
-        </ul>
-    </nav>
+<?php
+// ====================================================
+// ARQUIVO: index.php
+// Descrição: Página inicial
+// ====================================================
 
-    <div style="padding: 40px; text-align: center;">
-        <h1>Bem-vindo à Clínica Saúde & Bem-Estar 👩‍⚕️</h1>
-        <p>Sistema de agendamento de consultas e exames</p>
+$base_url = '';
+$titulo_pagina = 'Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/includes/header.php';
+?>
 
-        <?php
-            // Teste de conexão com BD
-            require_once __DIR__ . '/backend/config/conexao.php';
-
-            try {
-                $resultado = $db->query("SELECT COUNT(*) as total FROM especialidades");
-                $row = $resultado->fetch_assoc();
-                echo '<p style="color: green; font-weight: bold;">✅ Conexão com banco de dados OK!</p>';
-                echo '<p>Especialidades no banco: ' . $row['total'] . '</p>';
-            } catch (Exception $e) {
-                echo '<p style="color: red; font-weight: bold;">❌ Erro ao conectar: ' . $e->getMessage() . '</p>';
-            }
-        ?>
+    <div class="inicial">
+        <img src="imagens/inicial.png" alt="Recepção da Clínica Saúde & Bem-Estar">
     </div>
-</body>
-</html>
+
+    <section class="sobre-clinica">
+        <div class="conteudo-texto">
+            <h2>Cuidado que Transforma, Saúde que Inspira!</h2>
+            <p>
+                Na Clínica Saúde & Bem-Estar, acreditamos que o cuidado vai além do consultório.
+                Unimos tecnologia de ponta a um atendimento profundamente humanizado para garantir
+                que você e sua família recebam o melhor suporte em cada etapa da jornada de saúde.
+            </p>
+            <p>
+                Nossa missão é promover qualidade de vida através de diagnósticos precisos e
+                especialidades focadas no seu equilíbrio físico e mental.
+            </p>
+            <a href="sobre.php" class="btn-sobre">Sobre Nós</a>
+        </div>
+
+        <div class="galeria-fotos">
+            <img src="imagens/clinica1.png" alt="Consultório">
+            <img src="imagens/clinica2.png" alt="Equipamento Médico">
+        </div>
+    </section>
+
+    <section class="destaques">
+        <a href="especialidades.php" class="destaque-card">
+            <div class="icone">🏥</div>
+            <h3>Especialidades</h3>
+            <p>Conheça as especialidades médicas disponíveis e agende sua consulta.</p>
+        </a>
+        <a href="exames.php" class="destaque-card">
+            <div class="icone">🧬</div>
+            <h3>Exames</h3>
+            <p>Solicite exames laboratoriais e de imagem com praticidade.</p>
+        </a>
+        <?php if (is_autenticado()): ?>
+            <a href="backend/views/painel_cliente.php" class="destaque-card">
+                <div class="icone">📅</div>
+                <h3>Meus Agendamentos</h3>
+                <p>Acompanhe e gerencie suas consultas e exames marcados.</p>
+            </a>
+        <?php else: ?>
+            <a href="cadastro/criar_conta.php" class="destaque-card">
+                <div class="icone">👤</div>
+                <h3>Crie sua conta</h3>
+                <p>Cadastre-se para agendar consultas e exames online.</p>
+            </a>
+        <?php endif; ?>
+    </section>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

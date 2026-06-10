@@ -18,10 +18,11 @@ Aplicação web para gerenciamento de clínica médica com autenticação de usu
 
 ## 📦 Requisitos
 
-- **PHP 7.4+** (recomendado 8.0+)
-- **MySQL 5.7+** ou **MariaDB**
+- **PHP 8.0+** com extensão **pdo_sqlite** (vem habilitada por padrão)
 - **Apache** ou outro servidor web (com suporte a rewrite URLs)
-- **XAMPP**, **WAMP** ou instalação local de PHP + Apache + MySQL
+- **XAMPP**, **WAMP** ou instalação local de PHP + Apache
+
+> O banco de dados é **SQLite** (arquivo único, sem necessidade de servidor de banco de dados separado).
 
 ---
 
@@ -40,11 +41,12 @@ cd C:\xampp\htdocs\Cinica_web
 #### No XAMPP:
 - Abrir **XAMPP Control Panel**
 - Iniciar **Apache** (botão Start)
-- Iniciar **MySQL** (botão Start)
+
+> Não é necessário iniciar o MySQL — o banco de dados SQLite é criado automaticamente.
 
 #### No WAMP:
 - Clicar no ícone WAMP na bandeja do sistema
-- Garantir que está "verde" (todos os serviços rodando)
+- Garantir que o **Apache** está "verde"
 
 ### 3. Acessar a Aplicação
 
@@ -56,41 +58,26 @@ http://localhost/Cinica_web
 
 ## 🗄️ Configuração do Banco de Dados
 
-### Passo 1: Acessar phpMyAdmin
+O banco de dados é um arquivo **SQLite** localizado em `database/clinica.sqlite`.
 
-```
-http://localhost/phpmyadmin
-```
+Na primeira requisição à aplicação, a classe `Conexao` (`backend/config/conexao.php`)
+verifica se esse arquivo existe e, caso não exista, **cria automaticamente** o banco
+executando o script `sql/schema.sqlite.sql`, que contém a estrutura das tabelas e os
+dados iniciais (especialidades, exames e usuários de teste).
 
-### Passo 2: Criar Banco de Dados
+Não é necessário nenhum passo manual de criação/importação do banco.
 
-1. Clique em "Novo" ou "New Database"
-2. Digite: `clinica_db`
-3. Clique em "Criar" ou "Create"
-
-### Passo 3: Importar Tabelas
-
-1. Selecione o banco `clinica_db`
-2. Vá para a aba **SQL**
-3. Abra o arquivo `Cinica_web/sql/criar_tabelas.sql`
-4. Copie todo o conteúdo
-5. Cole no editor SQL do phpMyAdmin
-6. Clique em **Executar**
-
-Ou, alternativa via terminal:
-
-```bash
-mysql -u root clinica_db < sql/criar_tabelas.sql
-```
-
-### Verificar Tabelas
-
-Após importar, você deve ver as tabelas:
+### Tabelas criadas automaticamente
 - `clientes`
 - `especialidades`
 - `exames`
 - `agendamentos`
 - `redefinicao_senha`
+
+### Recriar o banco do zero
+
+Para recomeçar com dados limpos, basta apagar o arquivo `database/clinica.sqlite`
+(ele será recriado automaticamente na próxima requisição).
 
 ---
 
@@ -98,21 +85,16 @@ Após importar, você deve ver as tabelas:
 
 ### Arquivo: `backend/config/config.php`
 
-Verifique se as configurações estão corretas:
+A configuração principal do banco é a constante `DB_PATH`, que aponta para o arquivo SQLite:
 
 ```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');              // Usuário MySQL (padrão: root)
-define('DB_PASS', '');                  // Senha MySQL (padrão: vazio)
-define('DB_NAME', 'clinica_db');
-define('DB_PORT', 3306);
+define('DB_PATH', getenv('DB_PATH') ?: __DIR__ . '/../../database/clinica.sqlite');
 ```
 
-#### Se você tem senha no MySQL:
+Pode ser sobrescrita definindo a variável de ambiente `DB_PATH` (útil em Docker).
 
-```php
-define('DB_PASS', 'sua_senha_aqui');
-```
+A `SITE_URL` é detectada automaticamente a partir do caminho do projeto e do host
+da requisição, podendo também ser sobrescrita via variável de ambiente `SITE_URL`.
 
 ---
 
@@ -121,7 +103,7 @@ define('DB_PASS', 'sua_senha_aqui');
 ### 1️⃣ Acessar a Página Inicial
 
 ```
-http://localhost/Cinica_web/index.html
+http://localhost/Cinica_web/index.php
 ```
 
 ### 2️⃣ Criar uma Conta
@@ -170,13 +152,17 @@ Como **admin** (usar credenciais de teste abaixo), você pode:
 ```
 Cinica_web/
 │
-├── index.html                          # Página inicial
-├── sobre.html                          # Página sobre
+├── index.php                           # Página inicial
+├── sobre.php                           # Página sobre
 ├── especialidades.php                  # Especialidades dinâmicas
 ├── exames.php                          # Exames dinâmicos
 ├── estilo.css                          # Estilos globais
 │
 ├── imagens/                            # Logo e imagens
+│
+├── includes/
+│   ├── header.php                      # Cabeçalho/navbar compartilhados
+│   └── footer.php                      # Rodapé compartilhado
 │
 ├── cadastro/
 │   ├── login.php                       # Página de login
@@ -186,7 +172,7 @@ Cinica_web/
 ├── backend/
 │   ├── config/
 │   │   ├── config.php                  # Configurações globais
-│   │   └── conexao.php                 # Classe de conexão BD
+│   │   └── conexao.php                 # Classe de conexão BD (PDO/SQLite)
 │   │
 │   ├── auth/
 │   │   ├── registrar.php               # Processa cadastro
@@ -206,8 +192,12 @@ Cinica_web/
 │       ├── painel_cliente.php          # Painel do cliente
 │       └── painel_admin.php            # Painel administrativo
 │
+├── database/
+│   └── clinica.sqlite                  # Banco de dados SQLite (criado automaticamente)
+│
 ├── sql/
-│   └── criar_tabelas.sql               # Script de criação do BD
+│   ├── schema.sqlite.sql               # Script de criação do BD (SQLite, usado pela aplicação)
+│   └── criar_tabelas.sql               # Script MySQL antigo (referência histórica)
 │
 └── README.md                           # Este arquivo
 ```
@@ -265,12 +255,12 @@ A aplicação implementa várias medidas de segurança:
 
 ## 🔧 Troubleshooting
 
-### ❌ Erro: "Fatal error: Uncaught mysqli_sql_exception"
+### ❌ Erro relacionado a PDO/SQLite
 
-**Solução**: Verificar conexão com BD
-- Verificar se MySQL está rodando
-- Verificar se banco `clinica_db` existe
-- Verificar credenciais em `backend/config/config.php`
+**Solução**: Verificar a extensão do PHP
+- Confirmar que `pdo_sqlite` está habilitada (`php -m | grep sqlite`)
+- Verificar se a pasta `database/` tem permissão de escrita
+- Apagar `database/clinica.sqlite` para forçar recriação do banco
 
 ### ❌ "Página em branco"
 

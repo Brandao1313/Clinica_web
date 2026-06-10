@@ -12,7 +12,7 @@ require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
 // Verificar se já está logado
 if (is_autenticado()) {
-    redirect('index.html');
+    redirect('index.php');
 }
 
 // Processar apenas se for POST
@@ -139,7 +139,7 @@ if (empty($erros)) {
             // Sucesso! Redirecionar para login com mensagem
             set_flash_message('registro', SUCESSO_CADASTRO, 'sucesso');
             log_acao('CADASTRO_USUARIO', 0, "Email: $email");
-            redirect('login.html');
+            redirect('cadastro/login.php');
         } else {
             $erros[] = 'Erro ao criar conta: ' . $conexao_db->error;
         }
@@ -162,6 +162,6 @@ if (!empty($erros)) {
 }
 
 // Redirecionar de volta para formulário
-redirect('criar_conta.html');
+redirect('cadastro/criar_conta.php');
 
 ?>

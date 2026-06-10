@@ -5,7 +5,7 @@
 Seu site estático foi **totalmente transformado** em uma **aplicação web dinâmica e segura** com:
 
 - ✅ **Autenticação segura** com bcrypt e sessões
-- ✅ **Banco de dados MySQL** com 5 tabelas normalizadas
+- ✅ **Banco de dados SQLite** com 5 tabelas normalizadas (criado automaticamente)
 - ✅ **Painel do cliente** com 5 funcionalidades principais
 - ✅ **Painel administrativo** com estatísticas e listagens
 - ✅ **Agendamentos** de consultas e exames
@@ -19,7 +19,7 @@ Seu site estático foi **totalmente transformado** em uma **aplicação web din�
 
 ## 🎯 O Que Foi Criado
 
-### 1. **Banco de Dados (MySQL)**
+### 1. **Banco de Dados (SQLite)**
 ```sql
 ✅ Tabela: clientes (id, nome, email, cpf, telefone, data_nascimento, senha_hash, etc)
 ✅ Tabela: especialidades (id, nome, descricao, ativo)
@@ -32,7 +32,7 @@ Seu site estático foi **totalmente transformado** em uma **aplicação web din�
 ### 2. **Backend (PHP)**
 ```
 ✅ config.php - Constantes e configurações globais
-✅ conexao.php - Singleton de conexão MySQL com prepared statements
+✅ conexao.php - Singleton de conexão SQLite (PDO) com prepared statements
 ✅ validacao.php - CPF, email, telefone, data, força de senha
 ✅ seguranca.php - Hash de senha, tokens CSRF, autenticação, logs
 ✅ funcoes_gerais.php - Formatação de dados, cálculos, helpers
@@ -70,29 +70,17 @@ Seu site estático foi **totalmente transformado** em uma **aplicação web din�
 
 ---
 
-## 🚀 Como Começar (3 Passos)
+## 🚀 Como Começar (1 Passo)
 
-### **Passo 1: Importar Banco de Dados**
-
-1. Abrir **phpMyAdmin**: `http://localhost/phpmyadmin`
-2. Criar banco: `clinica_db`
-3. Importar arquivo: `Cinica_web/sql/criar_tabelas.sql`
-
-### **Passo 2: Verificar Configuração**
-
-Abrir `Cinica_web/backend/config/config.php` e verificar:
-```php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');  // Sua senha MySQL se houver
-define('DB_NAME', 'clinica_db');
-```
-
-### **Passo 3: Acessar a Aplicação**
+### **Passo único: Acessar a Aplicação**
 
 ```
 http://localhost/Cinica_web
 ```
+
+O banco `database/clinica.sqlite` é criado automaticamente na primeira requisição,
+a partir do script `sql/schema.sqlite.sql` (estrutura + dados iniciais). Não é
+necessário phpMyAdmin nem configurar credenciais de banco.
 
 ---
 
@@ -153,7 +141,8 @@ Cinica_web/
 │   ├── criar_conta.php ................. Cadastro dinâmico
 │   └── esqueci_senha.php ............... Reset de senha
 ├── sql/
-│   └── criar_tabelas.sql ............... Script BD completo
+│   ├── schema.sqlite.sql ............... Script BD SQLite (usado pela aplicação)
+│   └── criar_tabelas.sql ............... Script BD MySQL (referência histórica)
 ├── especialidades.php .................. Dinâmica
 ├── exames.php .......................... Dinâmica
 └── README.md ........................... Documentação completa
@@ -224,7 +213,7 @@ Cinica_web/
 
 | Arquivo | Propósito |
 |---------|-----------|
-| `sql/criar_tabelas.sql` | Criar BD + dados iniciais |
+| `sql/schema.sqlite.sql` | Criar BD SQLite + dados iniciais (automático) |
 | `backend/config/config.php` | Configurações globais |
 | `backend/config/conexao.php` | Conexão com BD |
 | `README.md` | Documentação completa |
@@ -278,6 +267,6 @@ Sua aplicação está **pronta para usar** e **segura para produção** (com peq
 ---
 
 **Desenvolvido em**: Junho de 2026
-**Stack**: PHP 7.4+ | MySQL 5.7+ | HTML5 | CSS3
+**Stack**: PHP 8.0+ | SQLite | HTML5 | CSS3
 **Responsivo**: Sim ✅
 **Seguro**: Sim ✅

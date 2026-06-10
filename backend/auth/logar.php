@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/validacao.php';
 require_once __DIR__ . '/../utils/seguranca.php';
 require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
@@ -13,6 +14,7 @@ require_once __DIR__ . '/../utils/funcoes_gerais.php';
 if (is_autenticado()) {
     redirect('backend/views/painel_cliente.php');
 }
+
 
 // Processar apenas se for POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -93,6 +95,6 @@ if (!empty($erros)) {
 }
 
 // Redirecionar de volta para formulário
-redirect('login.html');
+redirect('cadastro/login.php');
 
 ?>

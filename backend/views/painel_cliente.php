@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/validacao.php';
 require_once __DIR__ . '/../utils/seguranca.php';
 require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
@@ -24,187 +25,32 @@ $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+$base_url = '../../';
+$titulo_pagina = 'Meu Painel - Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Clínica</title>
-    <link rel="stylesheet" href="../../estilo.css">
-    <style>
-        .painel-container {
-            max-width: 1200px;
-            margin: 100px auto 40px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 30px;
-        }
-
-        .painel-sidebar {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-        }
-
-        .painel-sidebar h3 {
-            color: #007b83;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .menu-item {
-            display: block;
-            padding: 12px;
-            margin-bottom: 8px;
-            text-decoration: none;
-            color: #333;
-            border-radius: 5px;
-            background: #f5f5f5;
-            transition: all 0.3s;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: #007b83;
-            color: white;
-        }
-
-        .painel-conteudo {
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .painel-conteudo h2 {
-            color: #007b83;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #007b83;
-            padding-bottom: 10px;
-        }
-
-        .info-card {
-            background: #f9f9f9;
-            border-left: 4px solid #007b83;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-
-        .info-card strong {
-            color: #007b83;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
-        .badge-info { background: #d1ecf1; color: #0c5460; }
-
-        .btn-action {
-            display: inline-block;
-            padding: 10px 15px;
-            background: #007b83;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-action:hover {
-            background: #005a60;
-        }
-
-        .btn-action.secondary {
-            background: #ccc;
-            color: #333;
-        }
-
-        .btn-action.secondary:hover {
-            background: #bbb;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th {
-            background: #007b83;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        table tr:hover {
-            background: #f5f5f5;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        @media (max-width: 768px) {
-            .painel-container {
-                grid-template-columns: 1fr;
-            }
-            .painel-sidebar {
-                position: relative;
-                top: 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav>
-        <ul>
-            <li><a href="../../index.html"><img src="../../imagens/logo.png" alt="Logo"></a></li>
-            <li><a href="../../exames.php">Exames</a></li>
-            <li><a href="../../especialidades.php">Especialidades</a></li>
-            <a href="../auth/deslogar.php" class="meu-btn">Sair</a>
-        </ul>
-    </nav>
 
     <div class="painel-container">
+        <?php
+            $flash_agendamento = get_flash_message('agendamento');
+            $flash_login = get_flash_message('login');
+        ?>
+        <?php if ($flash_login): ?>
+            <div class="alert alert-success" style="grid-column: 1 / -1;">✅ <?php echo htmlspecialchars($flash_login['mensagem']); ?></div>
+        <?php endif; ?>
+        <?php if ($flash_agendamento): ?>
+            <div class="alert <?php echo $flash_agendamento['tipo'] === 'sucesso' ? 'alert-success' : 'alert-error'; ?>" style="grid-column: 1 / -1;">
+                <?php echo $flash_agendamento['tipo'] === 'sucesso' ? '✅' : '❌'; ?> <?php echo htmlspecialchars($flash_agendamento['mensagem']); ?>
+            </div>
+        <?php endif; ?>
+        <?php if (!empty($_SESSION['erros_agendamento'])): ?>
+            <div class="alert alert-error" style="grid-column: 1 / -1;">
+                <?php foreach ($_SESSION['erros_agendamento'] as $erro): ?>
+                    <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+                <?php endforeach; ?>
+                <?php unset($_SESSION['erros_agendamento']); ?>
+            </div>
+        <?php endif; ?>
         <!-- SIDEBAR COM MENU -->
         <aside class="painel-sidebar">
             <h3>Menu</h3>
@@ -238,7 +84,7 @@ $stmt->close();
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
-                         WHERE a.id_cliente = ? AND a.status != "cancelado" AND a.data_hora > NOW()
+                         WHERE a.id_cliente = ? AND a.status != "cancelado" AND a.data_hora > datetime("now", "localtime")
                          ORDER BY a.data_hora ASC
                          LIMIT 5'
                     );
@@ -267,7 +113,7 @@ $stmt->close();
                                     <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                                     <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
                                     <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
-                                    <td><span class="badge <?php echo 'badge-' . get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
+                                    <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>
@@ -346,7 +192,7 @@ $stmt->close();
                                     <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                                     <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
                                     <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
-                                    <td><span class="badge <?php echo 'badge-' . get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
+                                    <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
                                     <td>
                                         <?php if (pode_cancelar_agendamento($ag['status'])): ?>
                                             <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" onclick="return confirm('Deseja cancelar?')">Cancelar</a>
@@ -468,6 +314,4 @@ $stmt->close();
         </main>
     </div>
 
-</body>
-
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

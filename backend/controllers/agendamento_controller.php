@@ -41,7 +41,7 @@ if ($acao === 'agendar_consulta') {
 
     if (!empty($erros)) {
         $_SESSION['erros_agendamento'] = $erros;
-        redirect('views/painel_cliente.php?acao=agendar');
+        redirect('backend/views/painel_cliente.php?acao=agendar');
     }
 
     // Converter formato datetime-local para formato MySQL
@@ -59,7 +59,7 @@ if ($acao === 'agendar_consulta') {
         if ($stmt->execute()) {
             set_flash_message('agendamento', SUCESSO_AGENDAMENTO, 'sucesso');
             log_acao('AGENDAR_CONSULTA', $id_cliente, "Especialidade: $id_especialidade, Data: $data_hora");
-            redirect('views/painel_cliente.php?acao=agendamentos');
+            redirect('backend/views/painel_cliente.php?acao=agendamentos');
         } else {
             $erros[] = 'Erro ao agendar: ' . $conexao_db->error;
         }
@@ -67,7 +67,7 @@ if ($acao === 'agendar_consulta') {
     }
 
     $_SESSION['erros_agendamento'] = $erros;
-    redirect('views/painel_cliente.php?acao=agendar');
+    redirect('backend/views/painel_cliente.php?acao=agendar');
 }
 
 // ====== AGENDAR EXAME ======
@@ -87,7 +87,7 @@ elseif ($acao === 'agendar_exame') {
 
     if (!empty($erros)) {
         $_SESSION['erros_agendamento'] = $erros;
-        redirect('views/painel_cliente.php?acao=exames');
+        redirect('backend/views/painel_cliente.php?acao=exames');
     }
 
     // Converter formato datetime-local para formato MySQL
@@ -105,7 +105,7 @@ elseif ($acao === 'agendar_exame') {
         if ($stmt->execute()) {
             set_flash_message('agendamento', SUCESSO_AGENDAMENTO, 'sucesso');
             log_acao('SOLICITAR_EXAME', $id_cliente, "Exame: $id_exame, Data: $data_hora");
-            redirect('views/painel_cliente.php?acao=agendamentos');
+            redirect('backend/views/painel_cliente.php?acao=agendamentos');
         } else {
             $erros[] = 'Erro ao solicitar exame: ' . $conexao_db->error;
         }
@@ -113,7 +113,7 @@ elseif ($acao === 'agendar_exame') {
     }
 
     $_SESSION['erros_agendamento'] = $erros;
-    redirect('views/painel_cliente.php?acao=exames');
+    redirect('backend/views/painel_cliente.php?acao=exames');
 }
 
 // ====== CANCELAR AGENDAMENTO ======
@@ -129,14 +129,14 @@ elseif ($acao === 'cancelar_agendamento') {
 
     if ($resultado->num_rows === 0) {
         $_SESSION['erros_agendamento'] = ['Agendamento não encontrado'];
-        redirect('views/painel_cliente.php?acao=agendamentos');
+        redirect('backend/views/painel_cliente.php?acao=agendamentos');
     }
 
     $agendamento = $resultado->fetch_assoc();
 
     if (!pode_cancelar_agendamento($agendamento['status'])) {
         $_SESSION['erros_agendamento'] = ['Este agendamento não pode ser cancelado'];
-        redirect('views/painel_cliente.php?acao=agendamentos');
+        redirect('backend/views/painel_cliente.php?acao=agendamentos');
     }
 
     // Cancelar agendamento
@@ -149,11 +149,11 @@ elseif ($acao === 'cancelar_agendamento') {
     }
     $stmt->close();
 
-    redirect('views/painel_cliente.php?acao=agendamentos');
+    redirect('backend/views/painel_cliente.php?acao=agendamentos');
 }
 
 // Ação desconhecida
 $_SESSION['erros_agendamento'] = ['Ação não permitida'];
-redirect('views/painel_cliente.php');
+redirect('backend/views/painel_cliente.php');
 
 ?>

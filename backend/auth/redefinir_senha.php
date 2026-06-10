@@ -99,7 +99,7 @@ elseif ($acao === 'redefinir') {
 
         // Verificar token
         $stmt = $conexao_db->prepare(
-            'SELECT id_cliente, usado FROM redefinicao_senha WHERE token = ? AND data_expiracao > NOW() AND usado = 0'
+            'SELECT id_cliente, usado FROM redefinicao_senha WHERE token = ? AND data_expiracao > datetime("now", "localtime") AND usado = 0'
         );
         $stmt->bind_param('s', $token);
         $stmt->execute();
@@ -127,7 +127,7 @@ elseif ($acao === 'redefinir') {
 
                 log_acao('RESET_SENHA_COMPLETADO', $id_cliente, 'Senha redefinida com sucesso');
                 set_flash_message('reset', 'Senha redefinida com sucesso! Faça login com sua nova senha.', 'sucesso');
-                redirect('login.html');
+                redirect('cadastro/login.php');
             } else {
                 $erros[] = 'Erro ao atualizar senha. Tente novamente.';
             }
@@ -148,6 +148,6 @@ if (!empty($sucesso)) {
     $_SESSION['sucesso_reset'] = $sucesso;
 }
 
-redirect('esqueci_senha.html');
+redirect('cadastro/esqueci_senha.php');
 
 ?>
