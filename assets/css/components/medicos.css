@@ -1,0 +1,228 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/medicos.css
+   Descrição: Cards de médicos (página pública), perfil
+              detalhado, formulário de horários e gráfico
+              simples de relatórios
+   ==================================================== */
+
+/* ---------- Listagem pública de médicos ---------- */
+.medicos-container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.medicos-container h2 {
+    text-align: center;
+    color: var(--cor-primaria);
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.medicos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.medico-card {
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.medico-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: var(--sombra-hover);
+}
+
+.medico-card-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.medico-foto {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--cor-primaria-clara);
+    flex-shrink: 0;
+}
+
+.medico-foto-placeholder {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.medico-card h3 {
+    color: var(--cor-primaria);
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.medico-especialidade {
+    color: var(--cor-texto-claro);
+    font-size: 0.9rem;
+}
+
+.medico-crm {
+    color: var(--cor-texto-claro);
+    font-size: 0.8rem;
+}
+
+.medico-card p.medico-bio {
+    color: var(--cor-texto-claro);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.medico-horarios {
+    font-size: 0.85rem;
+    color: var(--cor-texto);
+    background: var(--cor-primaria-clara);
+    border-radius: var(--raio);
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.medico-horarios strong {
+    color: var(--cor-primaria-escura);
+}
+
+/* ---------- Perfil detalhado do médico ---------- */
+.medico-detalhe-container {
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.medico-detalhe-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.medico-detalhe-cabecalho .medico-foto,
+.medico-detalhe-cabecalho .medico-foto-placeholder {
+    width: 120px;
+    height: 120px;
+    font-size: 3rem;
+}
+
+.medico-detalhe-cabecalho h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 6px;
+    border: none;
+    padding: 0;
+}
+
+.medico-detalhe-secao {
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    margin-bottom: 30px;
+}
+
+.medico-detalhe-secao h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+}
+
+/* ---------- Formulário de horários (admin) ---------- */
+.horarios-tabela td,
+.horarios-tabela th {
+    text-align: center;
+}
+
+.horarios-tabela td:first-child,
+.horarios-tabela th:first-child {
+    text-align: left;
+}
+
+/* ---------- Gráfico simples (relatórios) ---------- */
+.grafico-barras {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    height: 220px;
+    padding: 20px;
+    margin: 20px 0;
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    overflow-x: auto;
+}
+
+.grafico-barra-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 80px;
+    height: 100%;
+    flex: 1;
+}
+
+.grafico-barra-coluna {
+    width: 36px;
+    background: linear-gradient(180deg, var(--cor-destaque), var(--cor-primaria));
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease;
+}
+
+.grafico-barra-valor {
+    margin-top: 8px;
+    font-weight: 700;
+    color: var(--cor-primaria);
+}
+
+.grafico-barra-label {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: var(--cor-texto-claro);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .medicos-container h2 {
+        font-size: 1.8rem;
+    }
+
+    .medicos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .medico-detalhe-cabecalho {
+        flex-direction: column;
+        text-align: center;
+    }
+}

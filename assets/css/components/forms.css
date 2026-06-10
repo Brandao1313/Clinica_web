@@ -1,0 +1,231 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/forms.css
+   Descrição: Cards de formulário (autenticação e painéis)
+   ==================================================== */
+
+/* ---------- Páginas de autenticação ---------- */
+.auth-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
+}
+
+.auth-card {
+    background: #ffffff;
+    border-radius: var(--raio-grande);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+}
+
+.auth-card h1 {
+    color: var(--cor-destaque);
+    margin-bottom: 10px;
+    font-size: 32px;
+}
+
+.auth-card h2 {
+    color: #555;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 30px;
+}
+
+.auth-card p {
+    color: #555;
+    margin-bottom: 18px;
+}
+
+.auth-card form {
+    text-align: left;
+}
+
+.auth-card label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--cor-texto);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.auth-card input,
+.auth-card textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid var(--cor-borda);
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    transition: border-color 0.3s;
+}
+
+.auth-card input:focus,
+.auth-card textarea:focus {
+    outline: none;
+    border-color: var(--cor-destaque);
+    box-shadow: 0 0 5px rgba(39, 174, 96, 0.2);
+}
+
+.auth-card .button-group,
+.auth-card .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.auth-card .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+/* ---------- Subcards de agrupamento de campos ---------- */
+.form-grupo {
+    background: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 16px 16px 4px;
+    margin-bottom: 18px;
+}
+
+.form-grupo-titulo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cor-primaria);
+    margin-bottom: 12px;
+}
+
+/* Erro de validação ao lado do campo */
+.campo-erro {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--cor-perigo-escura);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: -6px 0 12px;
+}
+
+.campo-erro::before {
+    content: '⚠️';
+}
+
+/* ---------- Botão de envio com cadeado e estado de carregamento ---------- */
+.auth-card button[type="submit"],
+.auth-card .btn-primary,
+.painel-conteudo button[type="submit"] {
+    position: relative;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
+    color: white;
+    transition: all 0.3s;
+}
+
+.auth-card button[type="submit"]::before,
+.auth-card .btn-primary::before,
+.painel-conteudo button[type="submit"]::before {
+    content: '🔒';
+    margin-right: 8px;
+}
+
+.auth-card button[type="submit"]:hover,
+.auth-card .btn-primary:hover,
+.painel-conteudo button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 131, 0.4);
+}
+
+/* Estado visual de carregamento (acionado via classe JS opcional) */
+.auth-card button[type="submit"].carregando,
+.auth-card .btn-primary.carregando,
+.painel-conteudo button[type="submit"].carregando {
+    color: transparent;
+    pointer-events: none;
+}
+
+.auth-card button[type="submit"].carregando::after,
+.auth-card .btn-primary.carregando::after,
+.painel-conteudo button[type="submit"].carregando::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: girar 0.6s linear infinite;
+}
+
+@keyframes girar {
+    to { transform: rotate(360deg); }
+}
+
+.auth-card .link-button,
+.auth-card .btn-secondary {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f0f0f0;
+    color: var(--cor-texto);
+    font-weight: 500;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.auth-card .link-button:hover,
+.auth-card .btn-secondary:hover {
+    background: #e0e0e0;
+    transform: translateY(-2px);
+}
+
+.auth-card .note {
+    font-size: 13px;
+    color: #888;
+    margin-top: 16px;
+}
+
+/* ---------- Formulários dos painéis ---------- */
+.painel-conteudo form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.painel-conteudo form input,
+.painel-conteudo form select,
+.painel-conteudo form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.painel-conteudo form textarea {
+    min-height: 100px;
+}

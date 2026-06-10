@@ -1,16 +1,29 @@
 /* ====================================================
-   ARQUIVO: estilo.css
+   ARQUIVO: assets/css/estilo.css
    Descrição: Design system da Clínica Saúde & Bem-Estar
    ==================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('components/cards.css');
+@import url('components/menu.css');
+@import url('components/forms.css');
+@import url('components/agendamentos.css');
+@import url('components/flash.css');
+@import url('components/medicos.css');
 
 /* ---------- Variáveis globais ---------- */
 :root {
     --cor-primaria: #007b83;
     --cor-primaria-escura: #005a60;
+    --cor-primaria-clara: #e3f3f4;
     --cor-destaque: #27ae60;
     --cor-destaque-escura: #1e8449;
+    --cor-destaque-clara: #e6f7ed;
     --cor-perigo: #dc3545;
     --cor-perigo-escura: #c82333;
+    --cor-perigo-clara: #fbe7e9;
+    --cor-aviso: #f0ad4e;
+    --cor-aviso-clara: #fff3cd;
     --cor-texto: #2c3e50;
     --cor-texto-claro: #5b6b73;
     --cor-fundo: #eef7f6;
@@ -19,7 +32,10 @@
     --sombra: 0 4px 15px rgba(0, 0, 0, 0.08);
     --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
     --raio: 8px;
+    --raio-grande: 16px;
     --nav-altura: 80px;
+    --fonte-titulo: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --fonte-texto: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* ---------- Reset geral ---------- */
@@ -27,7 +43,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--fonte-texto);
+}
+
+h1, h2, h3, h4, .meu-btn, nav a, .btn, .btn-action, .btn-agendar, .btn-solicitar, .btn-sobre, .admin-btn {
+    font-family: var(--fonte-titulo);
 }
 
 html {
@@ -130,7 +150,7 @@ nav img {
     border-radius: var(--raio);
     border: none;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
     box-shadow: 0 4px 6px rgba(0, 123, 131, 0.15);
 }
 
@@ -175,6 +195,29 @@ nav img {
 .btn-login:hover,
 .btn-perigo:hover {
     background: var(--cor-perigo-escura);
+}
+
+/* Botão estilo "outline" -> preenchido no hover */
+.btn-outline {
+    background: transparent;
+    color: var(--cor-primaria);
+    border: 2px solid var(--cor-primaria);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    background: var(--cor-primaria);
+    color: #ffffff;
+}
+
+.btn-outline.btn-outline-destaque {
+    color: var(--cor-destaque-escura);
+    border-color: var(--cor-destaque);
+}
+
+.btn-outline.btn-outline-destaque:hover {
+    background: var(--cor-destaque);
+    color: #ffffff;
 }
 
 .admin-btn.active {
@@ -243,40 +286,6 @@ nav img {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 25px;
-}
-
-.destaque-card {
-    background: var(--cor-card);
-    border-radius: var(--raio);
-    padding: 30px;
-    text-align: center;
-    box-shadow: var(--sombra);
-    text-decoration: none;
-    color: var(--cor-texto);
-    border-top: 5px solid var(--cor-primaria);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.destaque-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--sombra-hover);
-}
-
-.destaque-card .icone {
-    font-size: 2.2rem;
-    margin-bottom: 12px;
-}
-
-.destaque-card h3 {
-    color: var(--cor-primaria);
-    margin-bottom: 8px;
-    font-size: 1.2rem;
-}
-
-.destaque-card p {
-    color: var(--cor-texto-claro);
-    font-size: 0.95rem;
-    line-height: 1.5;
 }
 
 /* ====================================================
@@ -350,37 +359,6 @@ nav img {
     gap: 30px;
 }
 
-.valor-card {
-    background: var(--cor-card);
-    padding: 40px 30px;
-    border-radius: var(--raio);
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-top: 5px solid var(--cor-primaria);
-    transition: transform 0.3s ease;
-}
-
-.valor-card:hover {
-    transform: translateY(-5px);
-}
-
-.valor-card .icone {
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-}
-
-.valor-card h3 {
-    color: var(--cor-texto);
-    font-size: 1.4rem;
-    margin-bottom: 15px;
-}
-
-.valor-card p {
-    color: var(--cor-texto-claro);
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
 /* ====================================================
    ESPECIALIDADES / EXAMES
    ==================================================== */
@@ -407,45 +385,6 @@ nav img {
     margin-bottom: 40px;
 }
 
-.especialidade-card,
-.exame-card {
-    background: var(--cor-card);
-    border-radius: var(--raio);
-    padding: 30px;
-    box-shadow: var(--sombra);
-    transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-}
-
-.especialidade-card:hover,
-.exame-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--sombra-hover);
-}
-
-.especialidade-card h3,
-.exame-card h3 {
-    color: var(--cor-primaria);
-    margin-bottom: 15px;
-    font-size: 1.3rem;
-}
-
-.especialidade-card p,
-.exame-card p {
-    color: var(--cor-texto-claro);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    flex: 1;
-}
-
-.preco {
-    font-size: 1.5rem;
-    color: var(--cor-destaque);
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-
 .btn-login {
     display: inline-block;
     padding: 12px 25px;
@@ -465,10 +404,11 @@ nav img {
    ALERTAS / BADGES
    ==================================================== */
 .alert {
-    padding: 15px;
+    padding: 15px 18px;
     border-radius: var(--raio);
     margin-bottom: 20px;
     border: 1px solid transparent;
+    border-left-width: 4px;
 }
 
 .alert p {
@@ -479,6 +419,7 @@ nav img {
     background: #d4edda;
     color: #155724;
     border-color: #c3e6cb;
+    border-left-color: #28a745;
 }
 
 .alert-error,
@@ -486,14 +427,27 @@ nav img {
     background: #f8d7da;
     color: #721c24;
     border-color: #f5c6cb;
+    border-left-color: var(--cor-perigo);
 }
 
 .badge {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
     font-size: 12px;
-    font-weight: bold;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.7;
 }
 
 .badge-success { background: #d4edda; color: #155724; }
@@ -516,39 +470,6 @@ nav img {
     width: 100%;
 }
 
-.painel-sidebar {
-    background: var(--cor-card);
-    border-radius: var(--raio);
-    padding: 20px;
-    box-shadow: var(--sombra);
-    height: fit-content;
-    position: sticky;
-    top: calc(var(--nav-altura) + 20px);
-}
-
-.painel-sidebar h3 {
-    color: var(--cor-primaria);
-    margin-bottom: 15px;
-    font-size: 16px;
-}
-
-.menu-item {
-    display: block;
-    padding: 12px;
-    margin-bottom: 8px;
-    text-decoration: none;
-    color: var(--cor-texto);
-    border-radius: 5px;
-    background: #f5f5f5;
-    transition: all 0.3s;
-}
-
-.menu-item:hover,
-.menu-item.active {
-    background: var(--cor-primaria);
-    color: white;
-}
-
 .painel-conteudo {
     background: var(--cor-card);
     border-radius: var(--raio);
@@ -561,39 +482,6 @@ nav img {
     margin-bottom: 20px;
     border-bottom: 2px solid var(--cor-primaria);
     padding-bottom: 10px;
-}
-
-.info-card {
-    background: #f9f9f9;
-    border-left: 4px solid var(--cor-primaria);
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-}
-
-.info-card strong {
-    color: var(--cor-primaria);
-}
-
-/* Formulários dos painéis */
-.painel-conteudo form label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.painel-conteudo form input,
-.painel-conteudo form select,
-.painel-conteudo form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-.painel-conteudo form textarea {
-    min-height: 100px;
 }
 
 /* Tabelas */
@@ -625,10 +513,6 @@ table tr:hover {
     .painel-container {
         grid-template-columns: 1fr;
     }
-    .painel-sidebar {
-        position: relative;
-        top: 0;
-    }
 }
 
 /* ---------- Painel Admin ---------- */
@@ -645,13 +529,6 @@ table tr:hover {
     margin-bottom: 20px;
     border-bottom: 2px solid var(--cor-primaria);
     padding-bottom: 10px;
-}
-
-.admin-menu {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
 }
 
 .admin-table {
@@ -733,26 +610,6 @@ table tr:hover {
     margin-bottom: 30px;
 }
 
-.stat-card {
-    background: var(--cor-card);
-    padding: 20px;
-    border-radius: var(--raio);
-    box-shadow: var(--sombra);
-    text-align: center;
-}
-
-.stat-card h3 {
-    color: #999;
-    font-size: 14px;
-    margin-bottom: 10px;
-}
-
-.stat-number {
-    font-size: 2.5rem;
-    color: var(--cor-primaria);
-    font-weight: bold;
-}
-
 @media (max-width: 768px) {
     .admin-table {
         font-size: 12px;
@@ -766,139 +623,6 @@ table tr:hover {
         padding: 3px 6px;
         font-size: 10px;
     }
-}
-
-/* ====================================================
-   PÁGINAS DE AUTENTICAÇÃO (login / cadastro / senha)
-   ==================================================== */
-.auth-page {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
-}
-
-.auth-card {
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    padding: 40px;
-    width: 100%;
-    max-width: 420px;
-    max-height: 90vh;
-    overflow-y: auto;
-    text-align: center;
-}
-
-.auth-card h1 {
-    color: var(--cor-destaque);
-    margin-bottom: 10px;
-    font-size: 32px;
-}
-
-.auth-card h2 {
-    color: #555;
-    font-size: 16px;
-    font-weight: 400;
-    margin-bottom: 30px;
-}
-
-.auth-card p {
-    color: #555;
-    margin-bottom: 18px;
-}
-
-.auth-card form {
-    text-align: left;
-}
-
-.auth-card label {
-    display: block;
-    margin-bottom: 8px;
-    color: var(--cor-texto);
-    font-weight: 500;
-    font-size: 14px;
-}
-
-.auth-card input,
-.auth-card textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 2px solid var(--cor-borda);
-    border-radius: 6px;
-    font-size: 14px;
-    margin-bottom: 12px;
-    transition: border-color 0.3s;
-}
-
-.auth-card input:focus,
-.auth-card textarea:focus {
-    outline: none;
-    border-color: var(--cor-destaque);
-    box-shadow: 0 0 5px rgba(39, 174, 96, 0.2);
-}
-
-.auth-card .button-group,
-.auth-card .actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.auth-card .actions {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-.auth-card button[type="submit"],
-.auth-card .btn-primary {
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    background: linear-gradient(135deg, var(--cor-destaque) 0%, var(--cor-primaria) 100%);
-    color: white;
-    transition: all 0.3s;
-}
-
-.auth-card button[type="submit"]:hover,
-.auth-card .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 123, 131, 0.4);
-}
-
-.auth-card .link-button,
-.auth-card .btn-secondary {
-    display: inline-block;
-    text-align: center;
-    text-decoration: none;
-    padding: 12px;
-    border-radius: 6px;
-    background: #f0f0f0;
-    color: var(--cor-texto);
-    font-weight: 500;
-    transition: all 0.3s;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.auth-card .link-button:hover,
-.auth-card .btn-secondary:hover {
-    background: #e0e0e0;
-    transform: translateY(-2px);
-}
-
-.auth-card .note {
-    font-size: 13px;
-    color: #888;
-    margin-top: 16px;
 }
 
 /* ====================================================

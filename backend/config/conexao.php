@@ -109,6 +109,22 @@ class Conexao {
 
         if ($banco_novo) {
             $this->executarScript(__DIR__ . '/../../sql/schema.sqlite.sql');
+        } else {
+            $this->aplicarMigracoes();
+        }
+    }
+
+    /**
+     * Aplica migrações incrementais em bancos já existentes
+     * (ex.: módulo de médicos/horários/financeiro)
+     */
+    private function aplicarMigracoes() {
+        $tabela_existe = $this->pdo->query(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='medicos'"
+        )->fetch();
+
+        if (!$tabela_existe) {
+            $this->executarScript(__DIR__ . '/../../sql/migrate_medicos.sql');
         }
     }
 

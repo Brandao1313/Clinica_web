@@ -25,13 +25,14 @@ if (!isset($titulo_pagina)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($titulo_pagina); ?></title>
-    <link rel="stylesheet" href="<?php echo $base_url; ?>estilo.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/estilo.css">
 </head>
-<body>
+<body data-base-url="<?php echo $base_url; ?>">
     <nav>
         <ul>
             <li><a href="<?php echo $base_url; ?>index.php"><img src="<?php echo $base_url; ?>imagens/logo.png" alt="Logo da Clínica Saúde & Bem-Estar"></a></li>
             <li><a href="<?php echo $base_url; ?>especialidades.php">Especialidades</a></li>
+            <li><a href="<?php echo $base_url; ?>medicos.php">Médicos</a></li>
             <li><a href="<?php echo $base_url; ?>exames.php">Exames</a></li>
             <li><a href="<?php echo $base_url; ?>sobre.php">Sobre</a></li>
             <?php if (is_autenticado()): ?>

@@ -7,6 +7,7 @@
 require_once __DIR__ . '/backend/config/conexao.php';
 require_once __DIR__ . '/backend/config/config.php';
 require_once __DIR__ . '/backend/utils/seguranca.php';
+require_once __DIR__ . '/backend/utils/funcoes_gerais.php';
 
 $conexao_db = Conexao::getInstance()->getConexao();
 
@@ -33,8 +34,16 @@ require_once __DIR__ . '/includes/header.php';
             <div class="especialidades-grid">
                 <?php while ($esp = $especialidades->fetch_assoc()): ?>
                     <div class="especialidade-card">
+                        <div class="card-icone"><?php echo obter_icone_especialidade($esp['nome']); ?></div>
                         <h3><?php echo htmlspecialchars($esp['nome']); ?></h3>
                         <p><?php echo htmlspecialchars($esp['descricao']); ?></p>
+
+                        <div class="card-meta">
+                            <span class="card-tempo">⏱️ <?php echo obter_tempo_estimado($esp['id']); ?></span>
+                            <?php if (eh_popular($esp['id'])): ?>
+                                <span class="card-popular">⭐ Mais agendado</span>
+                            <?php endif; ?>
+                        </div>
 
                         <?php if (is_autenticado()): ?>
                             <a href="backend/views/painel_cliente.php?acao=agendar" class="btn-agendar">Agendar Consulta</a>

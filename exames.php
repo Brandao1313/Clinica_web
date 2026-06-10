@@ -34,9 +34,17 @@ require_once __DIR__ . '/includes/header.php';
             <div class="exames-grid">
                 <?php while ($exame = $exames->fetch_assoc()): ?>
                     <div class="exame-card">
+                        <div class="card-icone"><?php echo obter_icone_exame($exame['nome']); ?></div>
                         <h3><?php echo htmlspecialchars($exame['nome']); ?></h3>
                         <p><?php echo htmlspecialchars($exame['descricao']); ?></p>
                         <div class="preco"><?php echo formatar_valor($exame['preco']); ?></div>
+
+                        <div class="card-meta">
+                            <span class="card-tempo">⏱️ <?php echo obter_tempo_estimado($exame['id']); ?></span>
+                            <?php if (eh_popular($exame['id'])): ?>
+                                <span class="card-popular">⭐ Mais agendado</span>
+                            <?php endif; ?>
+                        </div>
 
                         <?php if (is_autenticado()): ?>
                             <a href="backend/views/painel_cliente.php?acao=exames" class="btn-solicitar">Solicitar Exame</a>

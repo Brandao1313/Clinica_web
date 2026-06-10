@@ -1,0 +1,158 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/agendamentos.css
+   Descrição: Cards de agendamento (mobile) e modal de
+              confirmação de cancelamento
+   ==================================================== */
+
+.agendamentos-tabela-wrap {
+    display: block;
+}
+
+.agendamentos-grid {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.agendamento-card {
+    background: var(--cor-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-grande);
+    padding: 18px;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.agendamento-card:hover,
+.agendamento-card:active {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-hover);
+}
+
+.agendamento-card-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.agendamento-card-icone {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+}
+
+.agendamento-card-titulo {
+    font-weight: 700;
+    font-family: var(--fonte-titulo);
+    color: var(--cor-texto);
+}
+
+.agendamento-card-tipo {
+    font-size: 0.8rem;
+    color: var(--cor-texto-claro);
+}
+
+.agendamento-card-data {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+    background: var(--cor-primaria-clara);
+    border-radius: var(--raio);
+    padding: 8px 12px;
+    text-align: center;
+}
+
+.agendamento-card-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+    .agendamentos-tabela-wrap {
+        display: none;
+    }
+
+    .agendamentos-grid {
+        display: grid;
+    }
+}
+
+/* ---------- Modal de confirmação ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(44, 62, 80, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.modal-overlay.aberto {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 30px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--sombra-hover);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s ease;
+}
+
+.modal-overlay.aberto .modal-card {
+    transform: translateY(0) scale(1);
+}
+
+.modal-icone {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    border-radius: 50%;
+    background: var(--cor-perigo-clara);
+    color: var(--cor-perigo);
+}
+
+.modal-card h3 {
+    margin-bottom: 10px;
+    color: var(--cor-texto);
+}
+
+.modal-card p {
+    color: var(--cor-texto-claro);
+    margin-bottom: 22px;
+    line-height: 1.5;
+}
+
+.modal-acoes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
