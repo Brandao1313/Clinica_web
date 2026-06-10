@@ -1,7 +1,10 @@
 # Configurações sensíveis
-backend/config/config.php
 .env
 .env.local
+
+# Banco de dados local (SQLite)
+database/*.sqlite
+database/*.sqlite-journal
 
 # Arquivos de sistema
 .DS_Store

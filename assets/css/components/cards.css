@@ -1,0 +1,444 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/cards.css
+   Descrição: Cards de destaque, valores, especialidades,
+              exames, estatísticas e informações de perfil
+   ==================================================== */
+
+/* ---------- Cards de destaque (home) ---------- */
+.destaque-card {
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 35px 30px;
+    text-align: center;
+    box-shadow: var(--sombra);
+    text-decoration: none;
+    color: var(--cor-texto);
+    border: 1px solid var(--cor-borda);
+    border-top: 4px solid var(--cor-primaria);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.destaque-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-hover);
+    border-top-color: var(--cor-destaque);
+}
+
+.destaque-card .icone {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.destaque-card:hover .icone {
+    transform: scale(1.08) rotate(-4deg);
+    background: var(--cor-destaque-clara);
+}
+
+.destaque-card h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 8px;
+    font-size: 1.2rem;
+}
+
+.destaque-card p {
+    color: var(--cor-texto-claro);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* ---------- Cards de valores (sobre) ---------- */
+.valor-card {
+    background: var(--cor-card);
+    padding: 40px 30px;
+    border-radius: var(--raio-grande);
+    text-align: center;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.valor-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-hover);
+}
+
+.valor-card .icone {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--cor-destaque-clara), var(--cor-primaria-clara));
+}
+
+.valor-card h3 {
+    color: var(--cor-texto);
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.valor-card p {
+    color: var(--cor-texto-claro);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* ---------- Cards de especialidades / exames ---------- */
+.especialidade-card,
+.exame-card {
+    position: relative;
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Efeito de borda em gradiente no hover */
+.especialidade-card::before,
+.exame-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: var(--raio-grande);
+    background: linear-gradient(135deg, var(--cor-primaria), var(--cor-destaque));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.especialidade-card:hover,
+.exame-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--sombra-hover);
+    border-color: transparent;
+}
+
+.especialidade-card:hover::before,
+.exame-card:hover::before {
+    opacity: 1;
+}
+
+.card-icone {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+    margin-bottom: 18px;
+}
+
+.exame-card .card-icone {
+    background: var(--cor-destaque-clara);
+}
+
+.especialidade-card h3,
+.exame-card h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.especialidade-card p,
+.exame-card p {
+    color: var(--cor-texto-claro);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+/* Metadados extras: tempo estimado e selo de popularidade */
+.card-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.card-tempo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--cor-texto-claro);
+    background: #f5f5f5;
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+
+.card-popular {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #8a6d00;
+    background: var(--cor-aviso-clara);
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+
+.preco {
+    display: inline-block;
+    font-size: 1.4rem;
+    color: var(--cor-destaque-escura);
+    font-weight: 700;
+    font-family: var(--fonte-titulo);
+    background: var(--cor-destaque-clara);
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    align-self: flex-start;
+}
+
+/* Botões de ação dos cards: outline -> sólido no hover */
+.especialidade-card .btn-agendar,
+.exame-card .btn-solicitar {
+    background: transparent;
+    color: var(--cor-primaria);
+    border: 2px solid var(--cor-primaria);
+    box-shadow: none;
+    text-align: center;
+}
+
+.especialidade-card .btn-agendar:hover,
+.exame-card .btn-solicitar:hover {
+    background: var(--cor-primaria);
+    color: #ffffff;
+}
+
+.exame-card .btn-solicitar {
+    color: var(--cor-destaque-escura);
+    border-color: var(--cor-destaque);
+}
+
+.exame-card .btn-solicitar:hover {
+    background: var(--cor-destaque);
+    color: #ffffff;
+}
+
+/* ---------- Cards de informações do perfil ---------- */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+}
+
+.info-card {
+    background: linear-gradient(135deg, var(--cor-primaria-clara) 0%, #ffffff 100%);
+    border: 1px solid var(--cor-borda);
+    padding: 18px;
+    margin-bottom: 0;
+    border-radius: var(--raio-grande);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra);
+}
+
+.info-card-icone {
+    font-size: 1.5rem;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cor-card);
+    border-radius: 50%;
+    box-shadow: var(--sombra);
+    cursor: help;
+    position: relative;
+}
+
+/* Tooltip simples via atributo data-tooltip */
+.info-card-icone[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cor-texto);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    box-shadow: var(--sombra);
+    z-index: 10;
+}
+
+.info-card-icone[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--cor-texto);
+    margin-bottom: -2px;
+}
+
+.info-card-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info-card-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--cor-texto-claro);
+    font-weight: 600;
+}
+
+.info-card-valor {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--cor-primaria-escura);
+    font-family: var(--fonte-titulo);
+    word-break: break-word;
+}
+
+.info-card strong {
+    color: var(--cor-primaria-escura);
+}
+
+/* ---------- Cards de estatísticas (admin) ---------- */
+.stat-card {
+    position: relative;
+    background: var(--cor-card);
+    padding: 24px 20px;
+    border-radius: var(--raio-grande);
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    border-top: 4px solid var(--cor-primaria);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+}
+
+.stat-card.stat-card-warning {
+    border-top-color: var(--cor-aviso);
+    background: linear-gradient(180deg, var(--cor-aviso-clara) 0%, var(--cor-card) 45%);
+}
+
+.stat-card.stat-card-success {
+    border-top-color: var(--cor-destaque);
+    background: linear-gradient(180deg, var(--cor-destaque-clara) 0%, var(--cor-card) 45%);
+}
+
+.stat-card.stat-card-primario {
+    background: linear-gradient(180deg, var(--cor-primaria-clara) 0%, var(--cor-card) 45%);
+}
+
+.stat-icone {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+}
+
+.stat-icone.pulse {
+    animation: stat-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes stat-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(0, 123, 131, 0.25);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(0, 123, 131, 0);
+    }
+}
+
+.stat-card-warning .stat-icone {
+    background: var(--cor-aviso-clara);
+}
+
+.stat-card-success .stat-icone {
+    background: var(--cor-destaque-clara);
+}
+
+.stat-card h3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.stat-number {
+    font-size: 2.6rem;
+    color: var(--cor-primaria);
+    font-weight: 800;
+    font-family: var(--fonte-titulo);
+}
+
+.stat-variacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.stat-variacao.positivo {
+    color: var(--cor-destaque-escura);
+    background: var(--cor-destaque-clara);
+}
+
+.stat-variacao.negativo {
+    color: var(--cor-perigo-escura);
+    background: var(--cor-perigo-clara);
+}

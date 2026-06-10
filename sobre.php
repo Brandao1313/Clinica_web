@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nós - Saúde e Bem Estar</title>
-    <link rel="stylesheet" href="estilo.css">
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="index.html"><img src="imagens/logo.png" alt="Logo"></a></li>
-            <li><a href="exames.html">Exames</a></li>
-            <li><a href="especialidades.html">Especialidades</a></li>
-            <a href="cadastro/login.html" class="meu-btn">Login</a>  
-        </ul>
-    </nav>
+<?php
+// ====================================================
+// ARQUIVO: sobre.php
+// Descrição: Página institucional "Sobre Nós"
+// ====================================================
+
+$base_url = '';
+$titulo_pagina = 'Sobre Nós - Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/includes/header.php';
+?>
 
     <header class="sobre-header">
         <h1>Nossa História e Compromisso</h1>
@@ -38,17 +31,20 @@
 
     <section class="valores-container">
         <div class="valor-card">
+            <div class="icone">🎯</div>
             <h3>Missão</h3>
             <p>Promover a saúde integrada e a qualidade de vida, oferecendo diagnósticos precisos e tratamentos humanizados com excelência médica.</p>
         </div>
         <div class="valor-card">
+            <div class="icone">🔭</div>
             <h3>Visão</h3>
             <p>Ser reconhecida como a principal referência em cuidado médico humanizado e inovação tecnológica em saúde na região até 2028.</p>
         </div>
         <div class="valor-card">
+            <div class="icone">💚</div>
             <h3>Valores</h3>
             <p>Humanização, ética profissional, compromisso com a vida, inovação constante, transparência e respeito ao paciente.</p>
         </div>
     </section>
-</body>
-</html>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

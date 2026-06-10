@@ -35,10 +35,10 @@ function formatar_telefone($telefone) {
 function formatar_data($data) {
     if (empty($data)) return '';
     try {
-        $d = DateTime::createFromFormat('Y-m-d', $data);
+        $d = new DateTime($data);
         return $d->format('d/m/Y');
     } catch (Exception $e) {
-        return '';
+        return $data;
     }
 }
 
@@ -50,10 +50,10 @@ function formatar_data($data) {
 function formatar_data_hora($data_hora) {
     if (empty($data_hora)) return '';
     try {
-        $d = DateTime::createFromFormat('Y-m-d H:i:s', $data_hora);
+        $d = new DateTime($data_hora);
         return $d->format('d/m/Y H:i');
     } catch (Exception $e) {
-        return '';
+        return $data_hora;
     }
 }
 
@@ -223,6 +223,227 @@ function truncar_texto($texto, $limite = 100) {
         return substr($texto, 0, $limite) . '...';
     }
     return $texto;
+}
+
+/**
+ * Obter ícone (emoji) representativo de uma especialidade médica
+ * @param string $nome
+ * @return string
+ */
+function obter_icone_especialidade($nome) {
+    $mapa = [
+        'cardiologia' => '❤️',
+        'dermatologia' => '🧴',
+        'oftalmologia' => '👁️',
+        'odontologia' => '🦷',
+        'pneumologia' => '🫁',
+        'gastroenterologia' => '🩺',
+        'ortopedia' => '🦴',
+        'pediatria' => '🧒',
+        'ginecologia' => '🌸',
+        'neurologia' => '🧠',
+        'psiquiatria' => '💭',
+        'endocrinologia' => '⚖️',
+        'urologia' => '🩻',
+        'nutrição' => '🥗',
+        'fisioterapia' => '🤸',
+    ];
+
+    $chave = mb_strtolower($nome, 'UTF-8');
+    foreach ($mapa as $termo => $icone) {
+        if (mb_strpos($chave, $termo) !== false) {
+            return $icone;
+        }
+    }
+    return '🏥';
+}
+
+/**
+ * Obter ícone (emoji) representativo de um exame
+ * @param string $nome
+ * @return string
+ */
+function obter_icone_exame($nome) {
+    $mapa = [
+        'eletrocardiograma' => '❤️',
+        'ultrassom' => '📡',
+        'ressonância' => '🧲',
+        'ressonancia' => '🧲',
+        'tomografia' => '🩻',
+        'hemograma' => '🩸',
+        'sangue' => '🩸',
+        'diabetes' => '💉',
+        'glicemia' => '💉',
+        'raio' => '🩻',
+        'urina' => '🧪',
+        'biópsia' => '🔬',
+        'biopsia' => '🔬',
+        'mamografia' => '🩻',
+    ];
+
+    $chave = mb_strtolower($nome, 'UTF-8');
+    foreach ($mapa as $termo => $icone) {
+        if (mb_strpos($chave, $termo) !== false) {
+            return $icone;
+        }
+    }
+    return '🧬';
+}
+
+/**
+ * Obter tempo estimado fictício de atendimento, com base no ID
+ * (apenas para enriquecimento visual dos cards)
+ * @param int $id
+ * @return string
+ */
+function obter_tempo_estimado($id) {
+    $opcoes = ['20 min', '30 min', '45 min', '1h', '1h30'];
+    return $opcoes[$id % count($opcoes)];
+}
+
+/**
+ * Indicar se um item deve exibir o selo "Mais agendado"
+ * (dado fictício, apenas visual)
+ * @param int $id
+ * @return bool
+ */
+function eh_popular($id) {
+    return $id % 3 === 0;
+}
+
+/**
+ * Obter variação percentual fictícia para métricas do
+ * dashboard administrativo (apenas visual)
+ * @param int $semente
+ * @return array{texto: string, positivo: bool}
+ */
+function obter_variacao_percentual($semente) {
+    $valores = [12, 8, -5, 20, 3, -2, 15];
+    $variacao = $valores[$semente % count($valores)];
+    return [
+        'texto' => ($variacao >= 0 ? '+' : '') . $variacao . '% este mês',
+        'positivo' => $variacao >= 0,
+    ];
+}
+
+/**
+ * Formatar percentual para exibição (ex: 70 -> "70%")
+ * @param float $valor
+ * @return string
+ */
+function formatar_percentual($valor) {
+    $valor = (float) $valor;
+    $formatado = rtrim(rtrim(number_format($valor, 2, ',', '.'), '0'), ',');
+    return $formatado . '%';
+}
+
+/**
+ * Calcular o valor que cabe ao médico sobre um valor total,
+ * de acordo com o percentual de repasse configurado.
+ * @param float $valor_total
+ * @param float $percentual
+ * @return float
+ */
+function calcular_valor_medico($valor_total, $percentual) {
+    return round(((float) $valor_total) * ((float) $percentual) / 100, 2);
+}
+
+/**
+ * Obter nome do dia da semana em português
+ * @param int $dia_semana (0=domingo a 6=sábado)
+ * @return string
+ */
+function obter_nome_dia_semana($dia_semana) {
+    $dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    return $dias[$dia_semana % 7] ?? '';
+}
+
+/**
+ * Obter abreviação do dia da semana em português
+ * @param int $dia_semana (0=domingo a 6=sábado)
+ * @return string
+ */
+function obter_abrev_dia_semana($dia_semana) {
+    $dias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    return $dias[$dia_semana % 7] ?? '';
+}
+
+/**
+ * Formatar horário (HH:MM:SS ou HH:MM) para exibição (HH:MM)
+ * @param string $hora
+ * @return string
+ */
+function formatar_hora($hora) {
+    return substr($hora, 0, 5);
+}
+
+/**
+ * Obter rótulo em português para o status de pagamento
+ * de um agendamento ao médico
+ * @param string $status
+ * @return string
+ */
+function obter_label_status_pagamento($status) {
+    $mapa = [
+        'pendente' => 'Pendente',
+        'pago_clinica' => 'Recebido pela clínica',
+        'pago_medico' => 'Repassado ao médico',
+    ];
+    return $mapa[$status] ?? $status;
+}
+
+/**
+ * Obter classe CSS de badge para o status de pagamento
+ * @param string $status
+ * @return string
+ */
+function obter_classe_status_pagamento($status) {
+    $mapa = [
+        'pendente' => 'badge-warning',
+        'pago_clinica' => 'badge-info',
+        'pago_medico' => 'badge-success',
+    ];
+    return $mapa[$status] ?? 'badge-secondary';
+}
+
+/**
+ * Gerar lista de horários (HH:MM) entre hora_inicio e hora_fim,
+ * respeitando o intervalo (em minutos) entre cada consulta.
+ * O último slot só é incluído se a consulta inteira couber
+ * antes de hora_fim.
+ * @param string $hora_inicio (HH:MM ou HH:MM:SS)
+ * @param string $hora_fim (HH:MM ou HH:MM:SS)
+ * @param int $intervalo_minutos
+ * @return string[] lista de horários no formato HH:MM
+ */
+function gerar_slots_horario($hora_inicio, $hora_fim, $intervalo_minutos) {
+    $slots = [];
+    $intervalo_minutos = max(1, (int) $intervalo_minutos);
+
+    try {
+        $atual = DateTime::createFromFormat('H:i', substr($hora_inicio, 0, 5));
+        $fim = DateTime::createFromFormat('H:i', substr($hora_fim, 0, 5));
+    } catch (Exception $e) {
+        return $slots;
+    }
+
+    if (!$atual || !$fim) {
+        return $slots;
+    }
+
+    while (true) {
+        $proximo = clone $atual;
+        $proximo->modify('+' . $intervalo_minutos . ' minutes');
+
+        if ($proximo > $fim) {
+            break;
+        }
+
+        $slots[] = $atual->format('H:i');
+        $atual = $proximo;
+    }
+
+    return $slots;
 }
 
 ?>

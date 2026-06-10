@@ -1,0 +1,689 @@
+/* ====================================================
+   ARQUIVO: assets/css/estilo.css
+   Descrição: Design system da Clínica Saúde & Bem-Estar
+   ==================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('components/cards.css');
+@import url('components/menu.css');
+@import url('components/forms.css');
+@import url('components/agendamentos.css');
+@import url('components/flash.css');
+@import url('components/medicos.css');
+
+/* ---------- Variáveis globais ---------- */
+:root {
+    --cor-primaria: #007b83;
+    --cor-primaria-escura: #005a60;
+    --cor-primaria-clara: #e3f3f4;
+    --cor-destaque: #27ae60;
+    --cor-destaque-escura: #1e8449;
+    --cor-destaque-clara: #e6f7ed;
+    --cor-perigo: #dc3545;
+    --cor-perigo-escura: #c82333;
+    --cor-perigo-clara: #fbe7e9;
+    --cor-aviso: #f0ad4e;
+    --cor-aviso-clara: #fff3cd;
+    --cor-texto: #2c3e50;
+    --cor-texto-claro: #5b6b73;
+    --cor-fundo: #eef7f6;
+    --cor-card: #ffffff;
+    --cor-borda: #e0e0e0;
+    --sombra: 0 4px 15px rgba(0, 0, 0, 0.08);
+    --sombra-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --raio: 8px;
+    --raio-grande: 16px;
+    --nav-altura: 80px;
+    --fonte-titulo: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --fonte-texto: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ---------- Reset geral ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--fonte-texto);
+}
+
+h1, h2, h3, h4, .meu-btn, nav a, .btn, .btn-action, .btn-agendar, .btn-solicitar, .btn-sobre, .admin-btn {
+    font-family: var(--fonte-titulo);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    padding-top: var(--nav-altura);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main, .pagina-conteudo {
+    flex: 1;
+}
+
+a {
+    color: var(--cor-primaria);
+}
+
+img {
+    max-width: 100%;
+}
+
+/* ====================================================
+   NAVBAR
+   ==================================================== */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+nav ul {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 40px;
+    padding: 0 5%;
+    height: var(--nav-altura);
+}
+
+nav ul li:first-child {
+    margin-right: auto;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--cor-texto);
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--cor-destaque);
+}
+
+nav img {
+    height: 56px;
+    display: block;
+}
+
+.meu-btn {
+    background-color: var(--cor-destaque);
+    color: #ffffff !important;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.meu-btn:hover {
+    background-color: var(--cor-destaque-escura);
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+/* ====================================================
+   BOTÕES GERAIS
+   ==================================================== */
+.btn,
+.btn-action,
+.btn-agendar,
+.btn-solicitar,
+.btn-sobre,
+.admin-btn {
+    display: inline-block;
+    padding: 12px 26px;
+    background: var(--cor-primaria);
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: var(--raio);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 123, 131, 0.15);
+}
+
+.btn:hover,
+.btn-action:hover,
+.btn-agendar:hover,
+.btn-solicitar:hover,
+.btn-sobre:hover,
+.admin-btn:hover {
+    background: var(--cor-primaria-escura);
+    transform: translateY(-2px);
+}
+
+.btn-secondary,
+.action-edit.btn-secondary,
+.painel-conteudo .secondary {
+    background: #eef1f1;
+    color: var(--cor-texto);
+    box-shadow: none;
+}
+
+.btn-secondary:hover {
+    background: #dde3e3;
+}
+
+.btn-action.secondary {
+    background: #eef1f1;
+    color: var(--cor-texto);
+    box-shadow: none;
+}
+
+.btn-action.secondary:hover {
+    background: #dde3e3;
+}
+
+.btn-login,
+.btn-perigo {
+    background: var(--cor-perigo);
+    color: #ffffff;
+}
+
+.btn-login:hover,
+.btn-perigo:hover {
+    background: var(--cor-perigo-escura);
+}
+
+/* Botão estilo "outline" -> preenchido no hover */
+.btn-outline {
+    background: transparent;
+    color: var(--cor-primaria);
+    border: 2px solid var(--cor-primaria);
+    box-shadow: none;
+}
+
+.btn-outline:hover {
+    background: var(--cor-primaria);
+    color: #ffffff;
+}
+
+.btn-outline.btn-outline-destaque {
+    color: var(--cor-destaque-escura);
+    border-color: var(--cor-destaque);
+}
+
+.btn-outline.btn-outline-destaque:hover {
+    background: var(--cor-destaque);
+    color: #ffffff;
+}
+
+.admin-btn.active {
+    background: var(--cor-primaria-escura);
+}
+
+/* ====================================================
+   PÁGINA INICIAL
+   ==================================================== */
+.inicial img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.sobre-clinica {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.conteudo-texto {
+    flex: 1;
+    min-width: 300px;
+}
+
+.conteudo-texto h2 {
+    color: var(--cor-primaria);
+    font-size: 2rem;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.conteudo-texto p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--cor-texto-claro);
+    margin-bottom: 20px;
+}
+
+.galeria-fotos {
+    flex: 1;
+    min-width: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.galeria-fotos img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+}
+
+/* Cards de destaque (links rápidos na home) */
+.destaques {
+    max-width: 1200px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+/* ====================================================
+   PÁGINA SOBRE
+   ==================================================== */
+.sobre-header {
+    background-color: var(--cor-primaria);
+    color: white;
+    text-align: center;
+    padding: 60px 20px;
+    margin-bottom: 40px;
+}
+
+.sobre-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.sobre-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.sobre-historia {
+    max-width: 1200px;
+    margin: 0 auto 60px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.historia-texto {
+    flex: 1;
+    min-width: 300px;
+}
+
+.historia-texto h2 {
+    color: var(--cor-texto);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.historia-texto p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--cor-texto-claro);
+    margin-bottom: 15px;
+}
+
+.historia-imagem {
+    flex: 1;
+    min-width: 300px;
+}
+
+.historia-imagem img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+}
+
+.valores-container {
+    max-width: 1200px;
+    margin: 40px auto 80px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* ====================================================
+   ESPECIALIDADES / EXAMES
+   ==================================================== */
+.especialidades-container,
+.exames-container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+.especialidades-container h2,
+.exames-container h2 {
+    text-align: center;
+    color: var(--cor-primaria);
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.especialidades-grid,
+.exames-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.btn-login {
+    display: inline-block;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: var(--raio);
+    margin-top: 20px;
+}
+
+.nenhum {
+    text-align: center;
+    color: var(--cor-texto-claro);
+    font-size: 1.1rem;
+    padding: 40px;
+}
+
+/* ====================================================
+   ALERTAS / BADGES
+   ==================================================== */
+.alert {
+    padding: 15px 18px;
+    border-radius: var(--raio);
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-left-width: 4px;
+}
+
+.alert p {
+    margin: 5px 0;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+    border-left-color: #28a745;
+}
+
+.alert-error,
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+    border-left-color: var(--cor-perigo);
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.badge::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.7;
+}
+
+.badge-success { background: #d4edda; color: #155724; }
+.badge-warning { background: #fff3cd; color: #856404; }
+.badge-danger { background: #f8d7da; color: #721c24; }
+.badge-info { background: #d1ecf1; color: #0c5460; }
+.badge-secondary { background: #e2e3e5; color: #383d41; }
+
+/* ====================================================
+   PAINÉIS (CLIENTE / ADMIN)
+   ==================================================== */
+.painel-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    flex: 1;
+    width: 100%;
+}
+
+.painel-conteudo {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 30px;
+    box-shadow: var(--sombra);
+}
+
+.painel-conteudo h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+}
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--cor-card);
+}
+
+table th {
+    background: var(--cor-primaria);
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-weight: bold;
+}
+
+table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+table tr:hover {
+    background: #f5f5f5;
+}
+
+@media (max-width: 768px) {
+    .painel-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Painel Admin ---------- */
+.admin-container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+    flex: 1;
+    width: 100%;
+}
+
+.admin-container h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--cor-card);
+    box-shadow: var(--sombra);
+    border-radius: var(--raio);
+    overflow: hidden;
+}
+
+.admin-table th {
+    background: var(--cor-primaria);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table tr:hover {
+    background: #f9f9f9;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    margin-right: 5px;
+    font-size: 12px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.action-edit {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.action-delete {
+    background: var(--cor-perigo);
+    color: white;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a,
+.pagination span {
+    padding: 8px 12px;
+    margin: 0 5px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.pagination a:hover {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.pagination .active {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .admin-table {
+        font-size: 12px;
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 8px;
+    }
+
+    .action-btn {
+        padding: 3px 6px;
+        font-size: 10px;
+    }
+}
+
+/* ====================================================
+   RODAPÉ
+   ==================================================== */
+footer {
+    background: var(--cor-texto);
+    color: #d7e4e6;
+    text-align: center;
+    padding: 25px 20px;
+    margin-top: 60px;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ====================================================
+   RESPONSIVIDADE GERAL
+   ==================================================== */
+@media (max-width: 768px) {
+    nav ul {
+        gap: 18px;
+        padding: 0 4%;
+    }
+
+    nav img {
+        height: 44px;
+    }
+
+    .meu-btn {
+        padding: 8px 14px;
+    }
+
+    .sobre-clinica,
+    .sobre-historia {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .sobre-historia {
+        flex-direction: column-reverse;
+    }
+
+    .galeria-fotos {
+        grid-template-columns: 1fr;
+    }
+
+    .especialidades-container h2,
+    .exames-container h2 {
+        font-size: 1.8rem;
+    }
+
+    .especialidades-grid,
+    .exames-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sobre-header h1 {
+        font-size: 2rem;
+    }
+}

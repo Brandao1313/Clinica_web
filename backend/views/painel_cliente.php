@@ -6,6 +6,7 @@
 
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/validacao.php';
 require_once __DIR__ . '/../utils/seguranca.php';
 require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
@@ -24,199 +25,87 @@ $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+$base_url = '../../';
+$titulo_pagina = 'Meu Painel - Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/../../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Clínica</title>
-    <link rel="stylesheet" href="../../estilo.css">
-    <style>
-        .painel-container {
-            max-width: 1200px;
-            margin: 100px auto 40px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 250px 1fr;
-            gap: 30px;
-        }
+    <?php
+        $flash_agendamento = get_flash_message('agendamento');
+        $flash_login = get_flash_message('login');
+    ?>
+    <?php if ($flash_login || $flash_agendamento || !empty($_SESSION['erros_agendamento'])): ?>
+        <div class="flash-container" role="status" aria-live="polite">
+            <?php if ($flash_login): ?>
+                <div class="flash-toast flash-sucesso">
+                    <span class="flash-toast-icone">✅</span>
+                    <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_login['mensagem']); ?></span>
+                    <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                    <span class="flash-toast-progresso"></span>
+                </div>
+            <?php endif; ?>
+            <?php if ($flash_agendamento): ?>
+                <div class="flash-toast <?php echo $flash_agendamento['tipo'] === 'sucesso' ? 'flash-sucesso' : 'flash-erro'; ?>">
+                    <span class="flash-toast-icone"><?php echo $flash_agendamento['tipo'] === 'sucesso' ? '✅' : '❌'; ?></span>
+                    <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_agendamento['mensagem']); ?></span>
+                    <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                    <span class="flash-toast-progresso"></span>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($_SESSION['erros_agendamento'])): ?>
+                <?php foreach ($_SESSION['erros_agendamento'] as $erro): ?>
+                    <div class="flash-toast flash-erro">
+                        <span class="flash-toast-icone">❌</span>
+                        <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
+                        <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                        <span class="flash-toast-progresso"></span>
+                    </div>
+                <?php endforeach; ?>
+                <?php unset($_SESSION['erros_agendamento']); ?>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 
-        .painel-sidebar {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-        }
-
-        .painel-sidebar h3 {
-            color: #007b83;
-            margin-bottom: 15px;
-            font-size: 16px;
-        }
-
-        .menu-item {
-            display: block;
-            padding: 12px;
-            margin-bottom: 8px;
-            text-decoration: none;
-            color: #333;
-            border-radius: 5px;
-            background: #f5f5f5;
-            transition: all 0.3s;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: #007b83;
-            color: white;
-        }
-
-        .painel-conteudo {
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .painel-conteudo h2 {
-            color: #007b83;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #007b83;
-            padding-bottom: 10px;
-        }
-
-        .info-card {
-            background: #f9f9f9;
-            border-left: 4px solid #007b83;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
-        }
-
-        .info-card strong {
-            color: #007b83;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-success { background: #d4edda; color: #155724; }
-        .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-danger { background: #f8d7da; color: #721c24; }
-        .badge-info { background: #d1ecf1; color: #0c5460; }
-
-        .btn-action {
-            display: inline-block;
-            padding: 10px 15px;
-            background: #007b83;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn-action:hover {
-            background: #005a60;
-        }
-
-        .btn-action.secondary {
-            background: #ccc;
-            color: #333;
-        }
-
-        .btn-action.secondary:hover {
-            background: #bbb;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table th {
-            background: #007b83;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        table tr:hover {
-            background: #f5f5f5;
-        }
-
-        .alert {
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        @media (max-width: 768px) {
-            .painel-container {
-                grid-template-columns: 1fr;
-            }
-            .painel-sidebar {
-                position: relative;
-                top: 0;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav>
-        <ul>
-            <li><a href="../../index.html"><img src="../../imagens/logo.png" alt="Logo"></a></li>
-            <li><a href="../../exames.php">Exames</a></li>
-            <li><a href="../../especialidades.php">Especialidades</a></li>
-            <a href="../auth/deslogar.php" class="meu-btn">Sair</a>
-        </ul>
-    </nav>
+    <!-- MODAL DE CONFIRMAÇÃO (cancelamento de agendamento) -->
+    <div id="modal-confirmacao" class="modal-overlay">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-confirmacao-titulo">
+            <div class="modal-icone">⚠️</div>
+            <h3 data-modal-titulo id="modal-confirmacao-titulo">Confirmar ação</h3>
+            <p data-modal-texto>Tem certeza?</p>
+            <div class="modal-acoes">
+                <button type="button" data-modal-cancelar class="btn-action secondary">Não, voltar</button>
+                <button type="button" data-modal-confirmar class="btn-action" style="background: #dc3545;">Sim, cancelar</button>
+            </div>
+        </div>
+    </div>
 
     <div class="painel-container">
         <!-- SIDEBAR COM MENU -->
         <aside class="painel-sidebar">
             <h3>Menu</h3>
-            <a href="?acao=dashboard" class="menu-item <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">📊 Dashboard</a>
-            <a href="?acao=perfil" class="menu-item <?php echo $acao === 'perfil' ? 'active' : ''; ?>">👤 Meu Perfil</a>
-            <a href="?acao=agendamentos" class="menu-item <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">📅 Agendamentos</a>
-            <a href="?acao=agendar" class="menu-item <?php echo $acao === 'agendar' ? 'active' : ''; ?>">➕ Agendar Consulta</a>
-            <a href="?acao=exames" class="menu-item <?php echo $acao === 'exames' ? 'active' : ''; ?>">🧬 Solicitar Exame</a>
+            <a href="?acao=dashboard" class="menu-item <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
+                <span class="menu-item-icone">📊</span><span>Dashboard</span><span class="menu-item-seta">›</span>
+            </a>
+            <a href="?acao=perfil" class="menu-item <?php echo $acao === 'perfil' ? 'active' : ''; ?>">
+                <span class="menu-item-icone">👤</span><span>Meu Perfil</span><span class="menu-item-seta">›</span>
+            </a>
+            <a href="?acao=agendamentos" class="menu-item <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
+                <span class="menu-item-icone">📅</span><span>Agendamentos</span><span class="menu-item-seta">›</span>
+            </a>
+            <a href="?acao=agendar" class="menu-item <?php echo $acao === 'agendar' ? 'active' : ''; ?>">
+                <span class="menu-item-icone">➕</span><span>Agendar Consulta</span><span class="menu-item-seta">›</span>
+            </a>
+            <a href="?acao=exames" class="menu-item <?php echo $acao === 'exames' ? 'active' : ''; ?>">
+                <span class="menu-item-icone">🧬</span><span>Solicitar Exame</span><span class="menu-item-seta">›</span>
+            </a>
             <?php if (is_admin()): ?>
-                <a href="painel_admin.php" class="menu-item">⚙️ Painel Admin</a>
+                <a href="painel_admin.php" class="menu-item">
+                    <span class="menu-item-icone">⚙️</span><span>Painel Admin</span><span class="menu-item-seta">›</span>
+                </a>
             <?php endif; ?>
-            <a href="../auth/deslogar.php" class="menu-item">🚪 Sair</a>
+            <a href="../auth/deslogar.php" class="menu-item menu-item-sair">
+                <span class="menu-item-icone">🚪</span><span>Sair</span>
+            </a>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
@@ -226,19 +115,23 @@ $stmt->close();
                 <h2>🏠 Bem-vindo, <?php echo htmlspecialchars($cliente['nome']); ?>!</h2>
 
                 <div class="info-card">
-                    <strong>Última atualização de perfil:</strong><br>
-                    <?php echo formatar_data_hora($cliente['data_atualizacao']); ?>
+                    <span class="info-card-icone" data-tooltip="Quando seus dados de perfil foram atualizados pela última vez">🕒</span>
+                    <div class="info-card-corpo">
+                        <span class="info-card-label">Última atualização de perfil</span>
+                        <span class="info-card-valor"><?php echo formatar_data_hora($cliente['data_atualizacao']); ?></span>
+                    </div>
                 </div>
 
                 <h3 style="color: #007b83; margin-top: 20px;">Seus próximos agendamentos</h3>
 
                 <?php
                     $stmt = $conexao_db->prepare(
-                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo
+                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo, m.nome as nome_medico
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
-                         WHERE a.id_cliente = ? AND a.status != "cancelado" AND a.data_hora > NOW()
+                         LEFT JOIN medicos m ON a.id_medico = m.id
+                         WHERE a.id_cliente = ? AND a.status != "cancelado" AND a.data_hora > datetime("now", "localtime")
                          ORDER BY a.data_hora ASC
                          LIMIT 5'
                     );
@@ -252,54 +145,112 @@ $stmt->close();
                     <p style="margin-top: 15px; color: #666;">Nenhum agendamento futuro.</p>
                     <a href="?acao=agendar" class="btn-action">Agendar agora</a>
                 <?php else: ?>
-                    <table style="margin-top: 15px;">
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Tipo</th>
-                                <th>Item</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($ag = $agendamentos->fetch_assoc()): ?>
+                    <?php $lista_proximos = []; while ($ag = $agendamentos->fetch_assoc()) { $lista_proximos[] = $ag; } ?>
+                    <div class="agendamentos-tabela-wrap">
+                        <table style="margin-top: 15px;">
+                            <thead>
                                 <tr>
-                                    <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
-                                    <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
-                                    <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
-                                    <td><span class="badge <?php echo 'badge-' . get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
+                                    <th>Data/Hora</th>
+                                    <th>Tipo</th>
+                                    <th>Item</th>
+                                    <th>Médico</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($lista_proximos as $ag): ?>
+                                    <tr>
+                                        <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
+                                        <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
+                                        <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
+                                        <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
+                                        <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
+                                        <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="agendamentos-grid">
+                        <?php foreach ($lista_proximos as $ag): ?>
+                            <div class="agendamento-card">
+                                <div class="agendamento-card-cabecalho">
+                                    <div class="agendamento-card-icone">
+                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item']) : obter_icone_especialidade($ag['nome_item']); ?>
+                                    </div>
+                                    <div>
+                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item']); ?></div>
+                                        <div class="agendamento-card-tipo"><?php echo get_tipo_agendamento($ag['tipo']); ?></div>
+                                    </div>
+                                </div>
+                                <div class="agendamento-card-data">🗓️ <?php echo formatar_data_hora($ag['data_hora']); ?></div>
+                                <?php if (!empty($ag['nome_medico'])): ?>
+                                    <div class="agendamento-card-data">🩺 Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
+                                <?php endif; ?>
+                                <?php if (!empty($ag['valor_total'])): ?>
+                                    <div class="agendamento-card-data">💰 <?php echo formatar_valor($ag['valor_total']); ?></div>
+                                <?php endif; ?>
+                                <div class="agendamento-card-rodape">
+                                    <span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
             <?php elseif ($acao === 'perfil'): ?>
                 <!-- PERFIL -->
                 <h2>👤 Meu Perfil</h2>
 
-                <div class="info-card">
-                    <strong>Nome:</strong> <?php echo htmlspecialchars($cliente['nome']); ?>
-                </div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="Seu nome completo de cadastro">👤</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">Nome</span>
+                            <span class="info-card-valor"><?php echo htmlspecialchars($cliente['nome']); ?></span>
+                        </div>
+                    </div>
 
-                <div class="info-card">
-                    <strong>Email:</strong> <?php echo htmlspecialchars($cliente['email']); ?>
-                </div>
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="E-mail usado para login e notificações">📧</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">Email</span>
+                            <span class="info-card-valor"><?php echo htmlspecialchars($cliente['email']); ?></span>
+                        </div>
+                    </div>
 
-                <div class="info-card">
-                    <strong>CPF:</strong> <?php echo formatar_cpf($cliente['cpf']); ?>
-                </div>
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="Documento utilizado para identificação">🪪</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">CPF</span>
+                            <span class="info-card-valor"><?php echo formatar_cpf($cliente['cpf']); ?></span>
+                        </div>
+                    </div>
 
-                <div class="info-card">
-                    <strong>Telefone:</strong> <?php echo !empty($cliente['telefone']) ? formatar_telefone($cliente['telefone']) : '-'; ?>
-                </div>
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="Telefone para contato em caso de necessidade">📱</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">Telefone</span>
+                            <span class="info-card-valor"><?php echo !empty($cliente['telefone']) ? formatar_telefone($cliente['telefone']) : '-'; ?></span>
+                        </div>
+                    </div>
 
-                <div class="info-card">
-                    <strong>Data de Nascimento:</strong> <?php echo !empty($cliente['data_nascimento']) ? formatar_data($cliente['data_nascimento']) . ' (' . calcular_idade($cliente['data_nascimento']) . ' anos)' : '-'; ?>
-                </div>
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="Usada para calcular sua idade">🎂</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">Data de Nascimento</span>
+                            <span class="info-card-valor"><?php echo !empty($cliente['data_nascimento']) ? formatar_data($cliente['data_nascimento']) . ' (' . calcular_idade($cliente['data_nascimento']) . ' anos)' : '-'; ?></span>
+                        </div>
+                    </div>
 
-                <div class="info-card">
-                    <strong>Membro desde:</strong> <?php echo formatar_data($cliente['data_cadastro']); ?>
+                    <div class="info-card">
+                        <span class="info-card-icone" data-tooltip="Data em que você se cadastrou na clínica">📅</span>
+                        <div class="info-card-corpo">
+                            <span class="info-card-label">Membro desde</span>
+                            <span class="info-card-valor"><?php echo formatar_data($cliente['data_cadastro']); ?></span>
+                        </div>
+                    </div>
                 </div>
 
                 <p style="margin-top: 20px;">
@@ -313,10 +264,11 @@ $stmt->close();
 
                 <?php
                     $stmt = $conexao_db->prepare(
-                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo
+                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo, m.nome as nome_medico
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
+                         LEFT JOIN medicos m ON a.id_medico = m.id
                          WHERE a.id_cliente = ?
                          ORDER BY a.data_hora DESC'
                     );
@@ -330,34 +282,69 @@ $stmt->close();
                     <p>Nenhum agendamento.</p>
                     <a href="?acao=agendar" class="btn-action">Criar agendamento</a>
                 <?php else: ?>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data/Hora</th>
-                                <th>Tipo</th>
-                                <th>Item</th>
-                                <th>Status</th>
-                                <th>Ação</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($ag = $agendamentos->fetch_assoc()): ?>
+                    <?php $lista_agendamentos = []; while ($ag = $agendamentos->fetch_assoc()) { $lista_agendamentos[] = $ag; } ?>
+                    <div class="agendamentos-tabela-wrap">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
-                                    <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
-                                    <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
-                                    <td><span class="badge <?php echo 'badge-' . get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
-                                    <td>
-                                        <?php if (pode_cancelar_agendamento($ag['status'])): ?>
-                                            <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" onclick="return confirm('Deseja cancelar?')">Cancelar</a>
-                                        <?php else: ?>
-                                            -
-                                        <?php endif; ?>
-                                    </td>
+                                    <th>Data/Hora</th>
+                                    <th>Tipo</th>
+                                    <th>Item</th>
+                                    <th>Médico</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Ação</th>
                                 </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($lista_agendamentos as $ag): ?>
+                                    <tr>
+                                        <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
+                                        <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
+                                        <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
+                                        <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
+                                        <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
+                                        <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
+                                        <td>
+                                            <?php if (pode_cancelar_agendamento($ag['status'])): ?>
+                                                <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" data-confirm="Deseja realmente cancelar este agendamento?" data-confirm-titulo="Cancelar agendamento">Cancelar</a>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="agendamentos-grid">
+                        <?php foreach ($lista_agendamentos as $ag): ?>
+                            <div class="agendamento-card">
+                                <div class="agendamento-card-cabecalho">
+                                    <div class="agendamento-card-icone">
+                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item']) : obter_icone_especialidade($ag['nome_item']); ?>
+                                    </div>
+                                    <div>
+                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item']); ?></div>
+                                        <div class="agendamento-card-tipo"><?php echo get_tipo_agendamento($ag['tipo']); ?></div>
+                                    </div>
+                                </div>
+                                <div class="agendamento-card-data">🗓️ <?php echo formatar_data_hora($ag['data_hora']); ?></div>
+                                <?php if (!empty($ag['nome_medico'])): ?>
+                                    <div class="agendamento-card-data">🩺 Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
+                                <?php endif; ?>
+                                <?php if (!empty($ag['valor_total'])): ?>
+                                    <div class="agendamento-card-data">💰 <?php echo formatar_valor($ag['valor_total']); ?></div>
+                                <?php endif; ?>
+                                <div class="agendamento-card-rodape">
+                                    <span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span>
+                                    <?php if (pode_cancelar_agendamento($ag['status'])): ?>
+                                        <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" data-confirm="Deseja realmente cancelar este agendamento?" data-confirm-titulo="Cancelar agendamento">Cancelar</a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
 
             <?php elseif ($acao === 'agendar'): ?>
@@ -365,29 +352,48 @@ $stmt->close();
                 <h2>➕ Agendar Consulta</h2>
 
                 <form method="POST" action="../controllers/agendamento_controller.php" style="max-width: 500px;">
-                    <div style="margin-bottom: 15px;">
-                        <label for="especialidade"><strong>Especialidade *</strong></label>
-                        <select id="especialidade" name="id_especialidade" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
-                            <option value="">-- Selecione uma especialidade --</option>
-                            <?php
-                                $stmt = $conexao_db->prepare('SELECT id, nome FROM especialidades WHERE ativo = 1 ORDER BY nome');
-                                $stmt->execute();
-                                $especialidades = $stmt->get_result();
-                                while ($esp = $especialidades->fetch_assoc()):
-                            ?>
-                                <option value="<?php echo $esp['id']; ?>"><?php echo htmlspecialchars($esp['nome']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+                    <div class="form-grupo">
+                        <div class="form-grupo-titulo">🩺 Dados da consulta</div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label for="data_hora"><strong>Data e Hora *</strong></label>
-                        <input type="datetime-local" id="data_hora" name="data_hora" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
-                    </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="especialidade"><strong>Especialidade *</strong></label>
+                            <select id="especialidade" name="id_especialidade" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                                <option value="">-- Selecione uma especialidade --</option>
+                                <?php
+                                    $stmt = $conexao_db->prepare('SELECT id, nome FROM especialidades WHERE ativo = 1 ORDER BY nome');
+                                    $stmt->execute();
+                                    $especialidades = $stmt->get_result();
+                                    while ($esp = $especialidades->fetch_assoc()):
+                                ?>
+                                    <option value="<?php echo $esp['id']; ?>"><?php echo htmlspecialchars($esp['nome']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label for="notas"><strong>Observações</strong></label>
-                        <textarea id="notas" name="notas" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; min-height: 100px;"></textarea>
+                        <div style="margin-bottom: 15px;">
+                            <label for="medico"><strong>Médico *</strong></label>
+                            <select id="medico" name="id_medico" required disabled style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                                <option value="">-- Selecione uma especialidade primeiro --</option>
+                            </select>
+                            <small id="valor-consulta-info" style="display: block; margin-top: 5px; color: var(--cor-texto-claro);"></small>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="data_consulta"><strong>Data *</strong></label>
+                            <input type="date" id="data_consulta" name="data" required min="<?php echo date('Y-m-d'); ?>" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="horario"><strong>Horário *</strong></label>
+                            <select id="horario" name="horario" required disabled style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                                <option value="">-- Selecione o médico e a data --</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 0;">
+                            <label for="notas"><strong>Observações</strong></label>
+                            <textarea id="notas" name="notas" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; min-height: 100px;"></textarea>
+                        </div>
                     </div>
 
                     <input type="hidden" name="acao" value="agendar_consulta">
@@ -400,29 +406,33 @@ $stmt->close();
                 <h2>🧬 Solicitar Exame</h2>
 
                 <form method="POST" action="../controllers/agendamento_controller.php" style="max-width: 500px;">
-                    <div style="margin-bottom: 15px;">
-                        <label for="exame"><strong>Exame *</strong></label>
-                        <select id="exame" name="id_exame" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
-                            <option value="">-- Selecione um exame --</option>
-                            <?php
-                                $stmt = $conexao_db->prepare('SELECT id, nome, preco FROM exames WHERE ativo = 1 ORDER BY nome');
-                                $stmt->execute();
-                                $exames_lista = $stmt->get_result();
-                                while ($ex = $exames_lista->fetch_assoc()):
-                            ?>
-                                <option value="<?php echo $ex['id']; ?>"><?php echo htmlspecialchars($ex['nome']) . ' - ' . formatar_valor($ex['preco']); ?></option>
-                            <?php endwhile; ?>
-                        </select>
-                    </div>
+                    <div class="form-grupo">
+                        <div class="form-grupo-titulo">🧬 Dados do exame</div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label for="data_exame"><strong>Data e Hora *</strong></label>
-                        <input type="datetime-local" id="data_exame" name="data_hora" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
-                    </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="exame"><strong>Exame *</strong></label>
+                            <select id="exame" name="id_exame" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                                <option value="">-- Selecione um exame --</option>
+                                <?php
+                                    $stmt = $conexao_db->prepare('SELECT id, nome, preco FROM exames WHERE ativo = 1 ORDER BY nome');
+                                    $stmt->execute();
+                                    $exames_lista = $stmt->get_result();
+                                    while ($ex = $exames_lista->fetch_assoc()):
+                                ?>
+                                    <option value="<?php echo $ex['id']; ?>"><?php echo htmlspecialchars($ex['nome']) . ' - ' . formatar_valor($ex['preco']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
 
-                    <div style="margin-bottom: 15px;">
-                        <label for="notas_exame"><strong>Observações</strong></label>
-                        <textarea id="notas_exame" name="notas" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; min-height: 100px;"></textarea>
+                        <div style="margin-bottom: 15px;">
+                            <label for="data_exame"><strong>Data e Hora *</strong></label>
+                            <input type="datetime-local" id="data_exame" name="data_hora" required style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+                        </div>
+
+                        <div style="margin-bottom: 0;">
+                            <label for="notas_exame"><strong>Observações</strong></label>
+                            <textarea id="notas_exame" name="notas" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; min-height: 100px;"></textarea>
+                        </div>
                     </div>
 
                     <input type="hidden" name="acao" value="agendar_exame">
@@ -468,6 +478,4 @@ $stmt->close();
         </main>
     </div>
 
-</body>
-
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

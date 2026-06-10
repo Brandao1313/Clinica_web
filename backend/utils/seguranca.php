@@ -90,7 +90,7 @@ function require_login($pagina_retorno = null) {
         if ($pagina_retorno) {
             $_SESSION['pagina_retorno'] = $pagina_retorno;
         }
-        header('Location: ' . SITE_URL . '/cadastro/login.html');
+        header('Location: ' . SITE_URL . '/cadastro/login.php');
         exit;
     }
 }
@@ -103,7 +103,7 @@ function require_admin() {
     require_login();
     if (!is_admin()) {
         $_SESSION['mensagem_erro'] = ERRO_NAO_ADMIN;
-        header('Location: ' . SITE_URL . '/index.html');
+        header('Location: ' . SITE_URL . '/index.php');
         exit;
     }
 }
