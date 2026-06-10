@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - Clínica</title>
+    <style>
+        * { box-sizing: border-box; margin:0; padding:0 }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg,#81f1d5 0%,#047db9 100%); min-height:100vh; display:flex; align-items:center; justify-content:center }
+        .card { background:#fff; padding:32px; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.15); width:100%; max-width:420px; }
+        h1{ color:#0bbb0e; margin-bottom:8px }
+        p{ color:#555; margin-bottom:18px }
+        label{ display:block; margin-bottom:8px; color:#333 }
+        input{ width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:6px }
+        .actions{ margin-top:18px; display:flex; gap:10px }
+        .btn{ padding:10px 14px; border-radius:6px; text-decoration:none; display:inline-block }
+        .btn-primary{ background:linear-gradient(135deg,#667eea,#852c9b); color:#fff }
+        .btn-secondary{ background:#f0f0f0; color:#333 }
+        .back-link{ display:block; margin-top:12px; text-align:center }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Recuperar senha</h1>
+        <p>Informe seu e-mail e enviaremos instruções para redefinir sua senha.</p>
+        <form>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">Enviar instruções</button>
+                <a class="btn btn-secondary" href="login.html">Voltar</a>
+            </div>
+        </form>
+        <a class="back-link" href="criar_conta.html">Ainda não tem conta? Crie uma</a>
+    </div>
+</body>
+
+</html>
