@@ -22,8 +22,9 @@ require_once __DIR__ . '/../includes/header.php';
                 unset($_SESSION['erros_login']);
                 $flash = get_flash_message('registro');
                 $flash_logout = get_flash_message('logout');
+                $flash_reset = get_flash_message('reset');
             ?>
-            <?php if (!empty($erros_login) || $flash || $flash_logout): ?>
+            <?php if (!empty($erros_login) || $flash || $flash_logout || $flash_reset): ?>
                 <div class="flash-container" role="status" aria-live="polite">
                     <?php foreach ($erros_login as $erro): ?>
                         <div class="flash-toast flash-erro">
@@ -49,10 +50,19 @@ require_once __DIR__ . '/../includes/header.php';
                             <span class="flash-toast-progresso"></span>
                         </div>
                     <?php endif; ?>
+                    <?php if ($flash_reset): ?>
+                        <div class="flash-toast flash-sucesso">
+                            <span class="flash-toast-icone">✅</span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_reset['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
 
             <form method="POST" action="../backend/auth/logar.php">
+                <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                 <div class="form-grupo">
                     <div class="form-grupo-titulo">🔑 Dados de acesso</div>
 

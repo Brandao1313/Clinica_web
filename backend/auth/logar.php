@@ -28,13 +28,33 @@ $senha = $_POST['password'] ?? '';
 
 $erros = [];
 
+// ====== VERIFICAÇÃO CSRF ======
+
+$token_csrf = $_POST['csrf_token'] ?? '';
+if (!validar_token_csrf($token_csrf)) {
+    $erros[] = 'Token de segurança inválido. Tente novamente.';
+}
+
+// ====== RATE LIMITING (5 tentativas / bloqueio de 15 minutos) ======
+
+const MAX_TENTATIVAS_LOGIN = 5;
+const BLOQUEIO_LOGIN_MINUTOS = 15;
+
+if (empty($erros)) {
+    $bloqueio_ate = $_SESSION['login_bloqueio_ate'] ?? null;
+    if ($bloqueio_ate && strtotime($bloqueio_ate) > time()) {
+        $minutos_restantes = (int) ceil((strtotime($bloqueio_ate) - time()) / 60);
+        $erros[] = "Muitas tentativas de login. Tente novamente em $minutos_restantes minuto(s).";
+    }
+}
+
 // ====== VALIDAÇÕES BÁSICAS ======
 
-if (empty($email)) {
+if (empty($erros) && empty($email)) {
     $erros[] = 'Email é obrigatório';
 }
 
-if (empty($senha)) {
+if (empty($erros) && empty($senha)) {
     $erros[] = 'Senha é obrigatória';
 }
 
@@ -73,6 +93,9 @@ if (empty($erros)) {
                 $_SESSION['email_cliente'] = $usuario['email'];
                 $_SESSION['eh_admin'] = $usuario['eh_admin'];
 
+                // Resetar contador de tentativas de login
+                unset($_SESSION['login_tentativas'], $_SESSION['login_bloqueio_ate']);
+
                 // Log de atividade
                 log_acao('LOGIN', $usuario['id'], 'Login realizado com sucesso');
 
@@ -84,6 +107,19 @@ if (empty($erros)) {
             }
         }
         $stmt->close();
+    }
+}
+
+// ====== REGISTRAR TENTATIVA MAL-SUCEDIDA (RATE LIMITING) ======
+
+if (!empty($erros) && $erros !== ['Token de segurança inválido. Tente novamente.']) {
+    $tentativas = ($_SESSION['login_tentativas'] ?? 0) + 1;
+    $_SESSION['login_tentativas'] = $tentativas;
+
+    if ($tentativas >= MAX_TENTATIVAS_LOGIN) {
+        $_SESSION['login_bloqueio_ate'] = date('Y-m-d H:i:s', strtotime("+" . BLOQUEIO_LOGIN_MINUTOS . " minutes"));
+        $_SESSION['login_tentativas'] = 0;
+        log_acao('LOGIN_BLOQUEADO', 0, "Email: $email");
     }
 }
 

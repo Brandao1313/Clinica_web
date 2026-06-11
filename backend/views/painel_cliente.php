@@ -126,7 +126,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <?php
                     $stmt = $conexao_db->prepare(
-                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo, m.nome as nome_medico
+                        'SELECT a.*, COALESCE(e.nome, sp.nome, a.notas, "-") as nome_item, a.tipo, m.nome as nome_medico
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
@@ -163,7 +163,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <tr>
                                         <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                                         <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
-                                        <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
+                                        <td><?php echo htmlspecialchars($ag['nome_item'] ?? ''); ?></td>
                                         <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
                                         <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
                                         <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
@@ -177,10 +177,10 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="agendamento-card">
                                 <div class="agendamento-card-cabecalho">
                                     <div class="agendamento-card-icone">
-                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item']) : obter_icone_especialidade($ag['nome_item']); ?>
+                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item'] ?? '') : obter_icone_especialidade($ag['nome_item'] ?? ''); ?>
                                     </div>
                                     <div>
-                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item']); ?></div>
+                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item'] ?? ''); ?></div>
                                         <div class="agendamento-card-tipo"><?php echo get_tipo_agendamento($ag['tipo']); ?></div>
                                     </div>
                                 </div>
@@ -264,7 +264,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <?php
                     $stmt = $conexao_db->prepare(
-                        'SELECT a.*, COALESCE(e.nome, sp.nome) as nome_item, a.tipo, m.nome as nome_medico
+                        'SELECT a.*, COALESCE(e.nome, sp.nome, a.notas, "-") as nome_item, a.tipo, m.nome as nome_medico
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
@@ -301,7 +301,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <tr>
                                         <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                                         <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
-                                        <td><?php echo htmlspecialchars($ag['nome_item']); ?></td>
+                                        <td><?php echo htmlspecialchars($ag['nome_item'] ?? ''); ?></td>
                                         <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
                                         <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
                                         <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
@@ -322,10 +322,10 @@ require_once __DIR__ . '/../../includes/header.php';
                             <div class="agendamento-card">
                                 <div class="agendamento-card-cabecalho">
                                     <div class="agendamento-card-icone">
-                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item']) : obter_icone_especialidade($ag['nome_item']); ?>
+                                        <?php echo $ag['tipo'] === 'exame' ? obter_icone_exame($ag['nome_item'] ?? '') : obter_icone_especialidade($ag['nome_item'] ?? ''); ?>
                                     </div>
                                     <div>
-                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item']); ?></div>
+                                        <div class="agendamento-card-titulo"><?php echo htmlspecialchars($ag['nome_item'] ?? ''); ?></div>
                                         <div class="agendamento-card-tipo"><?php echo get_tipo_agendamento($ag['tipo']); ?></div>
                                     </div>
                                 </div>
@@ -397,6 +397,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <input type="hidden" name="acao" value="agendar_consulta">
+                    <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <button type="submit" class="btn-action">Agendar</button>
                     <a href="?acao=agendamentos" class="btn-action secondary">Voltar</a>
                 </form>
@@ -436,6 +437,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <input type="hidden" name="acao" value="agendar_exame">
+                    <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <button type="submit" class="btn-action">Solicitar Exame</button>
                     <a href="?acao=agendamentos" class="btn-action secondary">Voltar</a>
                 </form>
@@ -465,6 +467,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     <form method="POST" action="../controllers/agendamento_controller.php">
                         <input type="hidden" name="acao" value="cancelar_agendamento">
                         <input type="hidden" name="id_agendamento" value="<?php echo $id_agendamento; ?>">
+                        <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                         <button type="submit" class="btn-action" style="background: #dc3545;">Sim, cancelar</button>
                         <a href="?acao=agendamentos" class="btn-action secondary">Não, voltar</a>
                     </form>
