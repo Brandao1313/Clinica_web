@@ -140,16 +140,6 @@ function is_agendamento_futuro($data_hora) {
 }
 
 /**
- * Gerar hora de expiração do token (24 horas a partir de agora)
- * @return string (formato: YYYY-MM-DD HH:MM:SS)
- */
-function gerar_expiracao_token() {
-    $data = new DateTime();
-    $data->modify('+24 hours');
-    return $data->format('Y-m-d H:i:s');
-}
-
-/**
  * Verificar se token expirou
  * @param string $data_expiracao
  * @return bool
@@ -213,6 +203,53 @@ function log_acao($acao, $id_usuario, $detalhes = '') {
 }
 
 /**
+ * Registrar evento de segurança (tentativas de login, reset de senha, etc.)
+ * @param string $evento
+ * @param string $detalhes
+ * @return void
+ */
+function log_seguranca($evento, $detalhes = '') {
+    $data = date('Y-m-d H:i:s');
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'desconhecido';
+    $log = "[$data] EVENTO: $evento | IP: $ip | DETALHES: $detalhes\n";
+    $arquivo_log = __DIR__ . '/../../logs/security.log';
+
+    if (!is_dir(dirname($arquivo_log))) {
+        mkdir(dirname($arquivo_log), 0755, true);
+    }
+
+    file_put_contents($arquivo_log, $log, FILE_APPEND | LOCK_EX);
+}
+
+/**
+ * Verificar limite de tentativas de verificação telefone+CPF na recuperação de senha
+ * Máximo de 3 tentativas por hora por telefone (sessão)
+ * @param string $telefone
+ * @return bool true se dentro do limite, false se excedeu
+ */
+function verificar_limite_tentativas_reset($telefone) {
+    $agora = time();
+    $uma_hora_atras = $agora - 3600;
+
+    $_SESSION['reset_tentativas'] = $_SESSION['reset_tentativas'] ?? [];
+    $historico = $_SESSION['reset_tentativas'][$telefone] ?? [];
+
+    // Manter apenas tentativas da última hora
+    $historico = array_values(array_filter($historico, function ($timestamp) use ($uma_hora_atras) {
+        return $timestamp > $uma_hora_atras;
+    }));
+
+    if (count($historico) >= 3) {
+        $_SESSION['reset_tentativas'][$telefone] = $historico;
+        return false;
+    }
+
+    $historico[] = $agora;
+    $_SESSION['reset_tentativas'][$telefone] = $historico;
+    return true;
+}
+
+/**
  * Truncar texto com "..."
  * @param string $texto
  * @param int $limite
@@ -247,6 +284,8 @@ function obter_icone_especialidade($nome) {
         'urologia' => '🩻',
         'nutrição' => '🥗',
         'fisioterapia' => '🤸',
+        'otorrinolaringologia' => '👂',
+        'clínica geral' => '🩹',
     ];
 
     $chave = mb_strtolower($nome, 'UTF-8');

@@ -66,6 +66,8 @@ define('ERRO_EMAIL_EXISTE', 'Email já cadastrado no sistema');
 define('ERRO_CPF_EXISTE', 'CPF já cadastrado no sistema');
 define('ERRO_CPF_INVALIDO', 'CPF inválido');
 define('ERRO_EMAIL_INVALIDO', 'Email inválido');
+define('ERRO_TELEFONE_EXISTE', 'Telefone já cadastrado no sistema');
+define('ERRO_TELEFONE_INVALIDO', 'Telefone inválido');
 define('ERRO_SENHA_FRACA', 'Senha deve ter pelo menos ' . PASSWORD_MIN_LENGTH . ' caracteres');
 define('ERRO_SENHAS_NAOCOMPAT', 'Senhas não conferem');
 define('ERRO_LOGIN_INVALIDO', 'Email ou senha incorretos');

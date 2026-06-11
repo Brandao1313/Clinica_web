@@ -50,6 +50,64 @@ function resumo_financeiro($conexao_db, $periodo_sql) {
 
 $financeiro_mes = resumo_financeiro($conexao_db, "strftime('%Y-%m', data_realizacao) = '$mes_atual'");
 $financeiro_ano = resumo_financeiro($conexao_db, "strftime('%Y', data_realizacao) = '$ano_atual'");
+
+function contar_concluidos($conexao_db, $periodo_sql) {
+    $sql = "SELECT COUNT(*) as total FROM agendamentos WHERE status = 'concluído' AND $periodo_sql";
+    $stmt = $conexao_db->prepare($sql);
+    $stmt->execute();
+    $total = $stmt->get_result()->fetch_assoc()['total'];
+    $stmt->close();
+    return (int) $total;
+}
+
+$realizados_mes = contar_concluidos($conexao_db, "strftime('%Y-%m', data_realizacao) = '$mes_atual'");
+$realizados_ano = contar_concluidos($conexao_db, "strftime('%Y', data_realizacao) = '$ano_atual'");
+
+// ---------- Filtro de período (mês de referência) para o relatório por médico ----------
+$mes_ref = sanitizar_input($_GET['mes_ref'] ?? $mes_atual);
+if (!preg_match('/^\d{4}-\d{2}$/', $mes_ref)) {
+    $mes_ref = $mes_atual;
+}
+
+// ---------- Faturamento mensal (últimos 6 meses) para o gráfico ----------
+$stmt = $conexao_db->prepare(
+    "SELECT strftime('%Y-%m', data_realizacao) as mes,
+            COALESCE(SUM(valor_total), 0) as faturamento,
+            COALESCE(SUM(valor_medico), 0) as repasse
+     FROM agendamentos
+     WHERE status = 'concluído' AND data_realizacao >= date('now', 'start of month', '-5 months')
+     GROUP BY strftime('%Y-%m', data_realizacao)
+     ORDER BY mes ASC"
+);
+$stmt->execute();
+$faturamento_por_mes_raw = $stmt->get_result()->fetch_all();
+$stmt->close();
+
+$faturamento_por_mes = [];
+foreach ($faturamento_por_mes_raw as $linha) {
+    $faturamento_por_mes[$linha['mes']] = $linha;
+}
+
+$meses_grafico = [];
+for ($i = 5; $i >= 0; $i--) {
+    $chave = date('Y-m', strtotime("-$i months"));
+    $meses_grafico[] = [
+        'mes' => $chave,
+        'faturamento' => isset($faturamento_por_mes[$chave]) ? (float) $faturamento_por_mes[$chave]['faturamento'] : 0.0,
+        'repasse' => isset($faturamento_por_mes[$chave]) ? (float) $faturamento_por_mes[$chave]['repasse'] : 0.0,
+    ];
+}
+
+$maximo_faturamento_mensal = 1;
+foreach ($meses_grafico as $m) {
+    $maximo_faturamento_mensal = max($maximo_faturamento_mensal, $m['faturamento']);
+}
+
+function formatar_mes_ref($mes_ref) {
+    $meses_nomes = ['01' => 'Jan', '02' => 'Fev', '03' => 'Mar', '04' => 'Abr', '05' => 'Mai', '06' => 'Jun', '07' => 'Jul', '08' => 'Ago', '09' => 'Set', '10' => 'Out', '11' => 'Nov', '12' => 'Dez'];
+    [$ano, $mes] = explode('-', $mes_ref);
+    return ($meses_nomes[$mes] ?? $mes) . '/' . $ano;
+}
 ?>
 
 <h3>📊 Produtividade</h3>
@@ -104,6 +162,11 @@ $financeiro_ano = resumo_financeiro($conexao_db, "strftime('%Y', data_realizacao
         <h3>Lucro Líquido</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_mes['lucro']); ?></div>
     </div>
+    <div class="stat-card">
+        <div class="stat-icone">✅</div>
+        <h3>Consultas/Exames Realizados</h3>
+        <div class="stat-number"><?php echo $realizados_mes; ?></div>
+    </div>
 </div>
 
 <h3 style="margin-top: 30px;">💰 Financeiro - Ano Atual</h3>
@@ -123,9 +186,37 @@ $financeiro_ano = resumo_financeiro($conexao_db, "strftime('%Y', data_realizacao
         <h3>Lucro Líquido</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_ano['lucro']); ?></div>
     </div>
+    <div class="stat-card">
+        <div class="stat-icone">✅</div>
+        <h3>Consultas/Exames Realizados</h3>
+        <div class="stat-number"><?php echo $realizados_ano; ?></div>
+    </div>
 </div>
 
-<h3 style="margin-top: 30px;">Atendimentos por Médico (Mês Atual)</h3>
+<h3 style="margin-top: 30px;">Faturamento Mensal (Últimos 6 meses)</h3>
+
+<div class="grafico-barras">
+    <?php foreach ($meses_grafico as $m): ?>
+        <?php $altura = $maximo_faturamento_mensal > 0 ? round(($m['faturamento'] / $maximo_faturamento_mensal) * 100) : 0; ?>
+        <div class="grafico-barra-item">
+            <div class="grafico-barra-coluna" style="height: <?php echo max(4, $altura); ?>%;" title="<?php echo formatar_valor($m['faturamento']); ?>"></div>
+            <div class="grafico-barra-valor"><?php echo formatar_valor($m['faturamento']); ?></div>
+            <div class="grafico-barra-label"><?php echo formatar_mes_ref($m['mes']); ?></div>
+        </div>
+    <?php endforeach; ?>
+</div>
+
+<h3 style="margin-top: 30px;">Atendimentos por Médico (<?php echo formatar_mes_ref($mes_ref); ?>)</h3>
+
+<form method="GET" style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+    <input type="hidden" name="acao" value="relatorios">
+    <label for="mes_ref"><strong>Mês de referência:</strong></label>
+    <input type="month" id="mes_ref" name="mes_ref" value="<?php echo htmlspecialchars($mes_ref); ?>" style="padding: 8px; border: 1px solid #e0e0e0; border-radius: 5px;">
+    <button type="submit" class="btn-action">Filtrar</button>
+    <?php if ($mes_ref !== $mes_atual): ?>
+        <a href="?acao=relatorios" class="btn-action secondary">Mês atual</a>
+    <?php endif; ?>
+</form>
 
 <?php
     $stmt = $conexao_db->prepare(
@@ -140,7 +231,7 @@ $financeiro_ano = resumo_financeiro($conexao_db, "strftime('%Y', data_realizacao
          GROUP BY m.id, m.nome, m.crm
          ORDER BY total_atendimentos DESC, m.nome"
     );
-    $stmt->bind_param('s', $mes_atual);
+    $stmt->bind_param('s', $mes_ref);
     $stmt->execute();
     $relatorio_medicos = $stmt->get_result()->fetch_all();
     $stmt->close();

@@ -24,13 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Inicializar variáveis
 $nome = sanitizar_input($_POST['name'] ?? '');
 $email = sanitizar_input($_POST['email'] ?? '');
-$telefone = sanitizar_input($_POST['telefone'] ?? '');
+$telefone = preg_replace('/[^0-9]/', '', $_POST['telefone'] ?? '');
 $data_nascimento = sanitizar_input($_POST['data_nascimento'] ?? '');
 $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
 $senha = $_POST['password'] ?? '';
 $confirmacao_senha = $_POST['confirm'] ?? '';
 
 $erros = [];
+
+// ====== VERIFICAÇÃO CSRF ======
+
+$token_csrf = $_POST['csrf_token'] ?? '';
+if (!validar_token_csrf($token_csrf)) {
+    $erros[] = 'Token de segurança inválido. Tente novamente.';
+}
 
 // ====== VALIDAÇÕES ======
 
@@ -56,8 +63,10 @@ if (empty($cpf)) {
 }
 
 // Validar telefone
-if (!empty($telefone) && !validar_telefone($telefone)) {
-    $erros[] = 'Telefone inválido';
+if (empty($telefone)) {
+    $erros[] = 'Telefone é obrigatório';
+} elseif (!validar_telefone($telefone)) {
+    $erros[] = ERRO_TELEFONE_INVALIDO;
 }
 
 // Validar data de nascimento
@@ -104,6 +113,16 @@ if (empty($erros)) {
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
         $erros[] = ERRO_CPF_EXISTE;
+    }
+    $stmt->close();
+
+    // Verificar telefone único
+    $stmt = $conexao_db->prepare('SELECT id FROM clientes WHERE telefone = ?');
+    $stmt->bind_param('s', $telefone);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $erros[] = ERRO_TELEFONE_EXISTE;
     }
     $stmt->close();
 }

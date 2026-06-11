@@ -37,10 +37,10 @@ require_once __DIR__ . '/../../includes/header.php';
             <a href="?acao=agendamentos" class="admin-btn <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
                 <span class="admin-btn-icone">📅</span><span>Agendamentos</span>
             </a>
-            <a href="?acao=especialidades" class="admin-btn <?php echo $acao === 'especialidades' ? 'active' : ''; ?>">
+            <a href="?acao=especialidades" class="admin-btn <?php echo in_array($acao, ['especialidades', 'especialidade_form']) ? 'active' : ''; ?>">
                 <span class="admin-btn-icone">🏥</span><span>Especialidades</span>
             </a>
-            <a href="?acao=exames" class="admin-btn <?php echo $acao === 'exames' ? 'active' : ''; ?>">
+            <a href="?acao=exames" class="admin-btn <?php echo in_array($acao, ['exames', 'exame_form']) ? 'active' : ''; ?>">
                 <span class="admin-btn-icone">🧬</span><span>Exames</span>
             </a>
             <a href="?acao=medicos" class="admin-btn <?php echo in_array($acao, ['medicos', 'medico_form', 'horarios']) ? 'active' : ''; ?>">
@@ -239,7 +239,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 $total_paginas = max(1, ceil($total / $itens_por_pagina));
 
-                $sql = "SELECT a.*, c.nome as cliente_nome, COALESCE(e.nome, sp.nome) as item_nome, a.tipo, m.nome as nome_medico
+                $sql = "SELECT a.*, c.nome as cliente_nome, COALESCE(e.nome, sp.nome, a.notas, '-') as item_nome, a.tipo, m.nome as nome_medico
                         FROM agendamentos a
                         LEFT JOIN clientes c ON a.id_cliente = c.id
                         LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
@@ -335,7 +335,7 @@ require_once __DIR__ . '/../../includes/header.php';
                         <tr>
                             <td><?php echo htmlspecialchars($ag['cliente_nome']); ?></td>
                             <td><?php echo get_tipo_agendamento($ag['tipo']); ?></td>
-                            <td><?php echo htmlspecialchars($ag['item_nome']); ?></td>
+                            <td><?php echo htmlspecialchars($ag['item_nome'] ?? ''); ?></td>
                             <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
                             <td><?php echo formatar_data_hora($ag['data_hora']); ?></td>
                             <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
@@ -383,74 +383,16 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
 
         <?php elseif ($acao === 'especialidades'): ?>
-            <!-- LISTA DE ESPECIALIDADES -->
-            <h3>Especialidades</h3>
+            <?php require __DIR__ . '/especialidade_listar.php'; ?>
 
-            <?php
-                $stmt = $conexao_db->prepare('SELECT * FROM especialidades ORDER BY nome');
-                $stmt->execute();
-                $especialidades = $stmt->get_result();
-                $stmt->close();
-            ?>
-
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($esp = $especialidades->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($esp['nome']); ?></td>
-                            <td><?php echo truncar_texto(htmlspecialchars($esp['descricao']), 50); ?></td>
-                            <td>
-                                <span class="badge <?php echo $esp['ativo'] ? 'badge-success' : 'badge-danger'; ?>">
-                                    <?php echo $esp['ativo'] ? 'Ativo' : 'Inativo'; ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+        <?php elseif ($acao === 'especialidade_form'): ?>
+            <?php require __DIR__ . '/especialidade_form.php'; ?>
 
         <?php elseif ($acao === 'exames'): ?>
-            <!-- LISTA DE EXAMES -->
-            <h3>Exames</h3>
+            <?php require __DIR__ . '/exame_listar.php'; ?>
 
-            <?php
-                $stmt = $conexao_db->prepare('SELECT * FROM exames ORDER BY nome');
-                $stmt->execute();
-                $exames = $stmt->get_result();
-                $stmt->close();
-            ?>
-
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Descrição</th>
-                        <th>Preço</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($exame = $exames->fetch_assoc()): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($exame['nome']); ?></td>
-                            <td><?php echo truncar_texto(htmlspecialchars($exame['descricao']), 50); ?></td>
-                            <td><?php echo formatar_valor($exame['preco']); ?></td>
-                            <td>
-                                <span class="badge <?php echo $exame['ativo'] ? 'badge-success' : 'badge-danger'; ?>">
-                                    <?php echo $exame['ativo'] ? 'Ativo' : 'Inativo'; ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+        <?php elseif ($acao === 'exame_form'): ?>
+            <?php require __DIR__ . '/exame_form.php'; ?>
 
         <?php elseif ($acao === 'medicos'): ?>
             <?php require __DIR__ . '/medico_listar.php'; ?>

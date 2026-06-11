@@ -24,6 +24,13 @@ $id_cliente = $_SESSION['id_cliente'];
 $conexao_db = Conexao::getInstance()->getConexao();
 $erros = [];
 
+// Verificação CSRF para todas as ações
+$token_csrf = $_POST['csrf_token'] ?? '';
+if (!validar_token_csrf($token_csrf)) {
+    set_flash_message('agendamento', 'Token de segurança inválido. Tente novamente.', 'erro');
+    redirect('backend/views/painel_cliente.php?acao=agendamentos');
+}
+
 // ====== AGENDAR CONSULTA ======
 if ($acao === 'agendar_consulta') {
     $id_especialidade = intval($_POST['id_especialidade'] ?? 0);

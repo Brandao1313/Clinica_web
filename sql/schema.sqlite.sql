@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     nome VARCHAR(150) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     cpf VARCHAR(11) UNIQUE NOT NULL,
-    telefone VARCHAR(15),
+    telefone VARCHAR(15) UNIQUE NOT NULL,
     data_nascimento DATE,
     senha_hash VARCHAR(255) NOT NULL,
     ativo INTEGER DEFAULT 1,
@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS clientes (
 
 CREATE INDEX IF NOT EXISTS idx_clientes_email ON clientes(email);
 CREATE INDEX IF NOT EXISTS idx_clientes_cpf ON clientes(cpf);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_clientes_telefone ON clientes(telefone);
 
 -- Tabela: especialidades
 CREATE TABLE IF NOT EXISTS especialidades (

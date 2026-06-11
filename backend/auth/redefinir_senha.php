@@ -16,78 +16,70 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit('Método não permitido');
 }
 
-$acao = sanitizar_input($_POST['acao'] ?? 'solicitar');
+$acao = sanitizar_input($_POST['acao'] ?? '');
 $erros = [];
-$sucesso = '';
 
-// ====== AÇÃO 1: SOLICITAR REDEFINIÇÃO ======
+// ====== VERIFICAÇÃO CSRF ======
 
-if ($acao === 'solicitar') {
-    $email = sanitizar_input($_POST['email'] ?? '');
+$token_csrf = $_POST['csrf_token'] ?? '';
+if (!validar_token_csrf($token_csrf)) {
+    $_SESSION['erros_reset'] = ['Token de segurança inválido. Tente novamente.'];
+    redirect('cadastro/esqueci_senha.php');
+}
 
-    if (empty($email)) {
-        $erros[] = 'Email é obrigatório';
-    } elseif (!validar_email($email)) {
-        $erros[] = ERRO_EMAIL_INVALIDO;
+// Tempo de validade da autorização de redefinição (em segundos)
+const RESET_AUTORIZACAO_SEGUNDOS = 300;
+
+// ====== AÇÃO 1: VERIFICAR TELEFONE + CPF ======
+
+if ($acao === 'verificar_telefone') {
+    $telefone = preg_replace('/[^0-9]/', '', $_POST['telefone'] ?? '');
+    $cpf = preg_replace('/[^0-9]/', '', $_POST['cpf'] ?? '');
+    $mensagem_generica = 'Dados não conferem. Verifique o telefone e CPF.';
+
+    if (empty($telefone) || empty($cpf)) {
+        $erros[] = 'Telefone e CPF são obrigatórios';
+    } elseif (!validar_telefone($telefone)) {
+        $erros[] = ERRO_TELEFONE_INVALIDO;
+    } elseif (strlen($cpf) !== 11) {
+        $erros[] = ERRO_CPF_INVALIDO;
+    } elseif (!verificar_limite_tentativas_reset($telefone)) {
+        log_seguranca('RESET_SENHA_LIMITE_EXCEDIDO', "Telefone: $telefone");
+        $erros[] = 'Muitas tentativas. Tente novamente mais tarde.';
     } else {
         $conexao_db = Conexao::getInstance()->getConexao();
 
-        // Verificar se email existe
-        $stmt = $conexao_db->prepare('SELECT id, nome FROM clientes WHERE email = ?');
-        $stmt->bind_param('s', $email);
+        $stmt = $conexao_db->prepare('SELECT id FROM clientes WHERE telefone = ? AND cpf = ?');
+        $stmt->bind_param('ss', $telefone, $cpf);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows === 0) {
-            // Por segurança, não revelar se email existe ou não
-            $sucesso = 'Se o email existir em nosso sistema, você receberá um link de redefinição.';
+            log_seguranca('RESET_SENHA_DADOS_NAO_CONFEREM', "Telefone: $telefone");
+            $erros[] = $mensagem_generica;
         } else {
             $cliente = $result->fetch_assoc();
-            $id_cliente = $cliente['id'];
-            $nome_cliente = $cliente['nome'];
-
-            // Gerar token
-            $token = gerar_token_aleatorio();
-            $data_expiracao = gerar_expiracao_token();
-
-            // Salvar token no banco de dados
-            $stmt2 = $conexao_db->prepare(
-                'INSERT INTO redefinicao_senha (id_cliente, token, data_expiracao) VALUES (?, ?, ?)'
-            );
-            $stmt2->bind_param('iss', $id_cliente, $token, $data_expiracao);
-
-            if ($stmt2->execute()) {
-                // Simular envio de email (em produção, usar SwiftMailer ou similar)
-                $link_reset = SITE_URL . '/backend/auth/redefinir_senha.php?token=' . $token;
-                $mensagem_email = "Olá $nome_cliente,\n\n";
-                $mensagem_email .= "Para redefinir sua senha, clique no link abaixo:\n";
-                $mensagem_email .= "$link_reset\n\n";
-                $mensagem_email .= "Este link expira em 24 horas.\n\n";
-                $mensagem_email .= "Se você não solicitou esta redefinição, ignore este email.\n";
-
-                // Log do "envio" de email (em arquivo)
-                error_log("EMAIL DE RECUPERAÇÃO:\nPara: $email\nMensagem:\n$mensagem_email\n\n", 3, __DIR__ . '/../../logs/emails.log');
-
-                log_acao('SOLICITAR_RESET_SENHA', $id_cliente, "Email: $email");
-                $sucesso = 'Se o email existir em nosso sistema, você receberá um link de redefinição.';
-            } else {
-                $erros[] = 'Erro ao processar solicitação. Tente novamente.';
-            }
-            $stmt2->close();
+            $_SESSION['id_reset_autorizado'] = $cliente['id'];
+            $_SESSION['id_reset_autorizado_exp'] = time() + RESET_AUTORIZACAO_SEGUNDOS;
+            log_seguranca('RESET_SENHA_AUTORIZADO', "Telefone: $telefone | Cliente ID: {$cliente['id']}");
         }
         $stmt->close();
     }
 }
 
-// ====== AÇÃO 2: VALIDAR TOKEN E REDEFINIR SENHA ======
+// ====== AÇÃO 2: REDEFINIR SENHA (SEM TOKEN) ======
 
-elseif ($acao === 'redefinir') {
-    $token = sanitizar_input($_POST['token'] ?? '');
+elseif ($acao === 'redefinir_sem_token') {
     $senha_nova = $_POST['senha_nova'] ?? '';
     $confirmacao_senha = $_POST['confirmacao_senha'] ?? '';
 
-    if (empty($token)) {
-        $erros[] = 'Token inválido';
+    $id_cliente = $_SESSION['id_reset_autorizado'] ?? null;
+    $expiracao = $_SESSION['id_reset_autorizado_exp'] ?? 0;
+
+    if (empty($id_cliente) || time() > $expiracao) {
+        unset($_SESSION['id_reset_autorizado'], $_SESSION['id_reset_autorizado_exp']);
+        log_seguranca('RESET_SENHA_AUTORIZACAO_EXPIRADA', '');
+        $erros[] = 'Sessão de verificação expirada. Informe seus dados novamente.';
     } elseif (empty($senha_nova)) {
         $erros[] = 'Nova senha é obrigatória';
     } elseif (!validar_senha_forte($senha_nova)) {
@@ -97,55 +89,35 @@ elseif ($acao === 'redefinir') {
     } else {
         $conexao_db = Conexao::getInstance()->getConexao();
 
-        // Verificar token
-        $stmt = $conexao_db->prepare(
-            'SELECT id_cliente, usado FROM redefinicao_senha WHERE token = ? AND data_expiracao > datetime("now", "localtime") AND usado = 0'
-        );
-        $stmt->bind_param('s', $token);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $hash_senha = gerar_hash_senha($senha_nova);
 
-        if ($result->num_rows === 0) {
-            $erros[] = 'Token inválido ou expirado';
+        $stmt = $conexao_db->prepare('UPDATE clientes SET senha_hash = ? WHERE id = ?');
+        $stmt->bind_param('si', $hash_senha, $id_cliente);
+
+        if ($stmt->execute()) {
+            unset($_SESSION['id_reset_autorizado'], $_SESSION['id_reset_autorizado_exp']);
+
+            log_acao('RESET_SENHA_COMPLETADO', $id_cliente, 'Senha redefinida com sucesso');
+            log_seguranca('RESET_SENHA_COMPLETADO', "Cliente ID: $id_cliente");
+            set_flash_message('reset', 'Senha redefinida com sucesso! Faça login com sua nova senha.', 'sucesso');
+            redirect('cadastro/login.php');
         } else {
-            $token_info = $result->fetch_assoc();
-            $id_cliente = $token_info['id_cliente'];
-
-            // Gerar novo hash da senha
-            $hash_senha = gerar_hash_senha($senha_nova);
-
-            // Atualizar senha no banco
-            $stmt2 = $conexao_db->prepare('UPDATE clientes SET senha_hash = ? WHERE id = ?');
-            $stmt2->bind_param('si', $hash_senha, $id_cliente);
-
-            if ($stmt2->execute()) {
-                // Marcar token como usado
-                $stmt3 = $conexao_db->prepare('UPDATE redefinicao_senha SET usado = 1 WHERE token = ?');
-                $stmt3->bind_param('s', $token);
-                $stmt3->execute();
-                $stmt3->close();
-
-                log_acao('RESET_SENHA_COMPLETADO', $id_cliente, 'Senha redefinida com sucesso');
-                set_flash_message('reset', 'Senha redefinida com sucesso! Faça login com sua nova senha.', 'sucesso');
-                redirect('cadastro/login.php');
-            } else {
-                $erros[] = 'Erro ao atualizar senha. Tente novamente.';
-            }
-            $stmt2->close();
+            $erros[] = 'Erro ao atualizar senha. Tente novamente.';
         }
         $stmt->close();
     }
+}
+
+// Ação desconhecida
+else {
+    $erros[] = 'Ação não permitida';
 }
 
 // ====== RETORNAR RESULTADO ======
 
 if (!empty($erros)) {
     $_SESSION['erros_reset'] = $erros;
-    $_SESSION['email_reset'] = $email ?? '';
-}
-
-if (!empty($sucesso)) {
-    $_SESSION['sucesso_reset'] = $sucesso;
+    $_SESSION['telefone_reset'] = $telefone ?? '';
 }
 
 redirect('cadastro/esqueci_senha.php');

@@ -35,6 +35,7 @@ require_once __DIR__ . '/../includes/header.php';
             <?php endif; ?>
 
             <form method="POST" action="../backend/auth/registrar.php">
+                <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                 <div class="form-grupo">
                     <div class="form-grupo-titulo">👤 Dados pessoais</div>
 
@@ -44,8 +45,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <label for="cpf">CPF (somente números) *</label>
                     <input type="text" id="cpf" name="cpf" placeholder="12345678901" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['cpf'] ?? ''); ?>" required>
 
-                    <label for="telefone">Telefone (opcional)</label>
-                    <input type="tel" id="telefone" name="telefone" placeholder="11999999999" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['telefone'] ?? ''); ?>">
+                    <label for="telefone">Telefone *</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="11999999999" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['telefone'] ?? ''); ?>" required>
 
                     <label for="data_nascimento">Data de nascimento (opcional)</label>
                     <input type="date" id="data_nascimento" name="data_nascimento" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['data_nascimento'] ?? ''); ?>">
