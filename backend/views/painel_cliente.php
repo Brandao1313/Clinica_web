@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <div class="flash-container" role="status" aria-live="polite">
             <?php if ($flash_login): ?>
                 <div class="flash-toast flash-sucesso">
-                    <span class="flash-toast-icone">✅</span>
+                    <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
                     <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_login['mensagem']); ?></span>
                     <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                     <span class="flash-toast-progresso"></span>
@@ -46,7 +46,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <?php endif; ?>
             <?php if ($flash_agendamento): ?>
                 <div class="flash-toast <?php echo $flash_agendamento['tipo'] === 'sucesso' ? 'flash-sucesso' : 'flash-erro'; ?>">
-                    <span class="flash-toast-icone"><?php echo $flash_agendamento['tipo'] === 'sucesso' ? '✅' : '❌'; ?></span>
+                    <span class="flash-toast-icone"><?php echo $flash_agendamento['tipo'] === 'sucesso' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>'; ?></span>
                     <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_agendamento['mensagem']); ?></span>
                     <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                     <span class="flash-toast-progresso"></span>
@@ -55,7 +55,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <?php if (!empty($_SESSION['erros_agendamento'])): ?>
                 <?php foreach ($_SESSION['erros_agendamento'] as $erro): ?>
                     <div class="flash-toast flash-erro">
-                        <span class="flash-toast-icone">❌</span>
+                        <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
                         <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
                         <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                         <span class="flash-toast-progresso"></span>
@@ -69,7 +69,7 @@ require_once __DIR__ . '/../../includes/header.php';
     <!-- MODAL DE CONFIRMAÇÃO (cancelamento de agendamento) -->
     <div id="modal-confirmacao" class="modal-overlay">
         <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-confirmacao-titulo">
-            <div class="modal-icone">⚠️</div>
+            <div class="modal-icone"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <h3 data-modal-titulo id="modal-confirmacao-titulo">Confirmar ação</h3>
             <p data-modal-texto>Tem certeza?</p>
             <div class="modal-acoes">
@@ -84,27 +84,27 @@ require_once __DIR__ . '/../../includes/header.php';
         <aside class="painel-sidebar">
             <h3>Menu</h3>
             <a href="?acao=dashboard" class="menu-item <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
-                <span class="menu-item-icone">📊</span><span>Dashboard</span><span class="menu-item-seta">›</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-chart-bar"></i></span><span>Dashboard</span><span class="menu-item-seta">›</span>
             </a>
             <a href="?acao=perfil" class="menu-item <?php echo $acao === 'perfil' ? 'active' : ''; ?>">
-                <span class="menu-item-icone">👤</span><span>Meu Perfil</span><span class="menu-item-seta">›</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-user"></i></span><span>Meu Perfil</span><span class="menu-item-seta">›</span>
             </a>
             <a href="?acao=agendamentos" class="menu-item <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
-                <span class="menu-item-icone">📅</span><span>Agendamentos</span><span class="menu-item-seta">›</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-calendar-days"></i></span><span>Agendamentos</span><span class="menu-item-seta">›</span>
             </a>
             <a href="?acao=agendar" class="menu-item <?php echo $acao === 'agendar' ? 'active' : ''; ?>">
-                <span class="menu-item-icone">➕</span><span>Agendar Consulta</span><span class="menu-item-seta">›</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-plus"></i></span><span>Agendar Consulta</span><span class="menu-item-seta">›</span>
             </a>
             <a href="?acao=exames" class="menu-item <?php echo $acao === 'exames' ? 'active' : ''; ?>">
-                <span class="menu-item-icone">🧬</span><span>Solicitar Exame</span><span class="menu-item-seta">›</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-dna"></i></span><span>Solicitar Exame</span><span class="menu-item-seta">›</span>
             </a>
             <?php if (is_admin()): ?>
                 <a href="painel_admin.php" class="menu-item">
-                    <span class="menu-item-icone">⚙️</span><span>Painel Admin</span><span class="menu-item-seta">›</span>
+                    <span class="menu-item-icone"><i class="fa-solid fa-gear"></i></span><span>Painel Admin</span><span class="menu-item-seta">›</span>
                 </a>
             <?php endif; ?>
             <a href="../auth/deslogar.php" class="menu-item menu-item-sair">
-                <span class="menu-item-icone">🚪</span><span>Sair</span>
+                <span class="menu-item-icone"><i class="fa-solid fa-right-from-bracket"></i></span><span>Sair</span>
             </a>
         </aside>
 
@@ -186,7 +186,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 </div>
                                 <div class="agendamento-card-data">🗓️ <?php echo formatar_data_hora($ag['data_hora']); ?></div>
                                 <?php if (!empty($ag['nome_medico'])): ?>
-                                    <div class="agendamento-card-data">🩺 Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
+                                    <div class="agendamento-card-data"><i class="fa-solid fa-stethoscope"></i> Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
                                 <?php endif; ?>
                                 <?php if (!empty($ag['valor_total'])): ?>
                                     <div class="agendamento-card-data">💰 <?php echo formatar_valor($ag['valor_total']); ?></div>
@@ -201,11 +201,11 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <?php elseif ($acao === 'perfil'): ?>
                 <!-- PERFIL -->
-                <h2>👤 Meu Perfil</h2>
+                <h2><i class="fa-solid fa-user"></i> Meu Perfil</h2>
 
                 <div class="info-grid">
                     <div class="info-card">
-                        <span class="info-card-icone" data-tooltip="Seu nome completo de cadastro">👤</span>
+                        <span class="info-card-icone" data-tooltip="Seu nome completo de cadastro"><i class="fa-solid fa-user"></i></span>
                         <div class="info-card-corpo">
                             <span class="info-card-label">Nome</span>
                             <span class="info-card-valor"><?php echo htmlspecialchars($cliente['nome']); ?></span>
@@ -229,7 +229,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <div class="info-card">
-                        <span class="info-card-icone" data-tooltip="Telefone para contato em caso de necessidade">📱</span>
+                        <span class="info-card-icone" data-tooltip="Telefone para contato em caso de necessidade"><i class="fa-solid fa-mobile-screen"></i></span>
                         <div class="info-card-corpo">
                             <span class="info-card-label">Telefone</span>
                             <span class="info-card-valor"><?php echo !empty($cliente['telefone']) ? formatar_telefone($cliente['telefone']) : '-'; ?></span>
@@ -245,7 +245,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     </div>
 
                     <div class="info-card">
-                        <span class="info-card-icone" data-tooltip="Data em que você se cadastrou na clínica">📅</span>
+                        <span class="info-card-icone" data-tooltip="Data em que você se cadastrou na clínica"><i class="fa-solid fa-calendar-days"></i></span>
                         <div class="info-card-corpo">
                             <span class="info-card-label">Membro desde</span>
                             <span class="info-card-valor"><?php echo formatar_data($cliente['data_cadastro']); ?></span>
@@ -260,7 +260,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <?php elseif ($acao === 'agendamentos'): ?>
                 <!-- AGENDAMENTOS -->
-                <h2>📅 Meus Agendamentos</h2>
+                <h2><i class="fa-solid fa-calendar-days"></i> Meus Agendamentos</h2>
 
                 <?php
                     $stmt = $conexao_db->prepare(
@@ -331,7 +331,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                 </div>
                                 <div class="agendamento-card-data">🗓️ <?php echo formatar_data_hora($ag['data_hora']); ?></div>
                                 <?php if (!empty($ag['nome_medico'])): ?>
-                                    <div class="agendamento-card-data">🩺 Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
+                                    <div class="agendamento-card-data"><i class="fa-solid fa-stethoscope"></i> Dr(a). <?php echo htmlspecialchars($ag['nome_medico']); ?></div>
                                 <?php endif; ?>
                                 <?php if (!empty($ag['valor_total'])): ?>
                                     <div class="agendamento-card-data">💰 <?php echo formatar_valor($ag['valor_total']); ?></div>
@@ -349,11 +349,11 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <?php elseif ($acao === 'agendar'): ?>
                 <!-- AGENDAR CONSULTA -->
-                <h2>➕ Agendar Consulta</h2>
+                <h2><i class="fa-solid fa-plus"></i> Agendar Consulta</h2>
 
                 <form method="POST" action="../controllers/agendamento_controller.php" style="max-width: 500px;">
                     <div class="form-grupo">
-                        <div class="form-grupo-titulo">🩺 Dados da consulta</div>
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-stethoscope"></i> Dados da consulta</div>
 
                         <div style="margin-bottom: 15px;">
                             <label for="especialidade"><strong>Especialidade *</strong></label>
@@ -404,11 +404,11 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <?php elseif ($acao === 'exames'): ?>
                 <!-- SOLICITAR EXAME -->
-                <h2>🧬 Solicitar Exame</h2>
+                <h2><i class="fa-solid fa-dna"></i> Solicitar Exame</h2>
 
                 <form method="POST" action="../controllers/agendamento_controller.php" style="max-width: 500px;">
                     <div class="form-grupo">
-                        <div class="form-grupo-titulo">🧬 Dados do exame</div>
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-dna"></i> Dados do exame</div>
 
                         <div style="margin-bottom: 15px;">
                             <label for="exame"><strong>Exame *</strong></label>
@@ -456,7 +456,7 @@ require_once __DIR__ . '/../../includes/header.php';
                     if (!$agendamento || !pode_cancelar_agendamento($agendamento['status'])):
                 ?>
                     <div class="alert alert-error">
-                        ❌ Agendamento não encontrado ou não pode ser cancelado.
+                        <i class="fa-solid fa-circle-xmark"></i> Agendamento não encontrado ou não pode ser cancelado.
                     </div>
                 <?php else: ?>
                     <h2>Cancelar Agendamento</h2>
@@ -475,7 +475,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <?php else: ?>
                 <div class="alert alert-error">
-                    ❌ Ação não encontrada.
+                    <i class="fa-solid fa-circle-xmark"></i> Ação não encontrada.
                 </div>
             <?php endif; ?>
         </main>

@@ -37,7 +37,7 @@ require_once __DIR__ . '/../../includes/header.php';
 <?php if ($flash_login): ?>
     <div class="flash-container" role="status" aria-live="polite">
         <div class="flash-toast flash-sucesso">
-            <span class="flash-toast-icone">✅</span>
+            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
             <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_login['mensagem']); ?></span>
             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
             <span class="flash-toast-progresso"></span>
@@ -62,19 +62,19 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <nav class="painel-nav">
             <a href="?acao=dashboard" class="painel-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-                📊 Dashboard
+                <i class="fa-solid fa-chart-bar"></i> Dashboard
             </a>
             <a href="?acao=agenda" class="painel-nav-item <?php echo $acao === 'agenda' ? 'ativo' : ''; ?>">
-                📅 Minha Agenda
+                <i class="fa-solid fa-calendar-days"></i> Minha Agenda
             </a>
             <a href="?acao=historico" class="painel-nav-item <?php echo $acao === 'historico' ? 'ativo' : ''; ?>">
-                📋 Histórico
+                <i class="fa-solid fa-clipboard-list"></i> Histórico
             </a>
             <a href="?acao=perfil" class="painel-nav-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>">
-                👤 Meu Perfil
+                <i class="fa-solid fa-user"></i> Meu Perfil
             </a>
             <a href="../../backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
-                🚪 Sair
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
             </a>
         </nav>
     </aside>
@@ -136,17 +136,17 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <div class="painel-cards">
                 <div class="painel-card">
-                    <div class="painel-card-icone">📅</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-calendar-days"></i></div>
                     <div class="painel-card-valor"><?php echo $total_hoje; ?></div>
                     <div class="painel-card-label">Consultas hoje</div>
                 </div>
                 <div class="painel-card">
-                    <div class="painel-card-icone">🔮</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-clock"></i></div>
                     <div class="painel-card-valor"><?php echo $proximas_7d; ?></div>
                     <div class="painel-card-label">Próximos 7 dias</div>
                 </div>
                 <div class="painel-card">
-                    <div class="painel-card-icone">✅</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-circle-check"></i></div>
                     <div class="painel-card-valor"><?php echo $total_concluidas; ?></div>
                     <div class="painel-card-label">Consultas concluídas</div>
                 </div>
@@ -298,7 +298,7 @@ require_once __DIR__ . '/../../includes/header.php';
             <?php if ($flash_perfil): ?>
                 <div class="flash-container" role="status" aria-live="polite">
                     <div class="flash-toast flash-sucesso">
-                        <span class="flash-toast-icone">✅</span>
+                        <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
                         <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_perfil['mensagem']); ?></span>
                         <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                         <span class="flash-toast-progresso"></span>
@@ -309,14 +309,14 @@ require_once __DIR__ . '/../../includes/header.php';
             <?php if (!empty($erros_perfil)): ?>
                 <div class="alert alert-error">
                     <?php foreach ($erros_perfil as $e): ?>
-                        <p>❌ <?php echo htmlspecialchars($e); ?></p>
+                        <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($e); ?></p>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
             <!-- Alterar senha -->
             <div class="form-grupo" style="max-width:500px;">
-                <div class="form-grupo-titulo">🔒 Alterar senha</div>
+                <div class="form-grupo-titulo"><i class="fa-solid fa-lock"></i> Alterar senha</div>
                 <form method="POST" action="../../backend/controllers/medico_perfil_controller.php">
                     <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <input type="hidden" name="acao" value="alterar_senha_medico">
@@ -336,7 +336,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <!-- Dados do perfil (read-only) -->
             <div class="form-grupo" style="max-width:500px;margin-top:1.5rem;">
-                <div class="form-grupo-titulo">🩺 Dados cadastrais</div>
+                <div class="form-grupo-titulo"><i class="fa-solid fa-stethoscope"></i> Dados cadastrais</div>
                 <p><strong>Nome:</strong> <?php echo htmlspecialchars($medico['nome']); ?></p>
                 <p><strong>CRM:</strong> <?php echo htmlspecialchars($medico['crm']); ?></p>
                 <p><strong>Especialidade:</strong> <?php echo htmlspecialchars($medico['nome_especialidade'] ?? '—'); ?></p>

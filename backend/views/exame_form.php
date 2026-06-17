@@ -38,7 +38,7 @@ $valores = [
 <?php if (!empty($_SESSION['erros_exame'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_exame'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_exame']); ?>
@@ -52,7 +52,7 @@ $valores = [
     <?php endif; ?>
 
     <div class="form-grupo">
-        <div class="form-grupo-titulo">🧬 Dados do exame</div>
+        <div class="form-grupo-titulo"><i class="fa-solid fa-dna"></i> Dados do exame</div>
 
         <div style="margin-bottom: 15px;">
             <label for="nome"><strong>Nome *</strong></label>

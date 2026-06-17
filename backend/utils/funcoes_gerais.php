@@ -269,64 +269,64 @@ function truncar_texto($texto, $limite = 100) {
  */
 function obter_icone_especialidade($nome) {
     $mapa = [
-        'cardiologia' => '❤️',
-        'dermatologia' => '🧴',
-        'oftalmologia' => '👁️',
-        'odontologia' => '🦷',
-        'pneumologia' => '🫁',
-        'gastroenterologia' => '🩺',
-        'ortopedia' => '🦴',
-        'pediatria' => '🧒',
-        'ginecologia' => '🌸',
-        'neurologia' => '🧠',
-        'psiquiatria' => '💭',
-        'endocrinologia' => '⚖️',
-        'urologia' => '🩻',
-        'nutrição' => '🥗',
-        'fisioterapia' => '🤸',
-        'otorrinolaringologia' => '👂',
-        'clínica geral' => '🩹',
+        'cardiologia'          => 'fa-heart',
+        'dermatologia'         => 'fa-pump-soap',
+        'oftalmologia'         => 'fa-eye',
+        'odontologia'          => 'fa-tooth',
+        'pneumologia'          => 'fa-lungs',
+        'gastroenterologia'    => 'fa-stethoscope',
+        'ortopedia'            => 'fa-bone',
+        'pediatria'            => 'fa-child',
+        'ginecologia'          => 'fa-venus',
+        'neurologia'           => 'fa-brain',
+        'psiquiatria'          => 'fa-comment-dots',
+        'endocrinologia'       => 'fa-scale-balanced',
+        'urologia'             => 'fa-x-ray',
+        'nutrição'             => 'fa-bowl-food',
+        'fisioterapia'         => 'fa-person-walking',
+        'otorrinolaringologia' => 'fa-ear-listen',
+        'clínica geral'        => 'fa-bandage',
     ];
 
     $chave = mb_strtolower($nome, 'UTF-8');
-    foreach ($mapa as $termo => $icone) {
+    foreach ($mapa as $termo => $classe) {
         if (mb_strpos($chave, $termo) !== false) {
-            return $icone;
+            return '<i class="fa-solid ' . $classe . '" aria-hidden="true"></i>';
         }
     }
-    return '🏥';
+    return '<i class="fa-solid fa-hospital" aria-hidden="true"></i>';
 }
 
 /**
- * Obter ícone (emoji) representativo de um exame
+ * Obter ícone representativo de um exame (Font Awesome)
  * @param string $nome
  * @return string
  */
 function obter_icone_exame($nome) {
     $mapa = [
-        'eletrocardiograma' => '❤️',
-        'ultrassom' => '📡',
-        'ressonância' => '🧲',
-        'ressonancia' => '🧲',
-        'tomografia' => '🩻',
-        'hemograma' => '🩸',
-        'sangue' => '🩸',
-        'diabetes' => '💉',
-        'glicemia' => '💉',
-        'raio' => '🩻',
-        'urina' => '🧪',
-        'biópsia' => '🔬',
-        'biopsia' => '🔬',
-        'mamografia' => '🩻',
+        'eletrocardiograma' => 'fa-heart',
+        'ultrassom'         => 'fa-satellite-dish',
+        'ressonância'       => 'fa-magnet',
+        'ressonancia'       => 'fa-magnet',
+        'tomografia'        => 'fa-x-ray',
+        'hemograma'         => 'fa-droplet',
+        'sangue'            => 'fa-droplet',
+        'diabetes'          => 'fa-syringe',
+        'glicemia'          => 'fa-syringe',
+        'raio'              => 'fa-x-ray',
+        'urina'             => 'fa-flask',
+        'biópsia'           => 'fa-microscope',
+        'biopsia'           => 'fa-microscope',
+        'mamografia'        => 'fa-x-ray',
     ];
 
     $chave = mb_strtolower($nome, 'UTF-8');
-    foreach ($mapa as $termo => $icone) {
+    foreach ($mapa as $termo => $classe) {
         if (mb_strpos($chave, $termo) !== false) {
-            return $icone;
+            return '<i class="fa-solid ' . $classe . '" aria-hidden="true"></i>';
         }
     }
-    return '🧬';
+    return '<i class="fa-solid fa-dna" aria-hidden="true"></i>';
 }
 
 /**

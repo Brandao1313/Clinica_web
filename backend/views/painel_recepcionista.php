@@ -31,7 +31,7 @@ require_once __DIR__ . '/../../includes/header.php';
 <div class="flash-container" role="status" aria-live="polite">
     <?php foreach (array_filter([$flash_login, $flash_recep]) as $f): ?>
         <div class="flash-toast flash-<?php echo $f['tipo'] === 'sucesso' ? 'sucesso' : 'erro'; ?>">
-            <span class="flash-toast-icone"><?php echo $f['tipo'] === 'sucesso' ? '✅' : '❌'; ?></span>
+            <span class="flash-toast-icone"><?php echo $f['tipo'] === 'sucesso' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>'; ?></span>
             <span class="flash-toast-texto"><?php echo htmlspecialchars($f['mensagem']); ?></span>
             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
             <span class="flash-toast-progresso"></span>
@@ -50,22 +50,22 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <nav class="painel-nav">
             <a href="?acao=dashboard" class="painel-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-                📊 Dashboard
+                <i class="fa-solid fa-chart-bar"></i> Dashboard
             </a>
             <a href="?acao=agendamentos" class="painel-nav-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>">
-                📅 Agendamentos
+                <i class="fa-solid fa-calendar-days"></i> Agendamentos
             </a>
             <a href="?acao=novo_agendamento" class="painel-nav-item <?php echo $acao === 'novo_agendamento' ? 'ativo' : ''; ?>">
-                ➕ Novo Agendamento
+                <i class="fa-solid fa-plus"></i> Novo Agendamento
             </a>
             <a href="?acao=clientes" class="painel-nav-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>">
-                👥 Pacientes
+                <i class="fa-solid fa-users"></i> Pacientes
             </a>
             <a href="?acao=medicos" class="painel-nav-item <?php echo $acao === 'medicos' ? 'ativo' : ''; ?>">
-                🩺 Médicos
+                <i class="fa-solid fa-stethoscope"></i> Médicos
             </a>
             <a href="../../backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
-                🚪 Sair
+                <i class="fa-solid fa-right-from-bracket"></i> Sair
             </a>
         </nav>
     </aside>
@@ -76,7 +76,7 @@ require_once __DIR__ . '/../../includes/header.php';
         <?php if (!empty($_SESSION['erros_recep'])): ?>
             <div class="alert alert-error">
                 <?php foreach ($_SESSION['erros_recep'] as $e): ?>
-                    <p>❌ <?php echo htmlspecialchars($e); ?></p>
+                    <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($e); ?></p>
                 <?php endforeach; ?>
             </div>
             <?php unset($_SESSION['erros_recep']); ?>
@@ -113,22 +113,22 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <div class="painel-cards">
                 <div class="painel-card">
-                    <div class="painel-card-icone">📅</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-calendar-days"></i></div>
                     <div class="painel-card-valor"><?php echo $hoje; ?></div>
                     <div class="painel-card-label">Agendamentos hoje</div>
                 </div>
                 <div class="painel-card">
-                    <div class="painel-card-icone">⏳</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-hourglass-half"></i></div>
                     <div class="painel-card-valor"><?php echo $pendentes; ?></div>
                     <div class="painel-card-label">Pendentes</div>
                 </div>
                 <div class="painel-card">
-                    <div class="painel-card-icone">✅</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-circle-check"></i></div>
                     <div class="painel-card-valor"><?php echo $confirmados; ?></div>
                     <div class="painel-card-label">Confirmados</div>
                 </div>
                 <div class="painel-card">
-                    <div class="painel-card-icone">👥</div>
+                    <div class="painel-card-icone"><i class="fa-solid fa-users"></i></div>
                     <div class="painel-card-valor"><?php echo $total_clientes; ?></div>
                     <div class="painel-card-label">Pacientes</div>
                 </div>
@@ -269,7 +269,7 @@ require_once __DIR__ . '/../../includes/header.php';
                                         <input type="hidden" name="acao" value="concluir_agendamento">
                                         <input type="hidden" name="id_agendamento" value="<?php echo $ag['id']; ?>">
                                         <input type="hidden" name="redirect" value="agendamentos">
-                                        <button class="btn-action" style="padding:4px 10px;font-size:0.8rem;background:#28a745;" onclick="return confirm('Marcar como concluído?')">✅ Concluir</button>
+                                        <button class="btn-action" style="padding:4px 10px;font-size:0.8rem;background:#28a745;" onclick="return confirm('Marcar como concluído?')"><i class="fa-solid fa-circle-check"></i> Concluir</button>
                                     </form>
                                     <?php endif; ?>
                                 </td>
@@ -311,7 +311,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 <input type="hidden" name="acao" value="criar_agendamento">
 
                 <div class="form-grupo">
-                    <div class="form-grupo-titulo">👤 Paciente</div>
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-user"></i> Paciente</div>
                     <label>Paciente *</label>
                     <select name="id_cliente" required style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
                         <option value="">-- Selecione o paciente --</option>
@@ -322,7 +322,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
 
                 <div class="form-grupo">
-                    <div class="form-grupo-titulo">📅 Agendamento</div>
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-calendar-days"></i> Agendamento</div>
                     <label>Tipo *</label>
                     <select name="tipo" required style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
                         <option value="consulta">Consulta</option>

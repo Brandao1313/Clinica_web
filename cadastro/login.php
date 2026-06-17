@@ -28,7 +28,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="flash-container" role="status" aria-live="polite">
                     <?php foreach ($erros_login as $erro): ?>
                         <div class="flash-toast flash-erro">
-                            <span class="flash-toast-icone">❌</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -36,7 +36,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endforeach; ?>
                     <?php if ($flash): ?>
                         <div class="flash-toast flash-sucesso">
-                            <span class="flash-toast-icone">✅</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($flash['mensagem']); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -44,7 +44,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endif; ?>
                     <?php if ($flash_logout): ?>
                         <div class="flash-toast flash-sucesso">
-                            <span class="flash-toast-icone">✅</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_logout['mensagem']); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -52,7 +52,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endif; ?>
                     <?php if ($flash_reset): ?>
                         <div class="flash-toast flash-sucesso">
-                            <span class="flash-toast-icone">✅</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_reset['mensagem']); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -64,7 +64,7 @@ require_once __DIR__ . '/../includes/header.php';
             <form method="POST" action="../backend/auth/logar.php">
                 <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                 <div class="form-grupo">
-                    <div class="form-grupo-titulo">🔑 Dados de acesso</div>
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-key"></i> Dados de acesso</div>
 
                     <div class="form-group">
                         <label for="email">Email:</label>

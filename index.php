@@ -36,24 +36,24 @@ require_once __DIR__ . '/includes/header.php';
 
     <section class="destaques">
         <a href="especialidades.php" class="destaque-card">
-            <div class="icone">🏥</div>
+            <div class="icone"><i class="fa-solid fa-hospital"></i></div>
             <h3>Especialidades</h3>
             <p>Conheça as especialidades médicas disponíveis e agende sua consulta.</p>
         </a>
         <a href="exames.php" class="destaque-card">
-            <div class="icone">🧬</div>
+            <div class="icone"><i class="fa-solid fa-dna"></i></div>
             <h3>Exames</h3>
             <p>Solicite exames laboratoriais e de imagem com praticidade.</p>
         </a>
         <?php if (is_autenticado()): ?>
             <a href="backend/views/painel_cliente.php" class="destaque-card">
-                <div class="icone">📅</div>
+                <div class="icone"><i class="fa-solid fa-calendar-days"></i></div>
                 <h3>Meus Agendamentos</h3>
                 <p>Acompanhe e gerencie suas consultas e exames marcados.</p>
             </a>
         <?php else: ?>
             <a href="cadastro/criar_conta.php" class="destaque-card">
-                <div class="icone">👤</div>
+                <div class="icone"><i class="fa-solid fa-user"></i></div>
                 <h3>Crie sua conta</h3>
                 <p>Cadastre-se para agendar consultas e exames online.</p>
             </a>

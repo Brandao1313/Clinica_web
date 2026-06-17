@@ -17,7 +17,7 @@ $flash_especialidade = get_flash_message('especialidade');
 <?php if (!empty($_SESSION['erros_especialidade'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_especialidade'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_especialidade']); ?>

@@ -50,7 +50,7 @@ $stmt->close();
 <?php if (!empty($_SESSION['erros_medico'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_medico'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_medico']); ?>
@@ -64,7 +64,7 @@ $stmt->close();
     <?php endif; ?>
 
     <div class="form-grupo">
-        <div class="form-grupo-titulo">🩺 Dados do médico</div>
+        <div class="form-grupo-titulo"><i class="fa-solid fa-stethoscope"></i> Dados do médico</div>
 
         <div style="margin-bottom: 15px;">
             <label for="nome"><strong>Nome completo *</strong></label>
@@ -134,7 +134,7 @@ $stmt->close();
     </div>
 
     <div class="form-grupo">
-        <div class="form-grupo-titulo">🔒 Acesso ao sistema</div>
+        <div class="form-grupo-titulo"><i class="fa-solid fa-lock"></i> Acesso ao sistema</div>
 
         <?php if ($id_medico > 0): ?>
             <p style="font-size:0.85rem;color:#666;margin-bottom:10px;">Deixe em branco para manter a senha atual.</p>

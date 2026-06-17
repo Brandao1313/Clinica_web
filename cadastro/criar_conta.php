@@ -25,7 +25,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="flash-container" role="status" aria-live="polite">
                     <?php foreach ($erros_cadastro as $erro): ?>
                         <div class="flash-toast flash-erro">
-                            <span class="flash-toast-icone">❌</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -37,7 +37,7 @@ require_once __DIR__ . '/../includes/header.php';
             <form method="POST" action="../backend/auth/registrar.php">
                 <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                 <div class="form-grupo">
-                    <div class="form-grupo-titulo">👤 Dados pessoais</div>
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-user"></i> Dados pessoais</div>
 
                     <label for="name">Nome completo *</label>
                     <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['name'] ?? ''); ?>" required>
@@ -53,7 +53,7 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
 
                 <div class="form-grupo">
-                    <div class="form-grupo-titulo">🔑 Dados de acesso</div>
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-key"></i> Dados de acesso</div>
 
                     <label for="email">Email *</label>
                     <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['email'] ?? ''); ?>" required>

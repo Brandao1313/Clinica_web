@@ -30,7 +30,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="flash-container" role="status" aria-live="polite">
                     <?php foreach ($erros_reset as $erro): ?>
                         <div class="flash-toast flash-erro">
-                            <span class="flash-toast-icone">❌</span>
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
@@ -46,7 +46,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <input type="hidden" name="acao" value="verificar_telefone">
                     <div class="form-grupo">
-                        <div class="form-grupo-titulo">📱 Identificação</div>
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-mobile-screen"></i> Identificação</div>
                         <label for="telefone">Telefone *</label>
                         <input type="tel" id="telefone" name="telefone" placeholder="11999999999" value="<?php echo htmlspecialchars($_SESSION['telefone_reset'] ?? ''); ?>" required>
 
@@ -67,7 +67,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="hidden" name="acao" value="redefinir_sem_token">
 
                     <div class="form-grupo">
-                        <div class="form-grupo-titulo">🔒 Nova senha</div>
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-lock"></i> Nova senha</div>
                         <label for="senha_nova">Nova Senha *</label>
                         <input type="password" id="senha_nova" name="senha_nova" required>
 

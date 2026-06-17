@@ -36,7 +36,7 @@ foreach ($horarios_cadastrados as $h) {
 <?php if (!empty($_SESSION['erros_horarios'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_horarios'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_horarios']); ?>

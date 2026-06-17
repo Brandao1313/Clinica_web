@@ -110,36 +110,36 @@ function formatar_mes_ref($mes_ref) {
 }
 ?>
 
-<h3>📊 Produtividade</h3>
+<h3><i class="fa-solid fa-chart-bar"></i> Produtividade</h3>
 
 <div class="stats">
     <div class="stat-card stat-card-primario">
-        <div class="stat-icone">🩺</div>
+        <div class="stat-icone"><i class="fa-solid fa-stethoscope"></i></div>
         <h3>Consultas Hoje</h3>
         <div class="stat-number"><?php echo $consultas_hoje; ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">🩺</div>
+        <div class="stat-icone"><i class="fa-solid fa-stethoscope"></i></div>
         <h3>Consultas no Mês</h3>
         <div class="stat-number"><?php echo $consultas_mes; ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">🩺</div>
+        <div class="stat-icone"><i class="fa-solid fa-stethoscope"></i></div>
         <h3>Consultas no Ano</h3>
         <div class="stat-number"><?php echo $consultas_ano; ?></div>
     </div>
     <div class="stat-card stat-card-warning">
-        <div class="stat-icone">🧬</div>
+        <div class="stat-icone"><i class="fa-solid fa-dna"></i></div>
         <h3>Exames Hoje</h3>
         <div class="stat-number"><?php echo $exames_hoje; ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">🧬</div>
+        <div class="stat-icone"><i class="fa-solid fa-dna"></i></div>
         <h3>Exames no Mês</h3>
         <div class="stat-number"><?php echo $exames_mes; ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">🧬</div>
+        <div class="stat-icone"><i class="fa-solid fa-dna"></i></div>
         <h3>Exames no Ano</h3>
         <div class="stat-number"><?php echo $exames_ano; ?></div>
     </div>
@@ -153,17 +153,17 @@ function formatar_mes_ref($mes_ref) {
         <div class="stat-number"><?php echo formatar_valor($financeiro_mes['faturamento']); ?></div>
     </div>
     <div class="stat-card stat-card-warning">
-        <div class="stat-icone">🩺</div>
+        <div class="stat-icone"><i class="fa-solid fa-stethoscope"></i></div>
         <h3>Repassado aos Médicos</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_mes['repasse']); ?></div>
     </div>
     <div class="stat-card stat-card-primario">
-        <div class="stat-icone">📈</div>
+        <div class="stat-icone"><i class="fa-solid fa-chart-line"></i></div>
         <h3>Lucro Líquido</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_mes['lucro']); ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">✅</div>
+        <div class="stat-icone"><i class="fa-solid fa-circle-check"></i></div>
         <h3>Consultas/Exames Realizados</h3>
         <div class="stat-number"><?php echo $realizados_mes; ?></div>
     </div>
@@ -177,17 +177,17 @@ function formatar_mes_ref($mes_ref) {
         <div class="stat-number"><?php echo formatar_valor($financeiro_ano['faturamento']); ?></div>
     </div>
     <div class="stat-card stat-card-warning">
-        <div class="stat-icone">🩺</div>
+        <div class="stat-icone"><i class="fa-solid fa-stethoscope"></i></div>
         <h3>Repassado aos Médicos</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_ano['repasse']); ?></div>
     </div>
     <div class="stat-card stat-card-primario">
-        <div class="stat-icone">📈</div>
+        <div class="stat-icone"><i class="fa-solid fa-chart-line"></i></div>
         <h3>Lucro Líquido</h3>
         <div class="stat-number"><?php echo formatar_valor($financeiro_ano['lucro']); ?></div>
     </div>
     <div class="stat-card">
-        <div class="stat-icone">✅</div>
+        <div class="stat-icone"><i class="fa-solid fa-circle-check"></i></div>
         <h3>Consultas/Exames Realizados</h3>
         <div class="stat-number"><?php echo $realizados_ano; ?></div>
     </div>

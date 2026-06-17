@@ -79,7 +79,7 @@ function formatar_horarios_resumo(array $horarios): string {
                             <?php if (!empty($medico['foto'])): ?>
                                 <img class="medico-foto" src="<?php echo htmlspecialchars($medico['foto']); ?>" alt="Foto de <?php echo htmlspecialchars($medico['nome']); ?>">
                             <?php else: ?>
-                                <div class="medico-foto-placeholder">🩺</div>
+                                <div class="medico-foto-placeholder"><i class="fa-solid fa-stethoscope"></i></div>
                             <?php endif; ?>
                             <div>
                                 <h3>Dr(a). <?php echo htmlspecialchars($medico['nome']); ?></h3>

@@ -17,13 +17,13 @@ $flash_financeiro = get_flash_message('financeiro');
 <?php if (!empty($_SESSION['erros_financeiro'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_financeiro'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_financeiro']); ?>
 <?php endif; ?>
 
-<h3>💳 Repasses aos Médicos</h3>
+<h3><i class="fa-solid fa-credit-card"></i> Repasses aos Médicos</h3>
 
 <?php
     // Resumo: valor a receber por médico (atendimentos concluídos e ainda não repassados)

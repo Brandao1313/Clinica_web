@@ -19,7 +19,7 @@ $flash_medico = get_flash_message('medico');
 <?php if (!empty($_SESSION['erros_medico'])): ?>
     <div class="alert alert-error">
         <?php foreach ($_SESSION['erros_medico'] as $erro): ?>
-            <p>❌ <?php echo htmlspecialchars($erro); ?></p>
+            <p><i class="fa-solid fa-circle-xmark"></i> <?php echo htmlspecialchars($erro); ?></p>
         <?php endforeach; ?>
     </div>
     <?php unset($_SESSION['erros_medico']); ?>
@@ -132,7 +132,7 @@ $flash_medico = get_flash_message('medico');
 
 <div class="pagination">
     <?php if ($pagina > 1): ?>
-        <a href="?acao=medicos&busca=<?php echo urlencode($busca); ?>&pagina=<?php echo $pagina - 1; ?>">← Anterior</a>
+        <a href="?acao=medicos&busca=<?php echo urlencode($busca); ?>&pagina=<?php echo $pagina - 1; ?>"><i class="fa-solid fa-arrow-left"></i> Anterior</a>
     <?php endif; ?>
 
     <?php for ($i = 1; $i <= $total_paginas; $i++): ?>

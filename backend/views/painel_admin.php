@@ -25,35 +25,35 @@ require_once __DIR__ . '/../../includes/header.php';
 ?>
 
     <div class="admin-container">
-        <h2>⚙️ Painel Administrativo</h2>
+        <h2><i class="fa-solid fa-gear"></i> Painel Administrativo</h2>
 
         <div class="admin-menu">
             <a href="?acao=dashboard" class="admin-btn <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">📊</span><span>Dashboard</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-chart-bar"></i></span><span>Dashboard</span>
             </a>
             <a href="?acao=clientes" class="admin-btn <?php echo $acao === 'clientes' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">👥</span><span>Clientes</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-users"></i></span><span>Clientes</span>
             </a>
             <a href="?acao=agendamentos" class="admin-btn <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">📅</span><span>Agendamentos</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-calendar-days"></i></span><span>Agendamentos</span>
             </a>
             <a href="?acao=especialidades" class="admin-btn <?php echo in_array($acao, ['especialidades', 'especialidade_form']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">🏥</span><span>Especialidades</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-hospital"></i></span><span>Especialidades</span>
             </a>
             <a href="?acao=exames" class="admin-btn <?php echo in_array($acao, ['exames', 'exame_form']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">🧬</span><span>Exames</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-dna"></i></span><span>Exames</span>
             </a>
             <a href="?acao=medicos" class="admin-btn <?php echo in_array($acao, ['medicos', 'medico_form', 'horarios']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">🩺</span><span>Médicos</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-stethoscope"></i></span><span>Médicos</span>
             </a>
             <a href="?acao=financeiro" class="admin-btn <?php echo $acao === 'financeiro' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">💳</span><span>Financeiro</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-credit-card"></i></span><span>Financeiro</span>
             </a>
             <a href="?acao=relatorios" class="admin-btn <?php echo $acao === 'relatorios' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone">📈</span><span>Relatórios</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-chart-line"></i></span><span>Relatórios</span>
             </a>
             <a href="painel_cliente.php" class="admin-btn admin-btn-voltar">
-                <span class="admin-btn-icone">←</span><span>Voltar</span>
+                <span class="admin-btn-icone"><i class="fa-solid fa-arrow-left"></i></span><span>Voltar</span>
             </a>
         </div>
 
@@ -88,26 +88,26 @@ require_once __DIR__ . '/../../includes/header.php';
                     $variacao_especialidades = obter_variacao_percentual($total_especialidades + 3);
                 ?>
                 <div class="stat-card stat-card-primario">
-                    <div class="stat-icone pulse">👥</div>
-                    <h3>👤 Clientes Cadastrados</h3>
+                    <div class="stat-icone pulse"><i class="fa-solid fa-users"></i></div>
+                    <h3><i class="fa-solid fa-user"></i> Clientes Cadastrados</h3>
                     <div class="stat-number"><?php echo $total_clientes; ?></div>
                     <div class="stat-variacao <?php echo $variacao_clientes['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_clientes['texto']; ?></div>
                 </div>
                 <div class="stat-card stat-card-warning">
-                    <div class="stat-icone pulse">⏳</div>
-                    <h3>📋 Agendamentos Pendentes</h3>
+                    <div class="stat-icone pulse"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <h3><i class="fa-solid fa-clipboard-list"></i> Agendamentos Pendentes</h3>
                     <div class="stat-number"><?php echo $agendamentos_pendentes; ?></div>
                     <div class="stat-variacao <?php echo $variacao_pendentes['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_pendentes['texto']; ?></div>
                 </div>
                 <div class="stat-card stat-card-success">
-                    <div class="stat-icone pulse">✅</div>
+                    <div class="stat-icone pulse"><i class="fa-solid fa-circle-check"></i></div>
                     <h3>🗓️ Agendamentos Confirmados</h3>
                     <div class="stat-number"><?php echo $agendamentos_confirmados; ?></div>
                     <div class="stat-variacao <?php echo $variacao_confirmados['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_confirmados['texto']; ?></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icone pulse">🏥</div>
-                    <h3>🩺 Especialidades</h3>
+                    <div class="stat-icone pulse"><i class="fa-solid fa-hospital"></i></div>
+                    <h3><i class="fa-solid fa-stethoscope"></i> Especialidades</h3>
                     <div class="stat-number"><?php echo $total_especialidades; ?></div>
                     <div class="stat-variacao <?php echo $variacao_especialidades['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_especialidades['texto']; ?></div>
                 </div>
@@ -163,7 +163,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <div class="pagination">
                 <?php if ($pagina > 1): ?>
-                    <a href="?acao=clientes&pagina=<?php echo $pagina - 1; ?>">← Anterior</a>
+                    <a href="?acao=clientes&pagina=<?php echo $pagina - 1; ?>"><i class="fa-solid fa-arrow-left"></i> Anterior</a>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
@@ -368,7 +368,7 @@ require_once __DIR__ . '/../../includes/header.php';
 
             <div class="pagination">
                 <?php if ($pagina > 1): ?>
-                    <a href="?acao=agendamentos&pagina=<?php echo $pagina - 1; ?>&<?php echo $query_string_filtros; ?>">← Anterior</a>
+                    <a href="?acao=agendamentos&pagina=<?php echo $pagina - 1; ?>&<?php echo $query_string_filtros; ?>"><i class="fa-solid fa-arrow-left"></i> Anterior</a>
                 <?php endif; ?>
 
                 <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
