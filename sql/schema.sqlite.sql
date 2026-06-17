@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS medicos (
     bio TEXT,
     foto VARCHAR(255),
     ativo INTEGER DEFAULT 1,
+    senha_hash VARCHAR(255),
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_especialidade) REFERENCES especialidades(id) ON DELETE RESTRICT
 );

@@ -133,6 +133,29 @@ $stmt->close();
         </div>
     </div>
 
+    <div class="form-grupo">
+        <div class="form-grupo-titulo">🔒 Acesso ao sistema</div>
+
+        <?php if ($id_medico > 0): ?>
+            <p style="font-size:0.85rem;color:#666;margin-bottom:10px;">Deixe em branco para manter a senha atual.</p>
+        <?php else: ?>
+            <p style="font-size:0.85rem;color:#666;margin-bottom:10px;">O médico usará o e-mail e essa senha para fazer login.</p>
+        <?php endif; ?>
+
+        <div style="display:flex;gap:15px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:200px;">
+                <label for="senha"><strong>Senha <?php echo $id_medico === 0 ? '*' : '(nova)'; ?></strong></label>
+                <input type="password" id="senha" name="senha" <?php echo $id_medico === 0 ? 'required' : ''; ?> minlength="6" autocomplete="new-password"
+                       style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+            </div>
+            <div style="flex:1;min-width:200px;">
+                <label for="confirmacao_senha"><strong>Confirmar senha <?php echo $id_medico === 0 ? '*' : ''; ?></strong></label>
+                <input type="password" id="confirmacao_senha" name="confirmacao_senha" <?php echo $id_medico === 0 ? 'required' : ''; ?> minlength="6" autocomplete="new-password"
+                       style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+            </div>
+        </div>
+    </div>
+
     <button type="submit" class="btn-action">Salvar</button>
     <a href="?acao=medicos" class="btn-action secondary">Voltar</a>
 </form>

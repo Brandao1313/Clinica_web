@@ -63,7 +63,7 @@ if (empty($erros) && empty($senha)) {
 if (empty($erros)) {
     $conexao_db = Conexao::getInstance()->getConexao();
 
-    // Buscar usuário por email
+    // 1. Tentar login como cliente/admin
     $stmt = $conexao_db->prepare('SELECT id, nome, email, senha_hash, ativo, eh_admin FROM clientes WHERE email = ?');
 
     if (!$stmt) {
@@ -73,40 +73,66 @@ if (empty($erros)) {
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result->num_rows === 0) {
-            // Usuário não encontrado
-            $erros[] = ERRO_LOGIN_INVALIDO;
-        } else {
+        if ($result->num_rows > 0) {
             $usuario = $result->fetch_assoc();
+            $stmt->close();
 
-            // Verificar se usuário está ativo
             if ($usuario['ativo'] != 1) {
                 $erros[] = 'Sua conta foi desativada. Entre em contato com suporte.';
-            } // Verificar senha
-            elseif (!verificar_senha($senha, $usuario['senha_hash'])) {
+            } elseif (!verificar_senha($senha, $usuario['senha_hash'])) {
                 $erros[] = ERRO_LOGIN_INVALIDO;
             } else {
-                // LOGIN BEM-SUCEDIDO!
-                // Criar sessão do usuário
                 $_SESSION['id_cliente'] = $usuario['id'];
                 $_SESSION['nome_cliente'] = $usuario['nome'];
                 $_SESSION['email_cliente'] = $usuario['email'];
                 $_SESSION['eh_admin'] = $usuario['eh_admin'];
+                $_SESSION['eh_medico'] = 0;
 
-                // Resetar contador de tentativas de login
                 unset($_SESSION['login_tentativas'], $_SESSION['login_bloqueio_ate']);
-
-                // Log de atividade
                 log_acao('LOGIN', $usuario['id'], 'Login realizado com sucesso');
-
-                // Mensagem de sucesso
                 set_flash_message('login', SUCESSO_LOGIN, 'sucesso');
 
-                // Redirecionar para painel do cliente
-                redirect('backend/views/painel_cliente.php');
+                if ($usuario['eh_admin']) {
+                    redirect('backend/views/painel_admin.php');
+                } else {
+                    redirect('backend/views/painel_cliente.php');
+                }
             }
+        } else {
+            $stmt->close();
+
+            // 2. Tentar login como médico
+            $stmt2 = $conexao_db->prepare('SELECT id, nome, email, senha_hash, ativo FROM medicos WHERE email = ?');
+            $stmt2->bind_param('s', $email);
+            $stmt2->execute();
+            $result2 = $stmt2->get_result();
+
+            if ($result2->num_rows === 0) {
+                $erros[] = ERRO_LOGIN_INVALIDO;
+            } else {
+                $medico = $result2->fetch_assoc();
+
+                if ($medico['ativo'] != 1) {
+                    $erros[] = 'Sua conta foi desativada. Entre em contato com suporte.';
+                } elseif (empty($medico['senha_hash']) || !verificar_senha($senha, $medico['senha_hash'])) {
+                    $erros[] = ERRO_LOGIN_INVALIDO;
+                } else {
+                    $_SESSION['id_medico'] = $medico['id'];
+                    $_SESSION['nome_cliente'] = $medico['nome'];
+                    $_SESSION['email_cliente'] = $medico['email'];
+                    $_SESSION['eh_admin'] = 0;
+                    $_SESSION['eh_medico'] = 1;
+                    // Compatibilidade com is_autenticado()
+                    $_SESSION['id_cliente'] = 'medico_' . $medico['id'];
+
+                    unset($_SESSION['login_tentativas'], $_SESSION['login_bloqueio_ate']);
+                    log_acao('LOGIN_MEDICO', $medico['id'], 'Login de médico realizado com sucesso');
+                    set_flash_message('login', SUCESSO_LOGIN, 'sucesso');
+                    redirect('backend/views/painel_medico.php');
+                }
+            }
+            $stmt2->close();
         }
-        $stmt->close();
     }
 }
 

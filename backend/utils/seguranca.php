@@ -80,6 +80,24 @@ function is_admin() {
 }
 
 /**
+ * Verificar se usuário logado é médico
+ * @return bool
+ */
+function is_medico() {
+    return isset($_SESSION['eh_medico']) && $_SESSION['eh_medico'] == 1 && isset($_SESSION['id_medico']);
+}
+
+/**
+ * Redirecionar se não é médico
+ * @return void
+ */
+function require_medico() {
+    if (!is_medico()) {
+        redirect('cadastro/login.php');
+    }
+}
+
+/**
  * Redirecionar se não autenticado
  * @param string $pagina_retorno
  * @return void

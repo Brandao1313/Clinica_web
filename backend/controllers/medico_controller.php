@@ -42,7 +42,9 @@ if ($acao === 'salvar_medico') {
     $percentual_exame = (float) str_replace(',', '.', $_POST['percentual_exame'] ?? '0');
     $bio = sanitizar_input($_POST['bio'] ?? '');
     $foto = sanitizar_input($_POST['foto'] ?? '');
-    $ativo = isset($_POST['ativo']) ? 1 : 0;
+    $ativo           = isset($_POST['ativo']) ? 1 : 0;
+    $senha           = $_POST['senha'] ?? '';
+    $confirmacao_senha = $_POST['confirmacao_senha'] ?? '';
 
     $erros = [];
 
@@ -66,6 +68,18 @@ if ($acao === 'salvar_medico') {
     }
     if ($percentual_exame < 0 || $percentual_exame > 100) {
         $erros[] = 'O percentual sobre exames deve estar entre 0 e 100';
+    }
+
+    // Senha: obrigatória no cadastro, opcional na edição
+    if ($id_medico === 0 && empty($senha)) {
+        $erros[] = 'Informe uma senha para o médico';
+    }
+    if (!empty($senha)) {
+        if (!validar_senha_forte($senha)) {
+            $erros[] = ERRO_SENHA_FRACA;
+        } elseif ($senha !== $confirmacao_senha) {
+            $erros[] = ERRO_SENHAS_NAOCOMPAT;
+        }
     }
 
     // Verificar CRM único
@@ -101,30 +115,45 @@ if ($acao === 'salvar_medico') {
 
     if ($id_medico > 0) {
         // Atualizar médico existente
-        $stmt = $conexao_db->prepare(
-            'UPDATE medicos SET nome = ?, crm = ?, id_especialidade = ?, email = ?, telefone = ?,
-             valor_consulta = ?, percentual_medico = ?, percentual_exame = ?, bio = ?, foto = ?, ativo = ?
-             WHERE id = ?'
-        );
-        $stmt->bind_param(
-            'ssisssdddssi',
-            $nome, $crm, $id_especialidade, $email, $telefone,
-            $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $id_medico
-        );
+        if (!empty($senha)) {
+            $hash_senha = gerar_hash_senha($senha);
+            $stmt = $conexao_db->prepare(
+                'UPDATE medicos SET nome = ?, crm = ?, id_especialidade = ?, email = ?, telefone = ?,
+                 valor_consulta = ?, percentual_medico = ?, percentual_exame = ?, bio = ?, foto = ?, ativo = ?, senha_hash = ?
+                 WHERE id = ?'
+            );
+            $stmt->bind_param(
+                'ssisssdddsssi',
+                $nome, $crm, $id_especialidade, $email, $telefone,
+                $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $hash_senha, $id_medico
+            );
+        } else {
+            $stmt = $conexao_db->prepare(
+                'UPDATE medicos SET nome = ?, crm = ?, id_especialidade = ?, email = ?, telefone = ?,
+                 valor_consulta = ?, percentual_medico = ?, percentual_exame = ?, bio = ?, foto = ?, ativo = ?
+                 WHERE id = ?'
+            );
+            $stmt->bind_param(
+                'ssisssdddssi',
+                $nome, $crm, $id_especialidade, $email, $telefone,
+                $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $id_medico
+            );
+        }
         $stmt->execute();
         $stmt->close();
         set_flash_message('medico', 'Médico atualizado com sucesso', 'sucesso');
         log_acao('ATUALIZAR_MEDICO', $_SESSION['id_cliente'], "Médico: $id_medico");
     } else {
         // Criar novo médico
+        $hash_senha = gerar_hash_senha($senha);
         $stmt = $conexao_db->prepare(
-            'INSERT INTO medicos (nome, crm, id_especialidade, email, telefone, valor_consulta, percentual_medico, percentual_exame, bio, foto, ativo)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO medicos (nome, crm, id_especialidade, email, telefone, valor_consulta, percentual_medico, percentual_exame, bio, foto, ativo, senha_hash)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         $stmt->bind_param(
-            'ssisssdddsi',
+            'ssisssdddsis',
             $nome, $crm, $id_especialidade, $email, $telefone,
-            $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo
+            $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $hash_senha
         );
         $stmt->execute();
         $stmt->close();

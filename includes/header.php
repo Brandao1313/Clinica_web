@@ -36,9 +36,13 @@ if (!isset($titulo_pagina)) {
             <li><a href="<?php echo $base_url; ?>exames.php">Exames</a></li>
             <li><a href="<?php echo $base_url; ?>sobre.php">Sobre</a></li>
             <?php if (is_autenticado()): ?>
-                <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
-                <?php if (is_admin()): ?>
+                <?php if (is_medico()): ?>
+                    <li><a href="<?php echo $base_url; ?>backend/views/painel_medico.php">Meu Painel</a></li>
+                <?php elseif (is_admin()): ?>
+                    <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_admin.php">Admin</a></li>
+                <?php else: ?>
+                    <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
                 <?php endif; ?>
                 <li><a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="meu-btn">Sair (<?php echo htmlspecialchars($_SESSION['nome_cliente']); ?>)</a></li>
             <?php else: ?>
