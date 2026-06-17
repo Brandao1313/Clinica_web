@@ -71,47 +71,29 @@ function is_autenticado() {
     return isset($_SESSION['id_cliente']) && !empty($_SESSION['id_cliente']);
 }
 
-/**
- * Verificar se usuário é admin
- * @return bool
- */
 function is_admin() {
-    return is_autenticado() && isset($_SESSION['eh_admin']) && $_SESSION['eh_admin'] == 1;
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'admin';
 }
 
-/**
- * Verificar se usuário logado é médico
- * @return bool
- */
 function is_medico() {
-    return isset($_SESSION['eh_medico']) && $_SESSION['eh_medico'] == 1 && isset($_SESSION['id_medico']);
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'medico';
 }
 
-/**
- * Redirecionar se não é médico
- * @return void
- */
+function is_recepcionista() {
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'recepcionista';
+}
+
 function require_medico() {
+    require_login();
     if (!is_medico()) {
-        redirect('cadastro/login.php');
+        redirect('backend/views/painel_cliente.php');
     }
 }
 
-/**
- * Verificar se usuário logado é recepcionista
- * @return bool
- */
-function is_recepcionista() {
-    return is_autenticado() && isset($_SESSION['eh_recepcionista']) && $_SESSION['eh_recepcionista'] == 1;
-}
-
-/**
- * Redirecionar se não é recepcionista
- * @return void
- */
 function require_recepcionista() {
+    require_login();
     if (!is_recepcionista()) {
-        redirect('cadastro/login.php');
+        redirect('backend/views/painel_cliente.php');
     }
 }
 

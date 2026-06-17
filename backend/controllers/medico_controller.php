@@ -127,6 +127,21 @@ if ($acao === 'salvar_medico') {
                 $nome, $crm, $id_especialidade, $email, $telefone,
                 $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $hash_senha, $id_medico
             );
+            $stmt->execute();
+            $stmt->close();
+
+            // Sincronizar senha na conta clientes vinculada
+            $s2 = $conexao_db->prepare('SELECT id_cliente FROM medicos WHERE id = ?');
+            $s2->bind_param('i', $id_medico);
+            $s2->execute();
+            $r2 = $s2->get_result()->fetch_assoc();
+            $s2->close();
+            if (!empty($r2['id_cliente'])) {
+                $s3 = $conexao_db->prepare('UPDATE clientes SET senha_hash = ?, nome = ?, ativo = ? WHERE id = ?');
+                $s3->bind_param('ssii', $hash_senha, $nome, $ativo, $r2['id_cliente']);
+                $s3->execute();
+                $s3->close();
+            }
         } else {
             $stmt = $conexao_db->prepare(
                 'UPDATE medicos SET nome = ?, crm = ?, id_especialidade = ?, email = ?, telefone = ?,
@@ -138,27 +153,56 @@ if ($acao === 'salvar_medico') {
                 $nome, $crm, $id_especialidade, $email, $telefone,
                 $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $id_medico
             );
+            $stmt->execute();
+            $stmt->close();
+
+            // Sincronizar nome/ativo na conta clientes vinculada
+            $s2 = $conexao_db->prepare('SELECT id_cliente FROM medicos WHERE id = ?');
+            $s2->bind_param('i', $id_medico);
+            $s2->execute();
+            $r2 = $s2->get_result()->fetch_assoc();
+            $s2->close();
+            if (!empty($r2['id_cliente'])) {
+                $s3 = $conexao_db->prepare('UPDATE clientes SET nome = ?, ativo = ? WHERE id = ?');
+                $s3->bind_param('sii', $nome, $ativo, $r2['id_cliente']);
+                $s3->execute();
+                $s3->close();
+            }
         }
-        $stmt->execute();
-        $stmt->close();
         set_flash_message('medico', 'Médico atualizado com sucesso', 'sucesso');
         log_acao('ATUALIZAR_MEDICO', $_SESSION['id_cliente'], "Médico: $id_medico");
     } else {
-        // Criar novo médico
+        // Criar novo médico — também cria conta de login em clientes
         $hash_senha = gerar_hash_senha($senha);
+
+        // 1. Criar conta de login
+        $telefone_login = !empty($telefone) ? $telefone : '99' . str_pad(mt_rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+        $stmt_c = $conexao_db->prepare(
+            'INSERT INTO clientes (nome, email, senha_hash, telefone, cpf, tipo, ativo)
+             VALUES (?, ?, ?, ?, ?, "medico", ?)'
+        );
+        $cpf_fake = '000.000.000-00';
+        $stmt_c->bind_param('sssssi', $nome, $email, $hash_senha, $telefone_login, $cpf_fake, $ativo);
+        $stmt_c->execute();
+        $id_cliente_novo = $conexao_db->insert_id;
+        $stmt_c->close();
+
+        // 2. Criar registro clínico
         $stmt = $conexao_db->prepare(
-            'INSERT INTO medicos (nome, crm, id_especialidade, email, telefone, valor_consulta, percentual_medico, percentual_exame, bio, foto, ativo, senha_hash)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO medicos (nome, crm, id_especialidade, email, telefone, valor_consulta, percentual_medico,
+             percentual_exame, bio, foto, ativo, senha_hash, id_cliente)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
         $stmt->bind_param(
-            'ssisssdddsis',
+            'ssisssdddsisi',
             $nome, $crm, $id_especialidade, $email, $telefone,
-            $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $hash_senha
+            $valor_consulta, $percentual_medico, $percentual_exame, $bio, $foto, $ativo, $hash_senha, $id_cliente_novo
         );
         $stmt->execute();
         $stmt->close();
-        set_flash_message('medico', 'Médico cadastrado com sucesso', 'sucesso');
-        log_acao('CRIAR_MEDICO', $_SESSION['id_cliente'], "CRM: $crm");
+
+        set_flash_message('medico', 'Médico cadastrado com sucesso. Login: ' . htmlspecialchars($email), 'sucesso');
+        log_acao('CRIAR_MEDICO', $_SESSION['id_cliente'], "CRM: $crm email: $email");
     }
 
     unset($_SESSION['dados_medico']);

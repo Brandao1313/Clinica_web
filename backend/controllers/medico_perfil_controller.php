@@ -27,17 +27,18 @@ $acao = sanitizar_input($_POST['acao'] ?? '');
 
 // ====== ALTERAR SENHA ======
 if ($acao === 'alterar_senha_medico') {
-    $senha_atual      = $_POST['senha_atual'] ?? '';
-    $senha_nova       = $_POST['senha_nova'] ?? '';
-    $confirmacao      = $_POST['confirmacao_senha'] ?? '';
-    $id_medico        = $_SESSION['id_medico'];
-    $erros            = [];
+    $senha_atual  = $_POST['senha_atual'] ?? '';
+    $senha_nova   = $_POST['senha_nova'] ?? '';
+    $confirmacao  = $_POST['confirmacao_senha'] ?? '';
+    // A senha agora fica em clientes (conta de login unificada)
+    $id_cliente   = $_SESSION['id_cliente'];
+    $id_medico    = $_SESSION['id_medico'];
+    $erros        = [];
 
     $conexao_db = Conexao::getInstance()->getConexao();
 
-    // Buscar hash atual
-    $stmt = $conexao_db->prepare('SELECT senha_hash FROM medicos WHERE id = ?');
-    $stmt->bind_param('i', $id_medico);
+    $stmt = $conexao_db->prepare('SELECT senha_hash FROM clientes WHERE id = ?');
+    $stmt->bind_param('i', $id_cliente);
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();
     $stmt->close();
@@ -50,6 +51,12 @@ if ($acao === 'alterar_senha_medico') {
         $erros[] = ERRO_SENHAS_NAOCOMPAT;
     } else {
         $novo_hash = gerar_hash_senha($senha_nova);
+        // Atualiza senha na tabela clientes (fonte da verdade)
+        $stmt = $conexao_db->prepare('UPDATE clientes SET senha_hash = ? WHERE id = ?');
+        $stmt->bind_param('si', $novo_hash, $id_cliente);
+        $stmt->execute();
+        $stmt->close();
+        // Sincroniza também em medicos para consistência
         $stmt = $conexao_db->prepare('UPDATE medicos SET senha_hash = ? WHERE id = ?');
         $stmt->bind_param('si', $novo_hash, $id_medico);
         $stmt->execute();

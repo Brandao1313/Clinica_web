@@ -12,11 +12,12 @@ require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
 require_medico();
 
-$conexao_db = Conexao::getInstance()->getConexao();
-$id_medico  = $_SESSION['id_medico'];
-$acao       = sanitizar_input($_GET['acao'] ?? 'dashboard');
+$conexao_db  = Conexao::getInstance()->getConexao();
+$id_medico   = $_SESSION['id_medico'];
+$id_cliente  = $_SESSION['id_cliente'];
+$acao        = sanitizar_input($_GET['acao'] ?? 'dashboard');
 
-// Dados do médico
+// Dados clínicos do médico + conta de login
 $stmt = $conexao_db->prepare(
     'SELECT m.*, e.nome AS nome_especialidade
      FROM medicos m

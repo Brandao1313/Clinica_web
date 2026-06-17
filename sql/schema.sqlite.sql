@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     ativo INTEGER DEFAULT 1,
     eh_admin INTEGER DEFAULT 0,
     eh_recepcionista INTEGER DEFAULT 0,
+    tipo VARCHAR(20) NOT NULL DEFAULT 'cliente',
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -59,8 +60,10 @@ CREATE TABLE IF NOT EXISTS medicos (
     foto VARCHAR(255),
     ativo INTEGER DEFAULT 1,
     senha_hash VARCHAR(255),
+    id_cliente INTEGER NULL,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_especialidade) REFERENCES especialidades(id) ON DELETE RESTRICT
+    FOREIGN KEY (id_especialidade) REFERENCES especialidades(id) ON DELETE RESTRICT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id) ON DELETE SET NULL
 );
 
 CREATE INDEX IF NOT EXISTS idx_medicos_especialidade ON medicos(id_especialidade);
