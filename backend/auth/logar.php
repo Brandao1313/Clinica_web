@@ -63,8 +63,8 @@ if (empty($erros) && empty($senha)) {
 if (empty($erros)) {
     $conexao_db = Conexao::getInstance()->getConexao();
 
-    // 1. Tentar login como cliente/admin
-    $stmt = $conexao_db->prepare('SELECT id, nome, email, senha_hash, ativo, eh_admin FROM clientes WHERE email = ?');
+    // 1. Tentar login como cliente/admin/recepcionista
+    $stmt = $conexao_db->prepare('SELECT id, nome, email, senha_hash, ativo, eh_admin, eh_recepcionista FROM clientes WHERE email = ?');
 
     if (!$stmt) {
         $erros[] = 'Erro ao conectar: ' . $conexao_db->error;
@@ -87,6 +87,7 @@ if (empty($erros)) {
                 $_SESSION['email_cliente'] = $usuario['email'];
                 $_SESSION['eh_admin'] = $usuario['eh_admin'];
                 $_SESSION['eh_medico'] = 0;
+                $_SESSION['eh_recepcionista'] = $usuario['eh_recepcionista'] ?? 0;
 
                 unset($_SESSION['login_tentativas'], $_SESSION['login_bloqueio_ate']);
                 log_acao('LOGIN', $usuario['id'], 'Login realizado com sucesso');
@@ -94,6 +95,8 @@ if (empty($erros)) {
 
                 if ($usuario['eh_admin']) {
                     redirect('backend/views/painel_admin.php');
+                } elseif (!empty($usuario['eh_recepcionista'])) {
+                    redirect('backend/views/painel_recepcionista.php');
                 } else {
                     redirect('backend/views/painel_cliente.php');
                 }

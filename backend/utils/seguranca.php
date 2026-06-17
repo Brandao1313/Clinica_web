@@ -98,6 +98,24 @@ function require_medico() {
 }
 
 /**
+ * Verificar se usuário logado é recepcionista
+ * @return bool
+ */
+function is_recepcionista() {
+    return is_autenticado() && isset($_SESSION['eh_recepcionista']) && $_SESSION['eh_recepcionista'] == 1;
+}
+
+/**
+ * Redirecionar se não é recepcionista
+ * @return void
+ */
+function require_recepcionista() {
+    if (!is_recepcionista()) {
+        redirect('cadastro/login.php');
+    }
+}
+
+/**
  * Redirecionar se não autenticado
  * @param string $pagina_retorno
  * @return void

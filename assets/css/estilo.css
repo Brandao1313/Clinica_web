@@ -515,6 +515,234 @@ table tr:hover {
     }
 }
 
+/* ---------- Painel Médico / Recepcionista (sidebar + main) ---------- */
+.painel-sidebar {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 24px 16px;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    align-self: start;
+    position: sticky;
+    top: 80px;
+}
+
+.painel-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--cor-primaria);
+}
+
+.avatar-inicial {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--cor-primaria);
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.painel-nome {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--cor-texto);
+    text-align: center;
+    margin-top: 6px;
+}
+
+.painel-subtitulo {
+    font-size: 0.82rem;
+    color: #777;
+    text-align: center;
+}
+
+.painel-nav {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.painel-nav-item {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: var(--cor-texto);
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: background 0.15s;
+}
+
+.painel-nav-item:hover {
+    background: #f0f9f8;
+    color: var(--cor-primaria);
+}
+
+.painel-nav-item.ativo {
+    background: var(--cor-primaria);
+    color: #fff;
+    font-weight: 600;
+}
+
+.painel-main {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 30px;
+    box-shadow: var(--sombra);
+    min-height: 400px;
+}
+
+.painel-main h2 {
+    color: var(--cor-primaria);
+    margin-bottom: 6px;
+    border-bottom: 2px solid var(--cor-primaria);
+    padding-bottom: 10px;
+}
+
+.painel-main h3 {
+    color: var(--cor-texto);
+    margin-bottom: 12px;
+}
+
+/* Cards de resumo (dashboard) */
+.painel-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.painel-card {
+    background: #f4faf9;
+    border: 1px solid #d5ecea;
+    border-radius: var(--raio);
+    padding: 20px 16px;
+    text-align: center;
+}
+
+.painel-card-icone {
+    font-size: 2rem;
+    margin-bottom: 6px;
+}
+
+.painel-card-valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cor-primaria);
+    line-height: 1;
+}
+
+.painel-card-label {
+    font-size: 0.82rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Tabelas nos painéis */
+.tabela-admin {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 0.9rem;
+}
+
+.tabela-admin th {
+    background: var(--cor-primaria);
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.tabela-admin td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.tabela-admin tr:hover td {
+    background: #f9fdfc;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Badges de status */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.badge-warning  { background: #fff3cd; color: #856404; }
+.badge-success  { background: #d1e7dd; color: #0a5235; }
+.badge-danger   { background: #f8d7da; color: #842029; }
+.badge-info     { background: #cff4fc; color: #055160; }
+.badge-secondary{ background: #e2e3e5; color: #41464b; }
+
+/* Botão de ação nos painéis */
+.btn-action {
+    display: inline-block;
+    padding: 10px 22px;
+    background: var(--cor-primaria);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s;
+    margin-right: 8px;
+}
+.btn-action:hover { background: var(--cor-secundaria); }
+.btn-action.secondary {
+    background: transparent;
+    color: var(--cor-primaria);
+    border: 1.5px solid var(--cor-primaria);
+}
+.btn-action.secondary:hover { background: #f0f9f8; }
+
+/* Alertas */
+.alert {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 12px 0;
+    font-size: 0.92rem;
+}
+.alert-info    { background: #e8f4f8; color: #0c5460; border-left: 4px solid #17a2b8; }
+.alert-error   { background: #fdecea; color: #842029; border-left: 4px solid #dc3545; }
+.alert-success { background: #d1e7dd; color: #0a5235; border-left: 4px solid #28a745; }
+
+@media (max-width: 768px) {
+    .painel-container {
+        grid-template-columns: 1fr;
+    }
+    .painel-sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .painel-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
 /* ---------- Painel Admin ---------- */
 .admin-container {
     max-width: 1400px;

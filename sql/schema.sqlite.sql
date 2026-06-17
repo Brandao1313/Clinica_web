@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     senha_hash VARCHAR(255) NOT NULL,
     ativo INTEGER DEFAULT 1,
     eh_admin INTEGER DEFAULT 0,
+    eh_recepcionista INTEGER DEFAULT 0,
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

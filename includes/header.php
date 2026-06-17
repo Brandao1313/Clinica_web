@@ -38,6 +38,8 @@ if (!isset($titulo_pagina)) {
             <?php if (is_autenticado()): ?>
                 <?php if (is_medico()): ?>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_medico.php">Meu Painel</a></li>
+                <?php elseif (is_recepcionista()): ?>
+                    <li><a href="<?php echo $base_url; ?>backend/views/painel_recepcionista.php">Meu Painel</a></li>
                 <?php elseif (is_admin()): ?>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_admin.php">Admin</a></li>
