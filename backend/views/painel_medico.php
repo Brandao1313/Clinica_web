@@ -29,6 +29,13 @@ $stmt->execute();
 $medico = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
+if (!$medico) {
+    // id_medico na sessão não corresponde a nenhum registro — sessão corrompida
+    session_destroy();
+    header('Location: ' . SITE_URL . '/cadastro/login.php');
+    exit;
+}
+
 $base_url     = '../../';
 $titulo_pagina = 'Painel do Médico - Clínica Saúde & Bem-Estar';
 require_once __DIR__ . '/../includes/header.php';
@@ -54,12 +61,12 @@ require_once __DIR__ . '/../includes/header.php';
             <?php if (!empty($medico['foto'])): ?>
                 <img src="<?php echo htmlspecialchars($base_url . $medico['foto']); ?>" alt="Foto">
             <?php else: ?>
-                <div class="avatar-inicial"><?php echo mb_strtoupper(mb_substr($medico['nome'], 0, 1)); ?></div>
+                <div class="avatar-inicial"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
             <?php endif; ?>
         </div>
-        <div class="painel-nome"><?php echo htmlspecialchars($medico['nome']); ?></div>
+        <div class="painel-nome"><?php echo htmlspecialchars($medico['nome'] ?? ''); ?></div>
         <div class="painel-subtitulo"><?php echo htmlspecialchars($medico['nome_especialidade'] ?? ''); ?></div>
-        <div class="painel-subtitulo" style="font-size:0.8rem;margin-top:2px;"><?php echo htmlspecialchars($medico['crm']); ?></div>
+        <div class="painel-subtitulo" style="font-size:0.8rem;margin-top:2px;"><?php echo htmlspecialchars($medico['crm'] ?? ''); ?></div>
 
         <nav class="painel-nav">
             <a href="?acao=dashboard" class="painel-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
@@ -74,7 +81,7 @@ require_once __DIR__ . '/../includes/header.php';
             <a href="?acao=perfil" class="painel-nav-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>">
                 <i class="fa-solid fa-user"></i> Meu Perfil
             </a>
-            <a href="../../backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
+            <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
                 <i class="fa-solid fa-right-from-bracket"></i> Sair
             </a>
         </nav>
