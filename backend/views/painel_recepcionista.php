@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: backend/views/painel_recepcionista.php
 // Descrição: Painel da recepcionista
@@ -22,7 +22,7 @@ $nome_recep = $_SESSION['nome_cliente'];
 
 $base_url     = '../../';
 $titulo_pagina = 'Painel da Recepcionista - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <?php $flash_login = get_flash_message('login'); ?>
@@ -447,4 +447,4 @@ require_once __DIR__ . '/../../includes/header.php';
     </main>
 </div>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

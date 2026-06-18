@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: exames.php
 // Descrição: Página dinâmica de exames
@@ -13,7 +13,7 @@ $conexao_db = Conexao::getInstance()->getConexao();
 
 $base_url = '';
 $titulo_pagina = 'Exames - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/backend/includes/header.php';
 ?>
 
     <div class="exames-container">
@@ -57,4 +57,4 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/backend/includes/footer.php'; ?>

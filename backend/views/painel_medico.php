@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: backend/views/painel_medico.php
 // Descrição: Painel do médico logado
@@ -31,7 +31,7 @@ $stmt->close();
 
 $base_url     = '../../';
 $titulo_pagina = 'Painel do Médico - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <?php $flash_login = get_flash_message('login'); ?>
@@ -350,4 +350,4 @@ require_once __DIR__ . '/../../includes/header.php';
     </main>
 </div>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

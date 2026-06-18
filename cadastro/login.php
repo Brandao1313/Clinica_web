@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: cadastro/login.php
 // Descrição: Página de login
@@ -9,7 +9,7 @@ require_once __DIR__ . '/../backend/utils/seguranca.php';
 
 $base_url = '../';
 $titulo_pagina = 'Login - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../backend/includes/header.php';
 ?>
 
     <div class="auth-page">
@@ -91,4 +91,4 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../backend/includes/footer.php'; ?>

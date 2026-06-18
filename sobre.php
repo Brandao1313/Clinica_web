@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: sobre.php
 // Descrição: Página institucional "Sobre Nós"
@@ -6,7 +6,7 @@
 
 $base_url = '';
 $titulo_pagina = 'Sobre Nós - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/backend/includes/header.php';
 ?>
 
     <header class="sobre-header">
@@ -25,7 +25,7 @@ require_once __DIR__ . '/includes/header.php';
             </p>
         </div>
         <div class="historia-imagem">
-            <img src="imagens/clinica1.png" alt="Interior da Clínica">
+            <img src="assets/imagens/clinica1.png" alt="Interior da Clínica">
         </div>
     </section>
 
@@ -47,4 +47,4 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </section>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/backend/includes/footer.php'; ?>

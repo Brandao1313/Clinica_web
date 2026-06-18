@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: medico_detalhe.php
 // Descrição: Página pública - perfil detalhado do médico
@@ -26,7 +26,7 @@ $stmt->close();
 
 $base_url = '';
 $titulo_pagina = $medico ? 'Dr(a). ' . $medico['nome'] . ' - Clínica Saúde & Bem-Estar' : 'Médico não encontrado - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/backend/includes/header.php';
 
 if (!$medico) {
 ?>
@@ -35,7 +35,7 @@ if (!$medico) {
         <a href="medicos.php" class="btn-agendar">Voltar para Médicos</a>
     </div>
 <?php
-    require_once __DIR__ . '/includes/footer.php';
+    require_once __DIR__ . '/backend/includes/footer.php';
     return;
 }
 
@@ -119,4 +119,4 @@ foreach ($horarios as $h) {
         </div>
     </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/backend/includes/footer.php'; ?>

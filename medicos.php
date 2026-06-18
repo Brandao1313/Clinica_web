@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: medicos.php
 // Descrição: Página pública - listagem de médicos ativos
@@ -13,7 +13,7 @@ $conexao_db = Conexao::getInstance()->getConexao();
 
 $base_url = '';
 $titulo_pagina = 'Nossos Médicos - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/backend/includes/header.php';
 
 $stmt = $conexao_db->prepare(
     "SELECT m.*, e.nome as nome_especialidade
@@ -105,4 +105,4 @@ function formatar_horarios_resumo(array $horarios): string {
         <?php endif; ?>
     </div>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/backend/includes/footer.php'; ?>

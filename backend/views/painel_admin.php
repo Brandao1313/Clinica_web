@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: backend/views/painel_admin.php
 // Descrição: Painel administrativo simples
@@ -21,7 +21,7 @@ $offset = ($pagina - 1) * $itens_por_pagina;
 
 $base_url = '../../';
 $titulo_pagina = 'Painel Admin - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
     <div class="admin-container">
@@ -414,4 +414,4 @@ require_once __DIR__ . '/../../includes/header.php';
         <?php endif; ?>
     </div>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

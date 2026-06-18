@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: includes/header.php
 // Descrição: Cabeçalho e navbar compartilhados
@@ -31,7 +31,7 @@ if (!isset($titulo_pagina)) {
 <body data-base-url="<?php echo $base_url; ?>">
     <nav>
         <ul>
-            <li><a href="<?php echo $base_url; ?>index.php"><img src="<?php echo $base_url; ?>imagens/logo.png" alt="Logo da Clínica Saúde & Bem-Estar"></a></li>
+            <li><a href="<?php echo $base_url; ?>index.php"><img src="<?php echo $base_url; ?>assets/imagens/logo.png" alt="Logo da Clínica Saúde & Bem-Estar"></a></li>
             <li><a href="<?php echo $base_url; ?>especialidades.php">Especialidades</a></li>
             <li><a href="<?php echo $base_url; ?>medicos.php">Médicos</a></li>
             <li><a href="<?php echo $base_url; ?>exames.php">Exames</a></li>

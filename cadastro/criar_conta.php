@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: cadastro/criar_conta.php
 // Descrição: Página para criar nova conta
@@ -9,7 +9,7 @@ require_once __DIR__ . '/../backend/utils/seguranca.php';
 
 $base_url = '../';
 $titulo_pagina = 'Criar Conta - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../backend/includes/header.php';
 ?>
 
     <div class="auth-page">
@@ -77,4 +77,4 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../backend/includes/footer.php'; ?>

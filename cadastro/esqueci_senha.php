@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: cadastro/esqueci_senha.php
 // Descrição: Página para redefinição de senha (verificação por telefone + CPF)
@@ -15,7 +15,7 @@ $etapa = $autorizado ? 'redefinir' : 'verificar';
 
 $base_url = '../';
 $titulo_pagina = 'Redefinir Senha - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../backend/includes/header.php';
 ?>
 
     <div class="auth-page">
@@ -86,4 +86,4 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../backend/includes/footer.php'; ?>

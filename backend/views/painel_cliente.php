@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: backend/views/painel_cliente.php
 // Descrição: Painel principal do cliente logado
@@ -27,7 +27,7 @@ $stmt->close();
 
 $base_url = '../../';
 $titulo_pagina = 'Meu Painel - Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
     <?php
@@ -481,4 +481,4 @@ require_once __DIR__ . '/../../includes/header.php';
         </main>
     </div>
 
-<?php require_once __DIR__ . '/../../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -19,8 +19,13 @@ Thumbs.db
 *.code-workspace
 
 # Logs
+logs/*.log
+logs/*.txt
 *.log
 error.log
+
+# Uploads de imagens de médicos
+assets/imagens/medicos/
 
 # Cache
 __pycache__/

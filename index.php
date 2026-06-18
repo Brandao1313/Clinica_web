@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: index.php
 // Descrição: Página inicial
@@ -6,11 +6,11 @@
 
 $base_url = '';
 $titulo_pagina = 'Clínica Saúde & Bem-Estar';
-require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/backend/includes/header.php';
 ?>
 
     <div class="inicial">
-        <img src="imagens/inicial.png" alt="Recepção da Clínica Saúde & Bem-Estar">
+        <img src="assets/imagens/inicial.png" alt="Recepção da Clínica Saúde & Bem-Estar">
     </div>
 
     <section class="sobre-clinica">
@@ -29,8 +29,8 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div class="galeria-fotos">
-            <img src="imagens/clinica1.png" alt="Consultório">
-            <img src="imagens/clinica2.png" alt="Equipamento Médico">
+            <img src="assets/imagens/clinica1.png" alt="Consultório">
+            <img src="assets/imagens/clinica2.png" alt="Equipamento Médico">
         </div>
     </section>
 
@@ -60,4 +60,4 @@ require_once __DIR__ . '/includes/header.php';
         <?php endif; ?>
     </section>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/backend/includes/footer.php'; ?>
