@@ -10,8 +10,8 @@ require_once __DIR__ . '/../utils/validacao.php';
 require_once __DIR__ . '/../utils/seguranca.php';
 require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
-// Verificar autenticação
-require_login();
+// Exige usuário autenticado e do tipo 'cliente'; outros tipos são redirecionados ao painel correto
+require_cliente();
 
 // Variáveis
 $conexao_db = Conexao::getInstance()->getConexao();
@@ -19,11 +19,17 @@ $id_cliente = $_SESSION['id_cliente'];
 $acao = sanitizar_input($_GET['acao'] ?? 'dashboard');
 
 // Obter dados do cliente
-$stmt = $conexao_db->prepare('SELECT * FROM clientes WHERE id = ?');
+$stmt = $conexao_db->prepare('SELECT * FROM clientes WHERE id = ? AND tipo = "cliente"');
 $stmt->bind_param('i', $id_cliente);
 $stmt->execute();
 $cliente = $stmt->get_result()->fetch_assoc();
 $stmt->close();
+
+if (!$cliente) {
+    // Sessão inconsistente: tipo_usuario diz 'cliente' mas o registro não existe ou tem tipo diferente
+    session_destroy();
+    redirect('cadastro/login.php');
+}
 
 $base_url = '../../';
 $titulo_pagina = 'Meu Painel - Clínica Saúde & Bem-Estar';

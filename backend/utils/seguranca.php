@@ -83,6 +83,16 @@ function is_recepcionista() {
     return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'recepcionista';
 }
 
+function require_cliente() {
+    require_login();
+    $tipo = $_SESSION['tipo_usuario'] ?? 'cliente';
+    switch ($tipo) {
+        case 'admin':         redirect('backend/views/painel_admin.php');
+        case 'medico':        redirect('backend/views/painel_medico.php');
+        case 'recepcionista': redirect('backend/views/painel_recepcionista.php');
+    }
+}
+
 function require_medico() {
     require_login();
     if (!is_medico()) {
