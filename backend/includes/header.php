@@ -8,9 +8,9 @@
 //   $titulo_pagina - título da aba do navegador
 // ====================================================
 
-require_once __DIR__ . '/../backend/config/conexao.php';
-require_once __DIR__ . '/../backend/config/config.php';
-require_once __DIR__ . '/../backend/utils/seguranca.php';
+require_once __DIR__ . '/../config/conexao.php';
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/seguranca.php';
 
 if (!isset($base_url)) {
     $base_url = '';
@@ -42,8 +42,7 @@ if (!isset($titulo_pagina)) {
                 <?php elseif (is_recepcionista()): ?>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_recepcionista.php">Meu Painel</a></li>
                 <?php elseif (is_admin()): ?>
-                    <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
-                    <li><a href="<?php echo $base_url; ?>backend/views/painel_admin.php">Admin</a></li>
+                    <li><a href="<?php echo $base_url; ?>backend/views/painel_admin.php">Meu Painel</a></li>
                 <?php else: ?>
                     <li><a href="<?php echo $base_url; ?>backend/views/painel_cliente.php">Meu Painel</a></li>
                 <?php endif; ?>
