@@ -4,6 +4,11 @@
 // Descrição: Configurações globais da aplicação
 // ====================================================
 
+// Caminho absoluto para a raiz do projeto (usado em require_once com BASE_PATH)
+if (!defined('BASE_PATH')) {
+    define('BASE_PATH', realpath(__DIR__ . '/../..'));
+}
+
 // Configuração do banco de dados (SQLite)
 // Caminho do arquivo do banco. Pode ser sobrescrito via variável de ambiente DB_PATH
 define('DB_PATH', getenv('DB_PATH') ?: __DIR__ . '/../../database/clinica.sqlite');

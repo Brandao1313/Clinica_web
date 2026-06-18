@@ -12,16 +12,25 @@ require_once __DIR__ . '/../utils/funcoes_gerais.php';
 
 require_medico();
 
-$conexao_db  = Conexao::getInstance()->getConexao();
-$id_medico   = $_SESSION['id_medico'];
-$id_cliente  = $_SESSION['id_cliente'];
-$acao        = sanitizar_input($_GET['acao'] ?? 'dashboard');
+$conexao_db = Conexao::getInstance()->getConexao();
+$id_medico  = $_SESSION['id_medico']  ?? null;
+$id_cliente = $_SESSION['id_cliente'] ?? null;
+$acao       = sanitizar_input($_GET['acao'] ?? 'dashboard');
 
-// Dados clínicos do médico + conta de login
+// Sessão sem id_medico = login incompleto
+if (!$id_medico) {
+    session_destroy();
+    header('Location: ' . SITE_URL . '/cadastro/login.php');
+    exit;
+}
+
+// Dados clínicos do médico + e-mail/telefone da conta de login
 $stmt = $conexao_db->prepare(
-    'SELECT m.*, e.nome AS nome_especialidade
+    'SELECT m.*, e.nome AS nome_especialidade,
+            c.email AS login_email, c.telefone AS login_telefone
      FROM medicos m
      LEFT JOIN especialidades e ON e.id = m.id_especialidade
+     LEFT JOIN clientes c ON c.id = m.id_cliente
      WHERE m.id = ?'
 );
 $stmt->bind_param('i', $id_medico);
@@ -30,7 +39,6 @@ $medico = $stmt->get_result()->fetch_assoc();
 $stmt->close();
 
 if (!$medico) {
-    // id_medico na sessão não corresponde a nenhum registro — sessão corrompida
     session_destroy();
     header('Location: ' . SITE_URL . '/cadastro/login.php');
     exit;
@@ -165,29 +173,17 @@ require_once __DIR__ . '/../includes/header.php';
             <?php if (empty($consultas_hoje)): ?>
                 <div class="alert alert-info">Nenhuma consulta agendada para hoje.</div>
             <?php else: ?>
-                <div class="table-responsive">
-                    <table class="tabela-admin">
-                        <thead>
-                            <tr>
-                                <th>Horário</th>
-                                <th>Paciente</th>
-                                <th>Tipo</th>
-                                <th>Status</th>
-                                <th>Contato</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($consultas_hoje as $c): ?>
-                                <tr>
-                                    <td><strong><?php echo date('H:i', strtotime($c['data_hora'])); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($c['nome_cliente']); ?></td>
-                                    <td><?php echo get_tipo_agendamento($c['tipo']); ?></td>
-                                    <td><span class="badge <?php echo get_classe_status($c['status']); ?>"><?php echo get_status_agendamento($c['status']); ?></span></td>
-                                    <td><?php echo htmlspecialchars($c['telefone_cliente'] ?? $c['email_cliente']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                <div class="lista-consultas">
+                    <?php foreach ($consultas_hoje as $c): ?>
+                        <div class="consulta-card">
+                            <div class="consulta-hora"><?php echo date('H:i', strtotime($c['data_hora'])); ?></div>
+                            <div class="consulta-info">
+                                <strong><?php echo htmlspecialchars($c['nome_cliente']); ?></strong>
+                                <span><?php echo get_tipo_agendamento($c['tipo']); ?> &middot; <?php echo htmlspecialchars($c['telefone_cliente'] ?? $c['email_cliente'] ?? ''); ?></span>
+                            </div>
+                            <span class="badge consulta-status <?php echo get_classe_status($c['status']); ?>"><?php echo get_status_agendamento($c['status']); ?></span>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             <?php endif; ?>
 
@@ -325,7 +321,7 @@ require_once __DIR__ . '/../includes/header.php';
             <!-- Alterar senha -->
             <div class="form-grupo" style="max-width:500px;">
                 <div class="form-grupo-titulo"><i class="fa-solid fa-lock"></i> Alterar senha</div>
-                <form method="POST" action="../../backend/controllers/medico_perfil_controller.php">
+                <form method="POST" action="<?php echo $base_url; ?>backend/controllers/medico_perfil_controller.php">
                     <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <input type="hidden" name="acao" value="alterar_senha_medico">
 
@@ -348,8 +344,8 @@ require_once __DIR__ . '/../includes/header.php';
                 <p><strong>Nome:</strong> <?php echo htmlspecialchars($medico['nome']); ?></p>
                 <p><strong>CRM:</strong> <?php echo htmlspecialchars($medico['crm']); ?></p>
                 <p><strong>Especialidade:</strong> <?php echo htmlspecialchars($medico['nome_especialidade'] ?? '—'); ?></p>
-                <p><strong>Email:</strong> <?php echo htmlspecialchars($medico['email'] ?? '—'); ?></p>
-                <p><strong>Telefone:</strong> <?php echo htmlspecialchars($medico['telefone'] ?? '—'); ?></p>
+                <p><strong>Email:</strong> <?php echo htmlspecialchars($medico['login_email'] ?? $medico['email'] ?? '—'); ?></p>
+                <p><strong>Telefone:</strong> <?php echo htmlspecialchars($medico['login_telefone'] ?? $medico['telefone'] ?? '—'); ?></p>
                 <small>Para alterar dados cadastrais, solicite ao administrador.</small>
             </div>
         <?php endif; ?>
