@@ -281,7 +281,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     <td><?php echo htmlspecialchars($c['nome_cliente']); ?></td>
                                     <td><?php echo get_tipo_agendamento($c['tipo']); ?></td>
                                     <td><span class="badge <?php echo get_classe_status($c['status']); ?>"><?php echo get_status_agendamento($c['status']); ?></span></td>
-                                    <td><?php echo formatar_valor($c['valor'] ?? 0); ?></td>
+                                    <td><?php echo formatar_valor($c['valor_total'] ?? 0); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
