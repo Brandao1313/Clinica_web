@@ -289,26 +289,74 @@ require_once __DIR__ . '/../includes/header.php';
                 <h2><i class="fa-solid fa-calendar-days"></i> Meus Agendamentos</h2>
 
                 <?php
+                    $filtro_status = sanitizar_input($_GET['status'] ?? '');
+                    $filtro_tipo   = sanitizar_input($_GET['tipo']   ?? '');
+                    $status_validos = ['pendente','confirmado','cancelado','concluído'];
+                    $tipos_validos  = ['consulta','exame'];
+                    if (!in_array($filtro_status, $status_validos, true)) $filtro_status = '';
+                    if (!in_array($filtro_tipo, $tipos_validos, true))     $filtro_tipo   = '';
+
+                    $where_extra = '';
+                    $params_extra = [$id_cliente];
+                    $tipos_extra  = 'i';
+                    if ($filtro_status !== '') { $where_extra .= ' AND a.status = ?';  $params_extra[] = $filtro_status; $tipos_extra .= 's'; }
+                    if ($filtro_tipo   !== '') { $where_extra .= ' AND a.tipo = ?';    $params_extra[] = $filtro_tipo;   $tipos_extra .= 's'; }
+
                     $stmt = $conexao_db->prepare(
-                        'SELECT a.*, COALESCE(e.nome, sp.nome, a.notas, "-") as nome_item, a.tipo, m.nome as nome_medico
+                        "SELECT a.*, COALESCE(e.nome, sp.nome, a.notas, '-') as nome_item, a.tipo, m.nome as nome_medico
                          FROM agendamentos a
                          LEFT JOIN especialidades sp ON a.id_especialidade = sp.id
                          LEFT JOIN exames e ON a.id_exame = e.id
                          LEFT JOIN medicos m ON a.id_medico = m.id
-                         WHERE a.id_cliente = ?
-                         ORDER BY a.data_hora DESC'
+                         WHERE a.id_cliente = ? $where_extra
+                         ORDER BY a.data_hora DESC"
                     );
-                    $stmt->bind_param('i', $id_cliente);
+                    $stmt->bind_param($tipos_extra, ...$params_extra);
                     $stmt->execute();
                     $agendamentos = $stmt->get_result();
                     $stmt->close();
 
-                    if ($agendamentos->num_rows === 0):
+                    // Converter para array para reutilizar
+                    $lista_agendamentos = [];
+                    while ($row = $agendamentos->fetch_assoc()) $lista_agendamentos[] = $row;
                 ?>
-                    <p>Nenhum agendamento.</p>
+
+                <!-- Filtros -->
+                <form method="GET" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px;">
+                    <input type="hidden" name="acao" value="agendamentos">
+                    <div>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;">Status</label>
+                        <select name="status" style="padding:8px;border:1px solid #e0e0e0;border-radius:5px;">
+                            <option value="">Todos</option>
+                            <?php foreach (['pendente'=>'Pendente','confirmado'=>'Confirmado','cancelado'=>'Cancelado','concluído'=>'Concluído'] as $v => $l): ?>
+                                <option value="<?php echo $v; ?>" <?php echo $filtro_status === $v ? 'selected' : ''; ?>><?php echo $l; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:12px;margin-bottom:4px;">Tipo</label>
+                        <select name="tipo" style="padding:8px;border:1px solid #e0e0e0;border-radius:5px;">
+                            <option value="">Todos</option>
+                            <option value="consulta" <?php echo $filtro_tipo === 'consulta' ? 'selected' : ''; ?>>Consulta</option>
+                            <option value="exame"    <?php echo $filtro_tipo === 'exame'    ? 'selected' : ''; ?>>Exame</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button type="submit" class="btn-action">Filtrar</button>
+                        <?php if ($filtro_status || $filtro_tipo): ?>
+                            <a href="?acao=agendamentos" class="btn-action secondary">Limpar</a>
+                        <?php endif; ?>
+                        <a href="../../backend/controllers/exportar_controller.php?tipo=agendamentos" class="btn-action secondary" title="Exportar CSV">
+                            <i class="fa-solid fa-file-csv"></i> CSV
+                        </a>
+                    </div>
+                </form>
+
+                <?php if (empty($lista_agendamentos)):
+                ?>
+                    <p>Nenhum agendamento<?php echo ($filtro_status || $filtro_tipo) ? ' com os filtros selecionados' : ''; ?>.</p>
                     <a href="?acao=agendar" class="btn-action">Criar agendamento</a>
                 <?php else: ?>
-                    <?php $lista_agendamentos = []; while ($ag = $agendamentos->fetch_assoc()) { $lista_agendamentos[] = $ag; } ?>
                     <div class="agendamentos-tabela-wrap">
                         <table>
                             <thead>
