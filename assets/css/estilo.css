@@ -289,6 +289,309 @@ nav img {
 }
 
 /* ====================================================
+   HERO — Página Inicial
+   ==================================================== */
+
+.hero {
+    position: relative;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #004d52 0%, var(--cor-primaria) 55%, var(--cor-destaque) 100%);
+    overflow: hidden;
+}
+
+.hero-imagem {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+.hero-conteudo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 80px;
+}
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-conteudo h1 {
+    font-family: var(--fonte-titulo);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    max-width: 650px;
+}
+
+.hero-conteudo > p {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 36px;
+}
+
+.hero-acoes {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    background: #ffffff;
+    color: var(--cor-primaria-escura) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-hero:hover {
+    background: rgba(255, 255, 255, 0.92);
+    transform: translateY(-2px);
+}
+
+.btn-hero-outline {
+    background: transparent;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    box-shadow: none;
+}
+
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #ffffff;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+/* Barra de stats abaixo do hero */
+.hero-stats {
+    background: var(--cor-card);
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.hero-stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+}
+
+.hero-stat-item {
+    padding: 10px 20px;
+    border-right: 1px solid var(--cor-borda);
+}
+
+.hero-stat-item:last-child {
+    border-right: none;
+}
+
+.hero-stat-item strong {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--cor-primaria);
+    font-family: var(--fonte-titulo);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.hero-stat-item span {
+    font-size: 0.82rem;
+    color: var(--cor-texto-claro);
+    font-weight: 500;
+}
+
+/* ====================================================
+   SEÇÕES DA HOME
+   ==================================================== */
+
+.secao-cabecalho {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.secao-cabecalho h2 {
+    color: var(--cor-primaria);
+    font-size: clamp(1.8rem, 4vw, 2.3rem);
+    margin-bottom: 8px;
+}
+
+.secao-detalhe {
+    display: block;
+    width: 48px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cor-primaria), var(--cor-destaque));
+    border-radius: 2px;
+    margin: 12px auto 16px;
+}
+
+.secao-cabecalho p {
+    color: var(--cor-texto-claro);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.65;
+}
+
+.home-secao {
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.home-secao-rodape {
+    text-align: center;
+    margin-top: 36px;
+}
+
+.medico-card-acoes {
+    margin-top: auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+}
+
+.medico-card-acoes .btn,
+.medico-card-acoes .btn-agendar {
+    flex: 1;
+    text-align: center;
+}
+
+/* ====================================================
+   CONTATO — Home
+   ==================================================== */
+
+.contato-section {
+    background: var(--cor-primaria-clara);
+    padding: 80px 20px;
+}
+
+.contato-section .secao-cabecalho h2 {
+    color: var(--cor-primaria-escura);
+}
+
+.contato-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contato-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.contato-item {
+    background: var(--cor-card);
+    border-radius: var(--raio-grande);
+    padding: 24px 20px;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--cor-borda);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.contato-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sombra-hover);
+}
+
+.contato-icone {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+    color: var(--cor-primaria);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.contato-icone-whatsapp {
+    background: var(--cor-destaque-clara);
+    color: var(--cor-destaque-escura);
+}
+
+.contato-texto h4 {
+    color: var(--cor-texto);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    font-family: var(--fonte-titulo);
+}
+
+.contato-texto p,
+.contato-texto a {
+    color: var(--cor-texto-claro);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    text-decoration: none;
+}
+
+.contato-texto a:hover {
+    color: var(--cor-primaria);
+}
+
+/* ====================================================
+   CTA FINAL — Home
+   ==================================================== */
+
+.cta-section {
+    background: linear-gradient(135deg, #004d52 0%, var(--cor-primaria) 55%, var(--cor-destaque) 100%);
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-family: var(--fonte-titulo);
+    color: #ffffff;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin-bottom: 16px;
+}
+
+.cta-section p {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 1.1rem;
+    max-width: 540px;
+    margin: 0 auto 36px;
+    line-height: 1.65;
+}
+
+.cta-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* ====================================================
    PÁGINA SOBRE
    ==================================================== */
 .sobre-header {
@@ -899,6 +1202,14 @@ footer a {
 
     .meu-btn {
         padding: 8px 14px;
+    }
+
+    .hero-stats-inner {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-stat-item:nth-child(2) {
+        border-right: none;
     }
 
     .sobre-clinica,
