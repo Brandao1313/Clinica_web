@@ -330,24 +330,75 @@ function obter_icone_exame($nome) {
 }
 
 /**
- * Obter tempo estimado fictício de atendimento, com base no ID
- * (apenas para enriquecimento visual dos cards)
- * @param int $id
- * @return string
+ * Obter tempo estimado de atendimento para uma especialidade.
+ * Usa a média do intervalo_minutos dos médicos daquela especialidade;
+ * cai para 30 min se não houver horários cadastrados.
+ * @param int $id  id da especialidade
+ * @return string  ex: "30 min" ou "1h" ou "1h15min"
  */
 function obter_tempo_estimado($id) {
-    $opcoes = ['20 min', '30 min', '45 min', '1h', '1h30'];
-    return $opcoes[$id % count($opcoes)];
+    try {
+        $db   = Conexao::getInstance()->getConexao();
+        $stmt = $db->prepare(
+            'SELECT AVG(ha.intervalo_minutos) AS media
+             FROM horarios_atendimento ha
+             JOIN medicos m ON ha.id_medico = m.id
+             WHERE m.id_especialidade = ? AND ha.ativo = 1'
+        );
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        $minutos = (int) round($row['media'] ?? 30);
+        if ($minutos <= 0) $minutos = 30;
+        if ($minutos >= 60) {
+            $h = intdiv($minutos, 60);
+            $m = $minutos % 60;
+            return $m > 0 ? "{$h}h{$m}min" : "{$h}h";
+        }
+        return "{$minutos} min";
+    } catch (Exception $e) {
+        return '30 min';
+    }
 }
 
 /**
- * Indicar se um item deve exibir o selo "Mais agendado"
- * (dado fictício, apenas visual)
- * @param int $id
+ * Indicar se uma especialidade deve exibir o selo "Mais agendado".
+ * Retorna true quando o número de agendamentos da especialidade
+ * supera a média de agendamentos por especialidade.
+ * @param int $id  id da especialidade
  * @return bool
  */
 function eh_popular($id) {
-    return $id % 3 === 0;
+    try {
+        $db = Conexao::getInstance()->getConexao();
+
+        // Total de agendamentos desta especialidade
+        $stmt = $db->prepare(
+            "SELECT COUNT(*) AS total FROM agendamentos
+             WHERE id_especialidade = ? AND status != 'cancelado'"
+        );
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $total = (int) $stmt->get_result()->fetch_assoc()['total'];
+        $stmt->close();
+
+        // Média geral por especialidade (subquery)
+        $stmt2 = $db->prepare(
+            "SELECT AVG(cnt) AS media FROM (
+                SELECT COUNT(*) AS cnt FROM agendamentos
+                WHERE status != 'cancelado'
+                GROUP BY id_especialidade
+            ) sub"
+        );
+        $stmt2->execute();
+        $media = (float) ($stmt2->get_result()->fetch_assoc()['media'] ?? 0);
+        $stmt2->close();
+
+        return $total > 0 && $total > $media;
+    } catch (Exception $e) {
+        return false;
+    }
 }
 
 /**
