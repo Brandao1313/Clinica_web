@@ -36,7 +36,7 @@ $valores = [
     'percentual_medico' => $dados['percentual_medico'] ?? $medico['percentual_medico'] ?? '70',
     'percentual_exame' => $dados['percentual_exame'] ?? $medico['percentual_exame'] ?? '0',
     'bio' => $dados['bio'] ?? $medico['bio'] ?? '',
-    'foto' => $dados['foto'] ?? $medico['foto'] ?? '',
+    'foto' => $dados['foto_atual'] ?? $medico['foto'] ?? '',
     'ativo' => $dados['ativo'] ?? ($medico['ativo'] ?? 1),
 ];
 
@@ -57,7 +57,7 @@ $stmt->close();
     <?php unset($_SESSION['erros_medico']); ?>
 <?php endif; ?>
 
-<form method="POST" action="../controllers/medico_controller.php" style="max-width: 600px;">
+<form method="POST" action="../controllers/medico_controller.php" enctype="multipart/form-data" style="max-width: 600px;">
     <input type="hidden" name="acao" value="salvar_medico">
     <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
     <?php if ($id_medico > 0): ?>
@@ -117,8 +117,21 @@ $stmt->close();
         </div>
 
         <div style="margin-bottom: 15px;">
-            <label for="foto"><strong>URL da foto</strong></label>
-            <input type="text" id="foto" name="foto" maxlength="255" value="<?php echo htmlspecialchars($valores['foto']); ?>" placeholder="imagens/medicos/exemplo.jpg" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px;">
+            <label for="foto"><strong>Foto do médico</strong></label>
+
+            <?php if (!empty($valores['foto'])): ?>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <img src="<?php echo $base_url . htmlspecialchars($valores['foto']); ?>"
+                         alt="Foto atual"
+                         style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--cor-borda);">
+                    <small style="color:var(--cor-texto-claro);">Foto atual — envie uma nova para substituir.</small>
+                </div>
+            <?php endif; ?>
+
+            <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp"
+                   style="width:100%;padding:8px;border:1px dashed #ccc;border-radius:5px;background:#fafafa;">
+            <small style="color:var(--cor-texto-claro);">JPEG, PNG ou WebP · Máximo 2 MB</small>
+            <input type="hidden" name="foto_atual" value="<?php echo htmlspecialchars($valores['foto']); ?>">
         </div>
 
         <div style="margin-bottom: 15px;">

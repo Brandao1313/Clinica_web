@@ -24,8 +24,9 @@ logs/*.txt
 *.log
 error.log
 
-# Uploads de imagens de médicos
-assets/imagens/medicos/
+# Uploads de imagens de médicos (rastreia o diretório, ignora os arquivos)
+assets/imagens/medicos/*
+!assets/imagens/medicos/.gitkeep
 
 # Cache
 __pycache__/

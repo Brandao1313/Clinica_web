@@ -40,9 +40,10 @@ if ($acao === 'salvar_medico') {
     $valor_consulta = (float) str_replace(',', '.', $_POST['valor_consulta'] ?? '0');
     $percentual_medico = (float) str_replace(',', '.', $_POST['percentual_medico'] ?? '0');
     $percentual_exame = (float) str_replace(',', '.', $_POST['percentual_exame'] ?? '0');
-    $bio = sanitizar_input($_POST['bio'] ?? '');
-    $foto = sanitizar_input($_POST['foto'] ?? '');
-    $ativo           = isset($_POST['ativo']) ? 1 : 0;
+    $bio              = sanitizar_input($_POST['bio'] ?? '');
+    $foto             = sanitizar_input($_POST['foto_atual'] ?? ''); // mantém foto atual por padrão
+    $arquivo_foto     = $_FILES['foto'] ?? null;
+    $ativo            = isset($_POST['ativo']) ? 1 : 0;
     $senha           = $_POST['senha'] ?? '';
     $confirmacao_senha = $_POST['confirmacao_senha'] ?? '';
 
@@ -82,6 +83,28 @@ if ($acao === 'salvar_medico') {
         }
     }
 
+    // Validar foto (se uma nova for enviada)
+    $nova_foto_valida = false;
+    if ($arquivo_foto && $arquivo_foto['error'] !== UPLOAD_ERR_NO_FILE) {
+        $tipos_permitidos = ['image/jpeg', 'image/png', 'image/webp'];
+        $tamanho_max      = 2 * 1024 * 1024; // 2 MB
+
+        if ($arquivo_foto['error'] !== UPLOAD_ERR_OK) {
+            $erros[] = 'Erro no upload da foto (código ' . $arquivo_foto['error'] . ')';
+        } elseif ($arquivo_foto['size'] > $tamanho_max) {
+            $erros[] = 'Foto muito grande. Tamanho máximo: 2 MB';
+        } else {
+            // Verificar MIME real via finfo (não confia no tipo informado pelo browser)
+            $finfo     = new finfo(FILEINFO_MIME_TYPE);
+            $mime_real = $finfo->file($arquivo_foto['tmp_name']);
+            if (!in_array($mime_real, $tipos_permitidos, true)) {
+                $erros[] = 'Formato inválido. Use JPEG, PNG ou WebP';
+            } else {
+                $nova_foto_valida = true;
+            }
+        }
+    }
+
     // Verificar CRM único
     if (empty($erros)) {
         $stmt = $conexao_db->prepare('SELECT id FROM medicos WHERE crm = ? AND id != ?');
@@ -111,6 +134,34 @@ if ($acao === 'salvar_medico') {
             redirect('backend/views/painel_admin.php?acao=medico_form&id=' . $id_medico);
         }
         redirect('backend/views/painel_admin.php?acao=medico_form');
+    }
+
+    // Processar upload de foto (após validações passarem)
+    if ($nova_foto_valida) {
+        $mime_para_ext = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $finfo         = new finfo(FILEINFO_MIME_TYPE);
+        $mime          = $finfo->file($arquivo_foto['tmp_name']);
+        $ext           = $mime_para_ext[$mime] ?? 'jpg';
+        $slug_crm      = preg_replace('/[^a-z0-9]/', '', strtolower($crm));
+        $nome_arquivo  = 'medico_' . $slug_crm . '_' . time() . '.' . $ext;
+        $dir_destino   = BASE_PATH . '/assets/imagens/medicos/';
+
+        if (!is_dir($dir_destino)) {
+            mkdir($dir_destino, 0755, true);
+        }
+
+        if (move_uploaded_file($arquivo_foto['tmp_name'], $dir_destino . $nome_arquivo)) {
+            // Apaga foto antiga somente se for um upload local
+            if (!empty($foto) && str_starts_with($foto, 'assets/imagens/medicos/')) {
+                $caminho_antigo = BASE_PATH . '/' . $foto;
+                if (is_file($caminho_antigo)) {
+                    unlink($caminho_antigo);
+                }
+            }
+            $foto = 'assets/imagens/medicos/' . $nome_arquivo;
+        } else {
+            log_acao('UPLOAD_FOTO_FALHOU', $_SESSION['id_cliente'], "CRM: $crm");
+        }
     }
 
     if ($id_medico > 0) {
