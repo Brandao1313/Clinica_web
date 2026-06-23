@@ -111,7 +111,7 @@ foreach ($horarios as $h) {
 
         <div style="text-align: center; margin-top: 20px;">
             <?php if (is_autenticado()): ?>
-                <a href="backend/views/painel_cliente.php?acao=agendar" class="btn-agendar">Agendar Consulta</a>
+                <a href="backend/views/painel_cliente.php?acao=agendar&id_medico=<?php echo $id_medico; ?>" class="btn-agendar">Agendar com este Médico</a>
             <?php else: ?>
                 <a href="cadastro/login.php" class="btn-login">Faça login para agendar</a>
             <?php endif; ?>

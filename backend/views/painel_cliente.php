@@ -331,9 +331,12 @@ require_once __DIR__ . '/../includes/header.php';
                                         <td><?php echo !empty($ag['nome_medico']) ? htmlspecialchars($ag['nome_medico']) : '-'; ?></td>
                                         <td><?php echo !empty($ag['valor_total']) ? formatar_valor($ag['valor_total']) : '-'; ?></td>
                                         <td><span class="badge <?php echo get_classe_status($ag['status']); ?>"><?php echo get_status_agendamento($ag['status']); ?></span></td>
-                                        <td>
+                                        <td style="white-space:nowrap;">
+                                            <?php if ($ag['tipo'] === 'consulta' && pode_cancelar_agendamento($ag['status']) && is_agendamento_futuro($ag['data_hora'])): ?>
+                                                <a href="?acao=editar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action" style="margin-bottom:4px;">Reagendar</a>
+                                            <?php endif; ?>
                                             <?php if (pode_cancelar_agendamento($ag['status'])): ?>
-                                                <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" data-confirm="Deseja realmente cancelar este agendamento?" data-confirm-titulo="Cancelar agendamento">Cancelar</a>
+                                                <a href="?acao=cancelar_agendamento&id=<?php echo $ag['id']; ?>" class="btn-action secondary" data-confirm="Deseja cancelar? Cancelamentos exigem 2h de antecedência." data-confirm-titulo="Cancelar agendamento">Cancelar</a>
                                             <?php else: ?>
                                                 -
                                             <?php endif; ?>
@@ -377,7 +380,25 @@ require_once __DIR__ . '/../includes/header.php';
                 <!-- AGENDAR CONSULTA -->
                 <h2><i class="fa-solid fa-plus"></i> Agendar Consulta</h2>
 
-                <form method="POST" action="../controllers/agendamento_controller.php" style="max-width: 500px;">
+                <?php
+                    // Pré-seleção via ?id_medico= (vindo de medico_detalhe.php)
+                    $pre_id_medico = intval($_GET['id_medico'] ?? 0);
+                    $pre_id_especialidade = 0;
+                    if ($pre_id_medico > 0) {
+                        $stmt_pre = $conexao_db->prepare('SELECT id_especialidade FROM medicos WHERE id=? AND ativo=1');
+                        $stmt_pre->bind_param('i', $pre_id_medico);
+                        $stmt_pre->execute();
+                        $row_pre = $stmt_pre->get_result()->fetch_assoc();
+                        $stmt_pre->close();
+                        $pre_id_especialidade = (int) ($row_pre['id_especialidade'] ?? 0);
+                    }
+                ?>
+
+                <form id="form-agendar" method="POST" action="../controllers/agendamento_controller.php"
+                      style="max-width: 500px;"
+                      data-pre-especialidade="<?php echo $pre_id_especialidade; ?>"
+                      data-pre-medico="<?php echo $pre_id_medico; ?>"
+                      data-pre-data="" data-pre-horario="">
                     <div class="form-grupo">
                         <div class="form-grupo-titulo"><i class="fa-solid fa-stethoscope"></i> Dados da consulta</div>
 
@@ -467,6 +488,90 @@ require_once __DIR__ . '/../includes/header.php';
                     <button type="submit" class="btn-action">Solicitar Exame</button>
                     <a href="?acao=agendamentos" class="btn-action secondary">Voltar</a>
                 </form>
+
+            <?php elseif ($acao === 'editar_agendamento'): ?>
+                <!-- REAGENDAR CONSULTA -->
+                <?php
+                    $id_ag_editar = intval($_GET['id'] ?? 0);
+                    $stmt_ed = $conexao_db->prepare(
+                        'SELECT a.*, e.nome as nome_esp FROM agendamentos a
+                         LEFT JOIN especialidades e ON a.id_especialidade = e.id
+                         WHERE a.id = ? AND a.id_cliente = ? AND a.tipo = "consulta"'
+                    );
+                    $stmt_ed->bind_param('ii', $id_ag_editar, $id_cliente);
+                    $stmt_ed->execute();
+                    $ag_editar = $stmt_ed->get_result()->fetch_assoc();
+                    $stmt_ed->close();
+
+                    if (!$ag_editar || !pode_cancelar_agendamento($ag_editar['status'])):
+                ?>
+                    <div class="alert alert-error">
+                        <i class="fa-solid fa-circle-xmark"></i> Agendamento não encontrado ou não pode ser reagendado.
+                    </div>
+                    <a href="?acao=agendamentos" class="btn-action secondary">Voltar</a>
+                <?php else:
+                    $pre_data_editar    = substr($ag_editar['data_hora'], 0, 10);
+                    $pre_horario_editar = substr($ag_editar['data_hora'], 11, 5);
+                ?>
+                <h2><i class="fa-solid fa-calendar-pen"></i> Reagendar Consulta</h2>
+
+                <form id="form-agendar" method="POST" action="../controllers/agendamento_controller.php"
+                      style="max-width: 500px;"
+                      data-pre-especialidade="<?php echo (int) $ag_editar['id_especialidade']; ?>"
+                      data-pre-medico="<?php echo (int) $ag_editar['id_medico']; ?>"
+                      data-pre-data="<?php echo htmlspecialchars($pre_data_editar); ?>"
+                      data-pre-horario="<?php echo htmlspecialchars($pre_horario_editar); ?>">
+
+                    <div class="form-grupo">
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-stethoscope"></i> Novos dados da consulta</div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="especialidade"><strong>Especialidade *</strong></label>
+                            <select id="especialidade" name="id_especialidade" required style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+                                <option value="">-- Selecione --</option>
+                                <?php
+                                    $stmt_esp = $conexao_db->prepare('SELECT id, nome FROM especialidades WHERE ativo=1 ORDER BY nome');
+                                    $stmt_esp->execute();
+                                    while ($esp = $stmt_esp->get_result()->fetch_assoc()):
+                                ?>
+                                    <option value="<?php echo $esp['id']; ?>"><?php echo htmlspecialchars($esp['nome']); ?></option>
+                                <?php endwhile; $stmt_esp->close(); ?>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="medico"><strong>Médico *</strong></label>
+                            <select id="medico" name="id_medico" required disabled style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+                                <option value="">-- Selecione uma especialidade primeiro --</option>
+                            </select>
+                            <small id="valor-consulta-info" style="display:block;margin-top:5px;color:var(--cor-texto-claro);"></small>
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="data_consulta"><strong>Data *</strong></label>
+                            <input type="date" id="data_consulta" name="data" required min="<?php echo date('Y-m-d'); ?>" style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+                        </div>
+
+                        <div style="margin-bottom: 15px;">
+                            <label for="horario"><strong>Horário *</strong></label>
+                            <select id="horario" name="horario" required disabled style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
+                                <option value="">-- Selecione o médico e a data --</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 0;">
+                            <label for="notas"><strong>Observações</strong></label>
+                            <textarea id="notas" name="notas" style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;min-height:80px;"><?php echo htmlspecialchars($ag_editar['notas'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="acao" value="alterar_agendamento">
+                    <input type="hidden" name="id_agendamento" value="<?php echo $id_ag_editar; ?>">
+                    <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
+                    <button type="submit" class="btn-action">Confirmar Reagendamento</button>
+                    <a href="?acao=agendamentos" class="btn-action secondary">Cancelar</a>
+                </form>
+                <?php endif; ?>
 
             <?php elseif ($acao === 'editar_perfil'): ?>
                 <!-- EDITAR PERFIL -->

@@ -26,7 +26,7 @@
         select.appendChild(opcao);
     }
 
-    function carregarMedicos() {
+    function carregarMedicos(preMedico, preData, preHorario) {
         const idEspecialidade = selectEspecialidade.value;
         limparSelect(selectMedico, '-- Selecione um médico --');
         limparSelect(selectHorario, '-- Selecione um horário --');
@@ -55,13 +55,24 @@
                 });
 
                 selectMedico.disabled = medicos.length === 0;
+
+                // Pré-selecionar médico e continuar cascade se vier de ?id_medico=
+                if (preMedico) {
+                    selectMedico.value = preMedico;
+                    if (preData) {
+                        inputData.value = preData;
+                        carregarHorarios(preHorario);
+                    } else {
+                        carregarHorarios();
+                    }
+                }
             })
             .catch(function () {
                 limparSelect(selectMedico, 'Erro ao carregar médicos');
             });
     }
 
-    function carregarHorarios() {
+    function carregarHorarios(preHorario) {
         const idMedico = selectMedico.value;
         const data = inputData.value;
         limparSelect(selectHorario, '-- Selecione um horário --');
@@ -92,13 +103,32 @@
                 });
 
                 selectHorario.disabled = horarios.length === 0;
+
+                // Pré-selecionar horário (vindo do reagendamento)
+                if (preHorario && horarios.indexOf(preHorario) !== -1) {
+                    selectHorario.value = preHorario;
+                }
             })
             .catch(function () {
                 limparSelect(selectHorario, 'Erro ao carregar horários');
             });
     }
 
-    selectEspecialidade.addEventListener('change', carregarMedicos);
-    selectMedico.addEventListener('change', carregarHorarios);
-    inputData.addEventListener('change', carregarHorarios);
+    selectEspecialidade.addEventListener('change', function () { carregarMedicos(); });
+    selectMedico.addEventListener('change', function () { carregarHorarios(); });
+    inputData.addEventListener('change', function () { carregarHorarios(); });
+
+    // Pré-seleção via atributos data-* no formulário (vindo de ?id_medico= ou reagendamento)
+    const form = document.getElementById('form-agendar');
+    if (form) {
+        const preEsp     = form.dataset.preEspecialidade || '';
+        const preMedico  = form.dataset.preMedico        || '';
+        const preData    = form.dataset.preData          || '';
+        const preHorario = form.dataset.preHorario       || '';
+
+        if (preEsp) {
+            selectEspecialidade.value = preEsp;
+            carregarMedicos(preMedico || null, preData || null, preHorario || null);
+        }
+    }
 })();
