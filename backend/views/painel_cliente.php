@@ -38,9 +38,10 @@ require_once __DIR__ . '/../includes/header.php';
 
     <?php
         $flash_agendamento = get_flash_message('agendamento');
-        $flash_login = get_flash_message('login');
+        $flash_login       = get_flash_message('login');
+        $flash_perfil      = get_flash_message('perfil');
     ?>
-    <?php if ($flash_login || $flash_agendamento || !empty($_SESSION['erros_agendamento'])): ?>
+    <?php if ($flash_login || $flash_agendamento || $flash_perfil || !empty($_SESSION['erros_agendamento']) || !empty($_SESSION['erros_perfil'])): ?>
         <div class="flash-container" role="status" aria-live="polite">
             <?php if ($flash_login): ?>
                 <div class="flash-toast flash-sucesso">
@@ -58,6 +59,14 @@ require_once __DIR__ . '/../includes/header.php';
                     <span class="flash-toast-progresso"></span>
                 </div>
             <?php endif; ?>
+            <?php if ($flash_perfil): ?>
+                <div class="flash-toast <?php echo $flash_perfil['tipo'] === 'sucesso' ? 'flash-sucesso' : 'flash-erro'; ?>">
+                    <span class="flash-toast-icone"><?php echo $flash_perfil['tipo'] === 'sucesso' ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-circle-xmark"></i>'; ?></span>
+                    <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_perfil['mensagem']); ?></span>
+                    <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                    <span class="flash-toast-progresso"></span>
+                </div>
+            <?php endif; ?>
             <?php if (!empty($_SESSION['erros_agendamento'])): ?>
                 <?php foreach ($_SESSION['erros_agendamento'] as $erro): ?>
                     <div class="flash-toast flash-erro">
@@ -68,6 +77,17 @@ require_once __DIR__ . '/../includes/header.php';
                     </div>
                 <?php endforeach; ?>
                 <?php unset($_SESSION['erros_agendamento']); ?>
+            <?php endif; ?>
+            <?php if (!empty($_SESSION['erros_perfil'])): ?>
+                <?php foreach ($_SESSION['erros_perfil'] as $erro): ?>
+                    <div class="flash-toast flash-erro">
+                        <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
+                        <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
+                        <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                        <span class="flash-toast-progresso"></span>
+                    </div>
+                <?php endforeach; ?>
+                <?php unset($_SESSION['erros_perfil']); ?>
             <?php endif; ?>
         </div>
     <?php endif; ?>
@@ -92,7 +112,7 @@ require_once __DIR__ . '/../includes/header.php';
             <a href="?acao=dashboard" class="menu-item <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
                 <span class="menu-item-icone"><i class="fa-solid fa-chart-bar"></i></span><span>Dashboard</span><span class="menu-item-seta">›</span>
             </a>
-            <a href="?acao=perfil" class="menu-item <?php echo $acao === 'perfil' ? 'active' : ''; ?>">
+            <a href="?acao=perfil" class="menu-item <?php echo in_array($acao, ['perfil', 'editar_perfil', 'alterar_senha']) ? 'active' : ''; ?>">
                 <span class="menu-item-icone"><i class="fa-solid fa-user"></i></span><span>Meu Perfil</span><span class="menu-item-seta">›</span>
             </a>
             <a href="?acao=agendamentos" class="menu-item <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
@@ -446,6 +466,60 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                     <button type="submit" class="btn-action">Solicitar Exame</button>
                     <a href="?acao=agendamentos" class="btn-action secondary">Voltar</a>
+                </form>
+
+            <?php elseif ($acao === 'editar_perfil'): ?>
+                <!-- EDITAR PERFIL -->
+                <h2><i class="fa-solid fa-user-pen"></i> Editar Perfil</h2>
+
+                <form method="POST" action="../controllers/perfil_controller.php" style="max-width: 500px;">
+                    <div class="form-grupo">
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-user"></i> Dados pessoais</div>
+
+                        <label for="nome">Nome completo *</label>
+                        <input type="text" id="nome" name="nome" value="<?php echo htmlspecialchars($cliente['nome']); ?>" required>
+
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($cliente['email']); ?>" required>
+
+                        <label for="telefone">Telefone *</label>
+                        <input type="tel" id="telefone" name="telefone" value="<?php echo htmlspecialchars(formatar_telefone($cliente['telefone'])); ?>" required placeholder="(11) 99999-9999">
+                    </div>
+
+                    <div class="alert alert-info" style="margin-bottom: 16px;">
+                        <i class="fa-solid fa-circle-info"></i>
+                        CPF e data de nascimento não podem ser alterados. Em caso de erro, entre em contato com a clínica.
+                    </div>
+
+                    <input type="hidden" name="acao" value="atualizar_perfil">
+                    <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
+                    <button type="submit" class="btn-action">Salvar Alterações</button>
+                    <a href="?acao=perfil" class="btn-action secondary">Cancelar</a>
+                </form>
+
+            <?php elseif ($acao === 'alterar_senha'): ?>
+                <!-- ALTERAR SENHA -->
+                <h2><i class="fa-solid fa-lock"></i> Alterar Senha</h2>
+
+                <form method="POST" action="../controllers/perfil_controller.php" style="max-width: 500px;">
+                    <div class="form-grupo">
+                        <div class="form-grupo-titulo"><i class="fa-solid fa-lock"></i> Nova senha</div>
+
+                        <label for="senha_atual">Senha atual *</label>
+                        <input type="password" id="senha_atual" name="senha_atual" required autocomplete="current-password">
+
+                        <label for="nova_senha">Nova senha *</label>
+                        <input type="password" id="nova_senha" name="nova_senha" required minlength="<?php echo PASSWORD_MIN_LENGTH; ?>" autocomplete="new-password">
+                        <small style="display:block; margin-bottom:12px; color:var(--cor-texto-claro);">Mínimo <?php echo PASSWORD_MIN_LENGTH; ?> caracteres</small>
+
+                        <label for="confirmar_senha">Confirmar nova senha *</label>
+                        <input type="password" id="confirmar_senha" name="confirmar_senha" required autocomplete="new-password">
+                    </div>
+
+                    <input type="hidden" name="acao" value="alterar_senha">
+                    <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
+                    <button type="submit" class="btn-action">Alterar Senha</button>
+                    <a href="?acao=perfil" class="btn-action secondary">Cancelar</a>
                 </form>
 
             <?php elseif ($acao === 'cancelar_agendamento'): ?>
