@@ -18,13 +18,14 @@ require_once __DIR__ . '/../backend/includes/header.php';
             <h2>Faça login para acessar sua conta</h2>
 
             <?php
-                $erros_login = $_SESSION['erros_login'] ?? [];
+                $erros_login      = $_SESSION['erros_login'] ?? [];
                 unset($_SESSION['erros_login']);
-                $flash = get_flash_message('registro');
-                $flash_logout = get_flash_message('logout');
-                $flash_reset = get_flash_message('reset');
+                $flash            = get_flash_message('registro');
+                $flash_logout     = get_flash_message('logout');
+                $flash_reset      = get_flash_message('reset');
+                $flash_expirada   = get_flash_message('sessao_expirada');
             ?>
-            <?php if (!empty($erros_login) || $flash || $flash_logout || $flash_reset): ?>
+            <?php if (!empty($erros_login) || $flash || $flash_logout || $flash_reset || $flash_expirada): ?>
                 <div class="flash-container" role="status" aria-live="polite">
                     <?php foreach ($erros_login as $erro): ?>
                         <div class="flash-toast flash-erro">
@@ -56,6 +57,14 @@ require_once __DIR__ . '/../backend/includes/header.php';
                             <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_reset['mensagem']); ?></span>
                             <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
                             <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($flash_expirada): ?>
+                        <div class="flash-toast" style="border-left-color: var(--cor-aviso);">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-clock"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_expirada['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso" style="background: var(--cor-aviso);"></span>
                         </div>
                     <?php endif; ?>
                 </div>

@@ -56,11 +56,28 @@ error_reporting(E_ALL);
 // Iniciar sessão se não estiver iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-    // Segurança: regenerar session ID em tempo regular
+
+    // Verificar timeout por inatividade (apenas sessões autenticadas)
+    if (isset($_SESSION['id_cliente'])) {
+        if (isset($_SESSION['ultima_atividade']) && (time() - $_SESSION['ultima_atividade']) > SESSION_TIMEOUT) {
+            session_unset();
+            session_destroy();
+            session_start();
+            $_SESSION['flash_sessao_expirada'] = [
+                'mensagem' => 'Sua sessão expirou por inatividade. Faça login novamente.',
+                'tipo'     => 'aviso',
+            ];
+            header('Location: ' . SITE_URL . '/cadastro/login.php');
+            exit;
+        }
+        $_SESSION['ultima_atividade'] = time();
+    }
+
+    // Segurança: regenerar session ID a cada 5 minutos
     if (!isset($_SESSION['última_regen'])) {
         $_SESSION['última_regen'] = time();
     }
-    if (time() - $_SESSION['última_regen'] > 300) { // A cada 5 minutos
+    if (time() - $_SESSION['última_regen'] > 300) {
         session_regenerate_id(true);
         $_SESSION['última_regen'] = time();
     }
