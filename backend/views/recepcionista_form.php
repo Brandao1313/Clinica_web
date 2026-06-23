@@ -72,6 +72,7 @@ $v = [
             <div style="flex:1;min-width:160px;">
                 <label for="cpf"><strong>CPF *</strong></label>
                 <input type="text" id="cpf" name="cpf" required maxlength="14" placeholder="000.000.000-00"
+                       data-mascara="cpf"
                        value="<?php echo htmlspecialchars($v['cpf']); ?>"
                        style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
             </div>
@@ -81,6 +82,7 @@ $v = [
             <div style="flex:1;min-width:180px;">
                 <label for="telefone"><strong>Telefone</strong></label>
                 <input type="tel" id="telefone" name="telefone" maxlength="15" placeholder="(11) 99999-9999"
+                       data-mascara="telefone"
                        value="<?php echo htmlspecialchars($v['telefone']); ?>"
                        style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;">
             </div>

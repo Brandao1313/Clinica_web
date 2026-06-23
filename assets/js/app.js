@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     inicializarFlashToasts();
     inicializarModalCancelamento();
     inicializarLoadingFormularios();
+    inicializarMascarasInput();
 });
 
 /**
@@ -94,6 +95,52 @@ function inicializarModalCancelamento() {
             }
         });
     }
+}
+
+/**
+ * Máscaras de formatação para CPF e telefone.
+ * Uso: <input data-mascara="cpf"> ou <input data-mascara="telefone">
+ * O backend deve fazer preg_replace('/\D/', '', $valor) antes de processar.
+ */
+function aplicarMascaraCPF(valor) {
+    valor = valor.replace(/\D/g, '').slice(0, 11);
+    if (valor.length > 9) return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+    if (valor.length > 6) return valor.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+    if (valor.length > 3) return valor.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+    return valor;
+}
+
+function aplicarMascaraTelefone(valor) {
+    valor = valor.replace(/\D/g, '').slice(0, 11);
+    if (valor.length === 11) return valor.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    if (valor.length === 10) return valor.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    if (valor.length > 6)   return valor.replace(/(\d{2})(\d{1,5})(\d{0,4})/, '($1) $2-$3');
+    if (valor.length > 2)   return valor.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+    if (valor.length > 0)   return '(' + valor;
+    return valor;
+}
+
+function inicializarMascarasInput() {
+    document.querySelectorAll('[data-mascara="cpf"]').forEach(function (input) {
+        // Formata o valor já existente (caso de re-exibição após erro)
+        if (input.value) input.value = aplicarMascaraCPF(input.value);
+        input.addEventListener('input', function () {
+            var pos = input.selectionStart;
+            var anterior = input.value.replace(/\D/g, '').length;
+            input.value = aplicarMascaraCPF(input.value);
+            var posterior = input.value.replace(/\D/g, '').length;
+            // Ajusta cursor: avança pelo mesmo número de dígitos digitados
+            var diff = input.value.length - (input.value.replace(/\D/g, '').length - posterior + anterior);
+            input.setSelectionRange(pos + (posterior - anterior), pos + (posterior - anterior));
+        });
+    });
+
+    document.querySelectorAll('[data-mascara="telefone"]').forEach(function (input) {
+        if (input.value) input.value = aplicarMascaraTelefone(input.value);
+        input.addEventListener('input', function () {
+            input.value = aplicarMascaraTelefone(input.value);
+        });
+    });
 }
 
 /**

@@ -483,7 +483,9 @@ require_once __DIR__ . '/../includes/header.php';
                         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($cliente['email']); ?>" required>
 
                         <label for="telefone">Telefone *</label>
-                        <input type="tel" id="telefone" name="telefone" value="<?php echo htmlspecialchars(formatar_telefone($cliente['telefone'])); ?>" required placeholder="(11) 99999-9999">
+                        <input type="tel" id="telefone" name="telefone" maxlength="15" placeholder="(11) 99999-9999"
+                               data-mascara="telefone"
+                               value="<?php echo htmlspecialchars(formatar_telefone($cliente['telefone'])); ?>" required>
                     </div>
 
                     <div class="alert alert-info" style="margin-bottom: 16px;">

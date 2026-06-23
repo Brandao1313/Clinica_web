@@ -42,11 +42,15 @@ require_once __DIR__ . '/../backend/includes/header.php';
                     <label for="name">Nome completo *</label>
                     <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['name'] ?? ''); ?>" required>
 
-                    <label for="cpf">CPF (somente números) *</label>
-                    <input type="text" id="cpf" name="cpf" placeholder="12345678901" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['cpf'] ?? ''); ?>" required>
+                    <label for="cpf">CPF *</label>
+                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14"
+                           data-mascara="cpf"
+                           value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['cpf'] ?? ''); ?>" required>
 
                     <label for="telefone">Telefone *</label>
-                    <input type="tel" id="telefone" name="telefone" placeholder="11999999999" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['telefone'] ?? ''); ?>" required>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" maxlength="15"
+                           data-mascara="telefone"
+                           value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['telefone'] ?? ''); ?>" required>
 
                     <label for="data_nascimento">Data de nascimento (opcional)</label>
                     <input type="date" id="data_nascimento" name="data_nascimento" value="<?php echo htmlspecialchars($_SESSION['dados_cadastro']['data_nascimento'] ?? ''); ?>">
