@@ -195,12 +195,119 @@ elseif ($acao === 'agendar_exame') {
     redirect('backend/views/painel_cliente.php?acao=exames');
 }
 
+// ====== REAGENDAR CONSULTA ======
+elseif ($acao === 'alterar_agendamento') {
+    $id_agendamento   = intval($_POST['id_agendamento'] ?? 0);
+    $id_especialidade = intval($_POST['id_especialidade'] ?? 0);
+    $id_medico        = intval($_POST['id_medico'] ?? 0);
+    $data             = sanitizar_input($_POST['data'] ?? '');
+    $horario          = sanitizar_input($_POST['horario'] ?? '');
+    $notas            = sanitizar_input($_POST['notas'] ?? '');
+
+    // Verificar propriedade e status
+    $stmt = $conexao_db->prepare('SELECT * FROM agendamentos WHERE id = ? AND id_cliente = ?');
+    $stmt->bind_param('ii', $id_agendamento, $id_cliente);
+    $stmt->execute();
+    $ag_atual = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    if (!$ag_atual || !pode_cancelar_agendamento($ag_atual['status'])) {
+        $_SESSION['erros_agendamento'] = ['Agendamento não encontrado ou não pode ser reagendado'];
+        redirect('backend/views/painel_cliente.php?acao=agendamentos');
+    }
+
+    $erros = [];
+
+    if ($id_especialidade <= 0) $erros[] = 'Especialidade inválida';
+    if ($id_medico <= 0)        $erros[] = 'Selecione um médico';
+
+    if (!validar_data($data) || empty($horario) || !preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $horario)) {
+        $erros[] = 'Data e hora inválidas';
+    }
+
+    $data_hora = $data . ' ' . $horario . ':00';
+
+    if (empty($erros) && !validar_data_agendamento($data_hora)) {
+        $erros[] = 'A data/hora deve ser no futuro (mínimo 1 hora)';
+    }
+
+    $medico = null;
+    if (empty($erros)) {
+        $stmt = $conexao_db->prepare('SELECT * FROM medicos WHERE id = ? AND id_especialidade = ? AND ativo = 1');
+        $stmt->bind_param('ii', $id_medico, $id_especialidade);
+        $stmt->execute();
+        $medico = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+        if (!$medico) $erros[] = 'Médico inválido para a especialidade selecionada';
+    }
+
+    if (empty($erros)) {
+        $dia_semana = (int) date('w', strtotime($data));
+        $stmt = $conexao_db->prepare(
+            'SELECT hora_inicio, hora_fim, intervalo_minutos FROM horarios_atendimento
+             WHERE id_medico = ? AND dia_semana = ? AND ativo = 1'
+        );
+        $stmt->bind_param('ii', $id_medico, $dia_semana);
+        $stmt->execute();
+        $janelas = $stmt->get_result()->fetch_all();
+        $stmt->close();
+
+        $disponivel = false;
+        foreach ($janelas as $j) {
+            if (in_array($horario, gerar_slots_horario($j['hora_inicio'], $j['hora_fim'], $j['intervalo_minutos']), true)) {
+                $disponivel = true;
+                break;
+            }
+        }
+        if (!$disponivel) $erros[] = 'O médico não atende neste horário';
+    }
+
+    if (empty($erros)) {
+        // Verifica disponibilidade excluindo o próprio agendamento
+        $stmt = $conexao_db->prepare(
+            "SELECT COUNT(*) as total FROM agendamentos
+             WHERE id_medico = ? AND status IN ('pendente','confirmado') AND data_hora = ? AND id != ?"
+        );
+        $stmt->bind_param('isi', $id_medico, $data_hora, $id_agendamento);
+        $stmt->execute();
+        if ($stmt->get_result()->fetch_assoc()['total'] > 0) {
+            $erros[] = 'Este horário já está ocupado, escolha outro';
+        }
+        $stmt->close();
+    }
+
+    if (!empty($erros)) {
+        $_SESSION['erros_agendamento'] = $erros;
+        redirect('backend/views/painel_cliente.php?acao=editar_agendamento&id=' . $id_agendamento);
+    }
+
+    $valor_total  = (float) $medico['valor_consulta'];
+    $valor_medico = calcular_valor_medico($valor_total, $medico['percentual_medico']);
+
+    $stmt = $conexao_db->prepare(
+        'UPDATE agendamentos
+         SET id_especialidade=?, id_medico=?, data_hora=?, notas=?, valor_total=?, valor_medico=?
+         WHERE id=? AND id_cliente=?'
+    );
+    $stmt->bind_param('iissddii', $id_especialidade, $id_medico, $data_hora, $notas, $valor_total, $valor_medico, $id_agendamento, $id_cliente);
+
+    if ($stmt->execute()) {
+        set_flash_message('agendamento', 'Consulta reagendada com sucesso!', 'sucesso');
+        log_acao('REAGENDAMENTO', $id_cliente, "Agendamento: $id_agendamento -> $data_hora");
+    } else {
+        $_SESSION['erros_agendamento'] = ['Erro ao reagendar. Tente novamente.'];
+    }
+    $stmt->close();
+
+    redirect('backend/views/painel_cliente.php?acao=agendamentos');
+}
+
 // ====== CANCELAR AGENDAMENTO ======
 elseif ($acao === 'cancelar_agendamento') {
     $id_agendamento = intval($_POST['id_agendamento'] ?? 0);
 
     // Verificar se agendamento pertence ao cliente e pode ser cancelado
-    $stmt = $conexao_db->prepare('SELECT status FROM agendamentos WHERE id = ? AND id_cliente = ?');
+    $stmt = $conexao_db->prepare('SELECT status, data_hora FROM agendamentos WHERE id = ? AND id_cliente = ?');
     $stmt->bind_param('ii', $id_agendamento, $id_cliente);
     $stmt->execute();
     $resultado = $stmt->get_result();
@@ -218,7 +325,15 @@ elseif ($acao === 'cancelar_agendamento') {
         redirect('backend/views/painel_cliente.php?acao=agendamentos');
     }
 
-    // Cancelar agendamento
+    // Prazo mínimo: 2 horas de antecedência
+    $limite = new DateTime($agendamento['data_hora']);
+    $agora  = new DateTime();
+    $agora->modify('+2 hours');
+    if ($limite <= $agora) {
+        $_SESSION['erros_agendamento'] = ['Cancelamentos devem ser feitos com pelo menos 2 horas de antecedência'];
+        redirect('backend/views/painel_cliente.php?acao=agendamentos');
+    }
+
     $stmt = $conexao_db->prepare('UPDATE agendamentos SET status = "cancelado" WHERE id = ?');
     $stmt->bind_param('i', $id_agendamento);
 
