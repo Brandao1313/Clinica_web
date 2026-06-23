@@ -49,6 +49,9 @@ require_once __DIR__ . '/../includes/header.php';
             <a href="?acao=medicos" class="admin-btn <?php echo in_array($acao, ['medicos', 'medico_form', 'horarios']) ? 'active' : ''; ?>">
                 <span class="admin-btn-icone"><i class="fa-solid fa-stethoscope"></i></span><span>Médicos</span>
             </a>
+            <a href="?acao=recepcionistas" class="admin-btn <?php echo in_array($acao, ['recepcionistas', 'recepcionista_form']) ? 'active' : ''; ?>">
+                <span class="admin-btn-icone"><i class="fa-solid fa-id-badge"></i></span><span>Recepcionistas</span>
+            </a>
             <a href="?acao=financeiro" class="admin-btn <?php echo $acao === 'financeiro' ? 'active' : ''; ?>">
                 <span class="admin-btn-icone"><i class="fa-solid fa-credit-card"></i></span><span>Financeiro</span>
             </a>
@@ -405,6 +408,12 @@ require_once __DIR__ . '/../includes/header.php';
 
         <?php elseif ($acao === 'horarios'): ?>
             <?php require __DIR__ . '/horarios_form.php'; ?>
+
+        <?php elseif ($acao === 'recepcionistas'): ?>
+            <?php require __DIR__ . '/recepcionista_listar.php'; ?>
+
+        <?php elseif ($acao === 'recepcionista_form'): ?>
+            <?php require __DIR__ . '/recepcionista_form.php'; ?>
 
         <?php elseif ($acao === 'financeiro'): ?>
             <?php require __DIR__ . '/financeiro.php'; ?>
