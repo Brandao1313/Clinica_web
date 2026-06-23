@@ -58,6 +58,9 @@ require_once __DIR__ . '/../includes/header.php';
             <a href="?acao=relatorios" class="admin-btn <?php echo $acao === 'relatorios' ? 'active' : ''; ?>">
                 <span class="admin-btn-icone"><i class="fa-solid fa-chart-line"></i></span><span>Relatórios</span>
             </a>
+            <a href="?acao=logs" class="admin-btn <?php echo $acao === 'logs' ? 'active' : ''; ?>">
+                <span class="admin-btn-icone"><i class="fa-solid fa-file-lines"></i></span><span>Logs</span>
+            </a>
             <a href="painel_cliente.php" class="admin-btn admin-btn-voltar">
                 <span class="admin-btn-icone"><i class="fa-solid fa-arrow-left"></i></span><span>Voltar</span>
             </a>
@@ -420,6 +423,9 @@ require_once __DIR__ . '/../includes/header.php';
 
         <?php elseif ($acao === 'relatorios'): ?>
             <?php require __DIR__ . '/relatorios.php'; ?>
+
+        <?php elseif ($acao === 'logs'): ?>
+            <?php require __DIR__ . '/logs_viewer.php'; ?>
 
         <?php else: ?>
             <p>Ação não encontrada.</p>
