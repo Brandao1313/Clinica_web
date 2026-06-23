@@ -13,6 +13,9 @@ require_once __DIR__ . '/../utils/funcoes_gerais.php';
 // Verificar permissões
 require_admin();
 
+// Flag usada pelos sub-views para impedir acesso direto
+define('PAINEL_ADMIN_LOADED', true);
+
 $conexao_db = Conexao::getInstance()->getConexao();
 $acao = sanitizar_input($_GET['acao'] ?? 'dashboard');
 $pagina = intval($_GET['pagina'] ?? 1);

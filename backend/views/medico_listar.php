@@ -1,4 +1,5 @@
-<?php
+﻿<?php
+defined('PAINEL_ADMIN_LOADED') or die(header('Location: ' . (defined('SITE_URL') ? SITE_URL : '') . '/backend/views/painel_admin.php'));
 // ====================================================
 // ARQUIVO: backend/views/medico_listar.php
 // Descrição: Listagem (com busca e paginação) de médicos
