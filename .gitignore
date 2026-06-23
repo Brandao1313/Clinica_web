@@ -30,3 +30,6 @@ assets/imagens/medicos/
 # Cache
 __pycache__/
 *.pyc
+
+# Configurações locais do Claude Code (permissões específicas da máquina)
+.claude/settings.local.json
