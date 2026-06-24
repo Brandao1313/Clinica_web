@@ -40,38 +40,55 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 <?php endif; ?>
 
-<div class="painel-container">
+<div class="painel-wrapper">
 
-    <!-- Sidebar -->
-    <aside class="painel-sidebar">
-        <div class="avatar-inicial"><?php echo mb_strtoupper(mb_substr($nome_recep, 0, 1)); ?></div>
-        <div class="painel-nome"><?php echo htmlspecialchars($nome_recep); ?></div>
-        <div class="painel-subtitulo">Recepcionista</div>
+    <!-- Sidebar colapsável -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar"><?php echo mb_strtoupper(mb_substr($nome_recep, 0, 1)); ?></div>
+            <div class="sidebar-info">
+                <div class="sidebar-nome"><?php echo htmlspecialchars($nome_recep); ?></div>
+                <div class="sidebar-cargo">Recepcionista</div>
+            </div>
+        </div>
 
-        <nav class="painel-nav">
-            <a href="?acao=dashboard" class="painel-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-chart-bar"></i> Dashboard
+        <nav class="sidebar-nav">
+            <a href="?acao=dashboard" class="sidebar-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>" data-tooltip="Dashboard">
+                <i class="fa-solid fa-chart-bar"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="?acao=agendamentos" class="painel-nav-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-calendar-days"></i> Agendamentos
+            <a href="?acao=agendamentos" class="sidebar-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>" data-tooltip="Agendamentos">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Agendamentos</span>
             </a>
-            <a href="?acao=novo_agendamento" class="painel-nav-item <?php echo $acao === 'novo_agendamento' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-plus"></i> Novo Agendamento
+            <a href="?acao=novo_agendamento" class="sidebar-item <?php echo $acao === 'novo_agendamento' ? 'ativo' : ''; ?>" data-tooltip="Novo Agendamento">
+                <i class="fa-solid fa-plus"></i>
+                <span>Novo Agendamento</span>
             </a>
-            <a href="?acao=clientes" class="painel-nav-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-users"></i> Pacientes
+            <a href="?acao=clientes" class="sidebar-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>" data-tooltip="Pacientes">
+                <i class="fa-solid fa-users"></i>
+                <span>Pacientes</span>
             </a>
-            <a href="?acao=medicos" class="painel-nav-item <?php echo $acao === 'medicos' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-stethoscope"></i> Médicos
-            </a>
-            <a href="../../backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
-                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            <a href="?acao=medicos" class="sidebar-item <?php echo $acao === 'medicos' ? 'ativo' : ''; ?>" data-tooltip="Médicos">
+                <i class="fa-solid fa-stethoscope"></i>
+                <span>Médicos</span>
             </a>
         </nav>
+
+        <div class="sidebar-footer">
+            <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="sidebar-item sidebar-sair" data-tooltip="Sair">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Recolher barra lateral" title="Recolher barra lateral">
+                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+            </button>
+        </div>
     </aside>
 
     <!-- Main -->
-    <main class="painel-main">
+    <main class="sidebar-main">
+        <div class="painel-main">
 
         <?php if (!empty($_SESSION['erros_recep'])): ?>
             <div class="alert alert-error">
@@ -444,31 +461,31 @@ require_once __DIR__ . '/../includes/header.php';
 
         <?php endif; ?>
 
+        </div><!-- /.painel-main -->
     </main>
 </div>
 
-<!-- Bottom Navbar (mobile / complementar) -->
-<nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
-    <a href="?acao=agendamentos" class="bottom-nav-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span>Agendamentos</span>
-    </a>
-    <a href="?acao=novo_agendamento" class="bottom-nav-item <?php echo $acao === 'novo_agendamento' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-plus"></i>
-        <span>Novo</span>
-    </a>
-    <a href="?acao=clientes" class="bottom-nav-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-users"></i>
-        <span>Pacientes</span>
-    </a>
-    <a href="?acao=medicos" class="bottom-nav-item <?php echo $acao === 'medicos' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-stethoscope"></i>
-        <span>Médicos</span>
-    </a>
-    <a href="?acao=dashboard" class="bottom-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-chart-bar"></i>
-        <span>Dashboard</span>
-    </a>
-</nav>
+<script>
+(function(){
+    var sidebar = document.getElementById('sidebar');
+    var btn     = document.getElementById('sidebarToggle');
+    var icon    = document.getElementById('toggleIcon');
+    var key     = 'sidebar_recep_collapsed';
+
+    function aplicar(collapsed) {
+        sidebar.classList.toggle('collapsed', collapsed);
+        icon.className = collapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+        btn.title = collapsed ? 'Expandir barra lateral' : 'Recolher barra lateral';
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
+    }
+
+    // Restaurar estado salvo
+    try { var saved = localStorage.getItem(key); if (saved === '1') aplicar(true); } catch(e){}
+
+    btn.addEventListener('click', function(){
+        aplicar(!sidebar.classList.contains('collapsed'));
+    });
+})();
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

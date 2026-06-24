@@ -61,42 +61,55 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
-<div class="painel-container">
+<div class="painel-wrapper">
 
-    <!-- Sidebar -->
-    <aside class="painel-sidebar">
-        <div class="painel-avatar">
+    <!-- Sidebar colapsável -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
             <?php if (!empty($medico['foto'])): ?>
-                <img src="<?php echo htmlspecialchars($base_url . $medico['foto']); ?>" alt="Foto">
+                <img src="<?php echo htmlspecialchars($base_url . $medico['foto']); ?>" class="sidebar-avatar sidebar-avatar-img" alt="Foto">
             <?php else: ?>
-                <div class="avatar-inicial"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
+                <div class="sidebar-avatar"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
             <?php endif; ?>
+            <div class="sidebar-info">
+                <div class="sidebar-nome"><?php echo htmlspecialchars($medico['nome'] ?? ''); ?></div>
+                <div class="sidebar-cargo"><?php echo htmlspecialchars($medico['nome_especialidade'] ?? 'Médico'); ?></div>
+            </div>
         </div>
-        <div class="painel-nome"><?php echo htmlspecialchars($medico['nome'] ?? ''); ?></div>
-        <div class="painel-subtitulo"><?php echo htmlspecialchars($medico['nome_especialidade'] ?? ''); ?></div>
-        <div class="painel-subtitulo" style="font-size:0.8rem;margin-top:2px;"><?php echo htmlspecialchars($medico['crm'] ?? ''); ?></div>
 
-        <nav class="painel-nav">
-            <a href="?acao=dashboard" class="painel-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-chart-bar"></i> Dashboard
+        <nav class="sidebar-nav">
+            <a href="?acao=dashboard" class="sidebar-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>" data-tooltip="Dashboard">
+                <i class="fa-solid fa-chart-bar"></i>
+                <span>Dashboard</span>
             </a>
-            <a href="?acao=agenda" class="painel-nav-item <?php echo $acao === 'agenda' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-calendar-days"></i> Minha Agenda
+            <a href="?acao=agenda" class="sidebar-item <?php echo $acao === 'agenda' ? 'ativo' : ''; ?>" data-tooltip="Minha Agenda">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Minha Agenda</span>
             </a>
-            <a href="?acao=historico" class="painel-nav-item <?php echo $acao === 'historico' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-clipboard-list"></i> Histórico
+            <a href="?acao=historico" class="sidebar-item <?php echo $acao === 'historico' ? 'ativo' : ''; ?>" data-tooltip="Histórico">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Histórico</span>
             </a>
-            <a href="?acao=perfil" class="painel-nav-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>">
-                <i class="fa-solid fa-user"></i> Meu Perfil
-            </a>
-            <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="painel-nav-item" style="color:#e74c3c;">
-                <i class="fa-solid fa-right-from-bracket"></i> Sair
+            <a href="?acao=perfil" class="sidebar-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>" data-tooltip="Meu Perfil">
+                <i class="fa-solid fa-user"></i>
+                <span>Meu Perfil</span>
             </a>
         </nav>
+
+        <div class="sidebar-footer">
+            <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="sidebar-item sidebar-sair" data-tooltip="Sair">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Sair</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Recolher barra lateral" title="Recolher barra lateral">
+                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+            </button>
+        </div>
     </aside>
 
     <!-- Conteúdo principal -->
-    <main class="painel-main">
+    <main class="sidebar-main">
+        <div class="painel-main">
 
         <?php if ($acao === 'dashboard'): ?>
             <!-- ===== DASHBOARD ===== -->
@@ -350,31 +363,30 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
+        </div><!-- /.painel-main -->
     </main>
 </div>
 
-<!-- Bottom Navbar (mobile / complementar) -->
-<nav class="bottom-nav" role="navigation" aria-label="Navegação do médico">
-    <a href="?acao=dashboard" class="bottom-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-chart-bar"></i>
-        <span>Dashboard</span>
-    </a>
-    <a href="?acao=agenda" class="bottom-nav-item <?php echo $acao === 'agenda' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span>Agenda</span>
-    </a>
-    <a href="?acao=historico" class="bottom-nav-item <?php echo $acao === 'historico' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-clipboard-list"></i>
-        <span>Histórico</span>
-    </a>
-    <a href="?acao=perfil" class="bottom-nav-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>">
-        <i class="fa-solid fa-user"></i>
-        <span>Perfil</span>
-    </a>
-    <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="bottom-nav-item bottom-nav-sair">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        <span>Sair</span>
-    </a>
-</nav>
+<script>
+(function(){
+    var sidebar = document.getElementById('sidebar');
+    var btn     = document.getElementById('sidebarToggle');
+    var icon    = document.getElementById('toggleIcon');
+    var key     = 'sidebar_medico_collapsed';
+
+    function aplicar(collapsed) {
+        sidebar.classList.toggle('collapsed', collapsed);
+        icon.className = collapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+        btn.title = collapsed ? 'Expandir barra lateral' : 'Recolher barra lateral';
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
+    }
+
+    try { var saved = localStorage.getItem(key); if (saved === '1') aplicar(true); } catch(e){}
+
+    btn.addEventListener('click', function(){
+        aplicar(!sidebar.classList.contains('collapsed'));
+    });
+})();
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
