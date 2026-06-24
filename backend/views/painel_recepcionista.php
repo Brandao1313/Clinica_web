@@ -447,4 +447,28 @@ require_once __DIR__ . '/../includes/header.php';
     </main>
 </div>
 
+<!-- Bottom Navbar (mobile / complementar) -->
+<nav class="bottom-nav" role="navigation" aria-label="Navegação principal">
+    <a href="?acao=agendamentos" class="bottom-nav-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Agendamentos</span>
+    </a>
+    <a href="?acao=novo_agendamento" class="bottom-nav-item <?php echo $acao === 'novo_agendamento' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-plus"></i>
+        <span>Novo</span>
+    </a>
+    <a href="?acao=clientes" class="bottom-nav-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-users"></i>
+        <span>Pacientes</span>
+    </a>
+    <a href="?acao=medicos" class="bottom-nav-item <?php echo $acao === 'medicos' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-stethoscope"></i>
+        <span>Médicos</span>
+    </a>
+    <a href="?acao=dashboard" class="bottom-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Dashboard</span>
+    </a>
+</nav>
+
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

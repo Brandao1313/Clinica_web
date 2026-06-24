@@ -353,4 +353,28 @@ require_once __DIR__ . '/../includes/header.php';
     </main>
 </div>
 
+<!-- Bottom Navbar (mobile / complementar) -->
+<nav class="bottom-nav" role="navigation" aria-label="Navegação do médico">
+    <a href="?acao=dashboard" class="bottom-nav-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-chart-bar"></i>
+        <span>Dashboard</span>
+    </a>
+    <a href="?acao=agenda" class="bottom-nav-item <?php echo $acao === 'agenda' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Agenda</span>
+    </a>
+    <a href="?acao=historico" class="bottom-nav-item <?php echo $acao === 'historico' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <span>Histórico</span>
+    </a>
+    <a href="?acao=perfil" class="bottom-nav-item <?php echo $acao === 'perfil' ? 'ativo' : ''; ?>">
+        <i class="fa-solid fa-user"></i>
+        <span>Perfil</span>
+    </a>
+    <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="bottom-nav-item bottom-nav-sair">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sair</span>
+    </a>
+</nav>
+
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
