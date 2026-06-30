@@ -27,78 +27,208 @@ $titulo_pagina = 'Painel Admin - Clínica Saúde & Bem-Estar';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-    <div class="admin-container">
-        <h2><i class="fa-solid fa-gear"></i> Painel Administrativo</h2>
+<?php
+$titulos_admin = [
+    'dashboard'        => 'Dashboard',
+    'clientes'         => 'Pacientes',
+    'agendamentos'     => 'Agendamentos',
+    'especialidades'   => 'Especialidades',
+    'especialidade_form' => 'Especialidades',
+    'exames'           => 'Exames',
+    'exame_form'       => 'Exames',
+    'medicos'          => 'Médicos',
+    'medico_form'      => 'Médicos',
+    'horarios'         => 'Médicos',
+    'recepcionistas'   => 'Recepcionistas',
+    'recepcionista_form' => 'Recepcionistas',
+    'financeiro'       => 'Financeiro',
+    'relatorios'       => 'Relatórios',
+    'logs'             => 'Logs',
+];
+$titulo_acao_admin = $titulos_admin[$acao] ?? 'Dashboard';
+$inicial_admin = mb_strtoupper(mb_substr($_SESSION['nome_cliente'] ?? 'A', 0, 1));
+?>
 
-        <div class="admin-menu">
-            <a href="?acao=dashboard" class="admin-btn <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-chart-bar"></i></span><span>Dashboard</span>
-            </a>
-            <a href="?acao=clientes" class="admin-btn <?php echo $acao === 'clientes' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-users"></i></span><span>Clientes</span>
-            </a>
-            <a href="?acao=agendamentos" class="admin-btn <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-calendar-days"></i></span><span>Agendamentos</span>
-            </a>
-            <a href="?acao=especialidades" class="admin-btn <?php echo in_array($acao, ['especialidades', 'especialidade_form']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-hospital"></i></span><span>Especialidades</span>
-            </a>
-            <a href="?acao=exames" class="admin-btn <?php echo in_array($acao, ['exames', 'exame_form']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-dna"></i></span><span>Exames</span>
-            </a>
-            <a href="?acao=medicos" class="admin-btn <?php echo in_array($acao, ['medicos', 'medico_form', 'horarios']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-stethoscope"></i></span><span>Médicos</span>
-            </a>
-            <a href="?acao=recepcionistas" class="admin-btn <?php echo in_array($acao, ['recepcionistas', 'recepcionista_form']) ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-id-badge"></i></span><span>Recepcionistas</span>
-            </a>
-            <a href="?acao=financeiro" class="admin-btn <?php echo $acao === 'financeiro' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-credit-card"></i></span><span>Financeiro</span>
-            </a>
-            <a href="?acao=relatorios" class="admin-btn <?php echo $acao === 'relatorios' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-chart-line"></i></span><span>Relatórios</span>
-            </a>
-            <a href="?acao=logs" class="admin-btn <?php echo $acao === 'logs' ? 'active' : ''; ?>">
-                <span class="admin-btn-icone"><i class="fa-solid fa-file-lines"></i></span><span>Logs</span>
-            </a>
-            <a href="painel_cliente.php" class="admin-btn admin-btn-voltar">
-                <span class="admin-btn-icone"><i class="fa-solid fa-arrow-left"></i></span><span>Voltar</span>
-            </a>
+<div class="painel-wrapper">
+
+    <!-- Sidebar Admin -->
+    <aside class="sidebar sidebar-light" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar" style="background:#007b83;"><?php echo $inicial_admin; ?></div>
+            <div class="sidebar-info">
+                <div class="sidebar-nome"><?php echo htmlspecialchars($_SESSION['nome_cliente'] ?? ''); ?></div>
+                <div class="sidebar-cargo">Administrador</div>
+            </div>
         </div>
+
+        <div class="sidebar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="sidebar-search-input" placeholder="Buscar..." autocomplete="off">
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-title">Geral</div>
+            <a href="?acao=dashboard" class="sidebar-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>" data-tooltip="Dashboard">
+                <i class="fa-solid fa-chart-bar"></i><span>Dashboard</span>
+            </a>
+            <a href="?acao=agendamentos" class="sidebar-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>" data-tooltip="Agendamentos">
+                <i class="fa-solid fa-calendar-days"></i><span>Agendamentos</span>
+            </a>
+            <a href="?acao=clientes" class="sidebar-item <?php echo $acao === 'clientes' ? 'ativo' : ''; ?>" data-tooltip="Pacientes">
+                <i class="fa-solid fa-users"></i><span>Pacientes</span>
+            </a>
+
+            <div class="sidebar-section-title">Cadastros</div>
+            <a href="?acao=medicos" class="sidebar-item <?php echo in_array($acao, ['medicos', 'medico_form', 'horarios']) ? 'ativo' : ''; ?>" data-tooltip="Médicos">
+                <i class="fa-solid fa-stethoscope"></i><span>Médicos</span>
+            </a>
+            <a href="?acao=especialidades" class="sidebar-item <?php echo in_array($acao, ['especialidades', 'especialidade_form']) ? 'ativo' : ''; ?>" data-tooltip="Especialidades">
+                <i class="fa-solid fa-hospital"></i><span>Especialidades</span>
+            </a>
+            <a href="?acao=exames" class="sidebar-item <?php echo in_array($acao, ['exames', 'exame_form']) ? 'ativo' : ''; ?>" data-tooltip="Exames">
+                <i class="fa-solid fa-dna"></i><span>Exames</span>
+            </a>
+            <a href="?acao=recepcionistas" class="sidebar-item <?php echo in_array($acao, ['recepcionistas', 'recepcionista_form']) ? 'ativo' : ''; ?>" data-tooltip="Recepcionistas">
+                <i class="fa-solid fa-id-badge"></i><span>Recepcionistas</span>
+            </a>
+
+            <div class="sidebar-section-title">Ferramentas</div>
+            <a href="?acao=financeiro" class="sidebar-item <?php echo $acao === 'financeiro' ? 'ativo' : ''; ?>" data-tooltip="Financeiro">
+                <i class="fa-solid fa-credit-card"></i><span>Financeiro</span>
+            </a>
+            <a href="?acao=relatorios" class="sidebar-item <?php echo $acao === 'relatorios' ? 'ativo' : ''; ?>" data-tooltip="Relatórios">
+                <i class="fa-solid fa-chart-line"></i><span>Relatórios</span>
+            </a>
+            <a href="?acao=logs" class="sidebar-item <?php echo $acao === 'logs' ? 'ativo' : ''; ?>" data-tooltip="Logs">
+                <i class="fa-solid fa-file-lines"></i><span>Logs</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="painel_cliente.php" class="sidebar-item" data-tooltip="Voltar ao Painel" style="color:#8fa3b1;">
+                <i class="fa-solid fa-arrow-left"></i><span>Voltar ao Painel</span>
+            </a>
+            <a href="<?php echo $base_url; ?>backend/auth/deslogar.php" class="sidebar-item sidebar-sair" data-tooltip="Sair">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Sair</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Recolher barra lateral" title="Recolher barra lateral">
+                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="sidebar-main">
+        <div class="breadcrumb-bar">
+            <button class="breadcrumb-toggle" onclick="document.getElementById('sidebarToggle').click()" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="breadcrumb-path">
+                <span class="breadcrumb-root">Painel Admin</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="breadcrumb-current"><?php echo htmlspecialchars($titulo_acao_admin); ?></span>
+            </span>
+        </div>
+        <div class="painel-main">
 
         <?php if ($acao === 'dashboard'): ?>
             <!-- DASHBOARD -->
+            <?php
+                $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM clientes WHERE eh_admin = 0');
+                $stmt->execute();
+                $total_clientes = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM agendamentos WHERE status = "pendente"');
+                $stmt->execute();
+                $agendamentos_pendentes = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM agendamentos WHERE status = "confirmado"');
+                $stmt->execute();
+                $agendamentos_confirmados = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                // Agendamentos do mês atual (exclui cancelados)
+                $stmt = $conexao_db->prepare(
+                    "SELECT COUNT(*) as total FROM agendamentos
+                     WHERE status != 'cancelado'
+                     AND strftime('%Y-%m', data_hora) = strftime('%Y-%m', 'now', 'localtime')"
+                );
+                $stmt->execute();
+                $agendamentos_mes = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                // Faturamento do mês (apenas atendimentos concluídos)
+                $stmt = $conexao_db->prepare(
+                    "SELECT COALESCE(SUM(valor_total), 0) as total FROM agendamentos
+                     WHERE status = 'concluído'
+                     AND strftime('%Y-%m', data_hora) = strftime('%Y-%m', 'now', 'localtime')"
+                );
+                $stmt->execute();
+                $faturamento_mes = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                // Taxa de ocupação da semana atual: slots disponíveis (grade ativa) x agendamentos
+                $stmt = $conexao_db->prepare(
+                    'SELECT hora_inicio, hora_fim, intervalo_minutos FROM horarios_atendimento WHERE ativo = 1'
+                );
+                $stmt->execute();
+                $horarios_ativos = $stmt->get_result()->fetch_all() ?? [];
+                $stmt->close();
+
+                $slots_disponiveis = 0;
+                foreach ($horarios_ativos as $h) {
+                    $slots_disponiveis += count(gerar_slots_horario($h['hora_inicio'], $h['hora_fim'], $h['intervalo_minutos']));
+                }
+
+                $inicio_semana = (new DateTime('monday this week'))->format('Y-m-d 00:00:00');
+                $fim_semana    = (new DateTime('sunday this week'))->format('Y-m-d 23:59:59');
+
+                $stmt = $conexao_db->prepare(
+                    "SELECT COUNT(*) as total FROM agendamentos
+                     WHERE status IN ('pendente', 'confirmado', 'concluído')
+                     AND data_hora BETWEEN ? AND ?"
+                );
+                $stmt->bind_param('ss', $inicio_semana, $fim_semana);
+                $stmt->execute();
+                $agendamentos_semana = $stmt->get_result()->fetch_assoc()['total'];
+                $stmt->close();
+
+                $taxa_ocupacao = $slots_disponiveis > 0
+                    ? min(100, (int) round(($agendamentos_semana / $slots_disponiveis) * 100))
+                    : 0;
+
+                $variacao_mes          = obter_variacao_percentual($agendamentos_mes + 1);
+                $variacao_faturamento  = obter_variacao_percentual(2); // fixa o indicador "-5% este mês"
+                $variacao_ocupacao     = obter_variacao_percentual($taxa_ocupacao + 4);
+                $variacao_clientes     = obter_variacao_percentual($total_clientes);
+                $variacao_pendentes    = obter_variacao_percentual($agendamentos_pendentes + 1);
+                $variacao_confirmados  = obter_variacao_percentual($agendamentos_confirmados + 2);
+            ?>
+
             <div class="stats">
-                <?php
-                    $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM clientes WHERE eh_admin = 0');
-                    $stmt->execute();
-                    $total_clientes = $stmt->get_result()->fetch_assoc()['total'];
-                    $stmt->close();
-
-                    $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM agendamentos WHERE status = "pendente"');
-                    $stmt->execute();
-                    $agendamentos_pendentes = $stmt->get_result()->fetch_assoc()['total'];
-                    $stmt->close();
-
-                    $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM agendamentos WHERE status = "confirmado"');
-                    $stmt->execute();
-                    $agendamentos_confirmados = $stmt->get_result()->fetch_assoc()['total'];
-                    $stmt->close();
-
-                    $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM especialidades');
-                    $stmt->execute();
-                    $total_especialidades = $stmt->get_result()->fetch_assoc()['total'];
-                    $stmt->close();
-                ?>
-                <?php
-                    $variacao_clientes = obter_variacao_percentual($total_clientes);
-                    $variacao_pendentes = obter_variacao_percentual($agendamentos_pendentes + 1);
-                    $variacao_confirmados = obter_variacao_percentual($agendamentos_confirmados + 2);
-                    $variacao_especialidades = obter_variacao_percentual($total_especialidades + 3);
-                ?>
                 <div class="stat-card stat-card-primario">
+                    <div class="stat-icone pulse"><i class="fa-solid fa-calendar-days"></i></div>
+                    <h3><i class="fa-solid fa-calendar-check"></i> Agendamentos do Mês</h3>
+                    <div class="stat-number"><?php echo $agendamentos_mes; ?></div>
+                    <div class="stat-variacao <?php echo $variacao_mes['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_mes['texto']; ?></div>
+                </div>
+                <div class="stat-card stat-card-success">
+                    <div class="stat-icone pulse"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <h3><i class="fa-solid fa-dollar-sign"></i> Faturamento do Mês</h3>
+                    <div class="stat-number"><?php echo formatar_valor($faturamento_mes); ?></div>
+                    <div class="stat-variacao <?php echo $variacao_faturamento['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_faturamento['texto']; ?></div>
+                </div>
+                <div class="stat-card stat-card-warning">
+                    <div class="stat-icone pulse"><i class="fa-solid fa-gauge-high"></i></div>
+                    <h3><i class="fa-solid fa-chart-pie"></i> Taxa de Ocupação</h3>
+                    <div class="stat-number"><?php echo $taxa_ocupacao; ?>%</div>
+                    <div class="stat-variacao <?php echo $variacao_ocupacao['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_ocupacao['texto']; ?></div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-icone pulse"><i class="fa-solid fa-users"></i></div>
-                    <h3><i class="fa-solid fa-user"></i> Clientes Cadastrados</h3>
+                    <h3><i class="fa-solid fa-user"></i> Pacientes Cadastrados</h3>
                     <div class="stat-number"><?php echo $total_clientes; ?></div>
                     <div class="stat-variacao <?php echo $variacao_clientes['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_clientes['texto']; ?></div>
                 </div>
@@ -110,15 +240,9 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
                 <div class="stat-card stat-card-success">
                     <div class="stat-icone pulse"><i class="fa-solid fa-circle-check"></i></div>
-                    <h3>🗓️ Agendamentos Confirmados</h3>
+                    <h3><i class="fa-solid fa-calendar-check"></i> Agendamentos Confirmados</h3>
                     <div class="stat-number"><?php echo $agendamentos_confirmados; ?></div>
                     <div class="stat-variacao <?php echo $variacao_confirmados['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_confirmados['texto']; ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icone pulse"><i class="fa-solid fa-hospital"></i></div>
-                    <h3><i class="fa-solid fa-stethoscope"></i> Especialidades</h3>
-                    <div class="stat-number"><?php echo $total_especialidades; ?></div>
-                    <div class="stat-variacao <?php echo $variacao_especialidades['positivo'] ? 'positivo' : 'negativo'; ?>"><?php echo $variacao_especialidades['texto']; ?></div>
                 </div>
             </div>
 
@@ -430,6 +554,38 @@ require_once __DIR__ . '/../includes/header.php';
         <?php else: ?>
             <p>Ação não encontrada.</p>
         <?php endif; ?>
-    </div>
+        </div><!-- /.painel-main -->
+    </main>
+</div><!-- /.painel-wrapper -->
+
+<script>
+(function(){
+    var sidebar = document.getElementById('sidebar');
+    var btn     = document.getElementById('sidebarToggle');
+    var icon    = document.getElementById('toggleIcon');
+    var key     = 'sidebar_admin_collapsed';
+
+    function aplicar(collapsed) {
+        sidebar.classList.toggle('collapsed', collapsed);
+        icon.className = collapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+        btn.title = collapsed ? 'Expandir barra lateral' : 'Recolher barra lateral';
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
+    }
+
+    btn.addEventListener('click', function(){
+        aplicar(!sidebar.classList.contains('collapsed'));
+    });
+
+    var searchInput = document.getElementById('sidebar-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(){
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(function(el){
+                el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    }
+})();
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

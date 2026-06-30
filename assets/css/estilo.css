@@ -63,6 +63,12 @@ body {
     flex-direction: column;
 }
 
+/* Páginas de painel (sidebar fixa) não rolam no body — o scroll fica em .sidebar-main */
+body:has(.painel-wrapper) {
+    height: 100vh;
+    overflow: hidden;
+}
+
 main, .pagina-conteudo {
     flex: 1;
 }
@@ -1386,7 +1392,9 @@ body:has(.bottom-nav) .painel-container {
 
 .painel-wrapper {
     display: flex;
-    min-height: calc(100vh - var(--nav-altura));
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
     align-items: stretch;
 }
 
@@ -1397,9 +1405,6 @@ body:has(.bottom-nav) .painel-container {
     background: #1a2332;
     display: flex;
     flex-direction: column;
-    position: sticky;
-    top: var(--nav-altura);
-    height: calc(100vh - var(--nav-altura));
     overflow: hidden;
     transition: width 0.25s ease, min-width 0.25s ease;
     z-index: 100;
@@ -1479,6 +1484,29 @@ body:has(.bottom-nav) .painel-container {
     gap: 2px;
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+/* Títulos de seção (agrupamento do menu) */
+.sidebar-section-title {
+    padding: 16px 12px 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #5c7188;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar-nav .sidebar-section-title:first-child {
+    padding-top: 2px;
+}
+
+.sidebar.collapsed .sidebar-section-title {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    pointer-events: none;
 }
 
 .sidebar-item {
@@ -1580,11 +1608,107 @@ body:has(.bottom-nav) .painel-container {
     color: #fff;
 }
 
+/* Busca na sidebar */
+.sidebar-search {
+    padding: 0 12px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-search input {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 0.8rem;
+    padding: 7px 10px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.sidebar-search input::placeholder {
+    color: #6c8aa0;
+}
+
+.sidebar-search input:focus {
+    border-color: var(--cor-primaria, #007b83);
+    background: rgba(255,255,255,0.12);
+}
+
+.sidebar-search i {
+    color: #6c8aa0;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-search {
+    display: none;
+}
+
 /* Main content */
 .sidebar-main {
     flex: 1;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Breadcrumb bar */
+.breadcrumb-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 24px;
+    background: #f0f4f8;
+    border-bottom: 2px solid #dce3ea;
+    font-size: 0.85rem;
+    color: #6c757d;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.breadcrumb-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #495057;
+    font-size: 1rem;
+    padding: 4px 6px;
+    border-radius: 4px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.breadcrumb-toggle:hover {
+    background: #f1f3f5;
+    color: #212529;
+}
+
+.breadcrumb-path {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.breadcrumb-path i {
+    font-size: 0.65rem;
+    margin: 0 8px;
+    color: #adb5bd;
+}
+
+.breadcrumb-root {
+    color: #6c757d;
+}
+
+.breadcrumb-current {
+    color: #212529;
+    font-weight: 600;
 }
 
 .sidebar-main .painel-main {
@@ -1593,4 +1717,100 @@ body:has(.bottom-nav) .painel-container {
     border-radius: var(--raio);
     padding: 30px;
     box-shadow: var(--sombra);
+    flex: 1;
+}
+
+/* ====================================================
+   Sidebar CLARA — Painel Admin
+   ==================================================== */
+.sidebar.sidebar-light {
+    background: #ffffff;
+    border-right: 1px solid #e8ecef;
+}
+
+.sidebar.sidebar-light .sidebar-header {
+    border-bottom: 1px solid #eef1f3;
+}
+
+.sidebar.sidebar-light .sidebar-nome {
+    color: var(--cor-texto, #2c3e50);
+}
+
+.sidebar.sidebar-light .sidebar-cargo {
+    color: #93a0aa;
+}
+
+.sidebar.sidebar-light .sidebar-search input {
+    background: #f4f6f8;
+    border: 1px solid #e4e8eb;
+    color: var(--cor-texto, #2c3e50);
+}
+
+.sidebar.sidebar-light .sidebar-search input::placeholder {
+    color: #a3afb8;
+}
+
+.sidebar.sidebar-light .sidebar-search input:focus {
+    border-color: var(--cor-primaria, #007b83);
+    background: #fff;
+}
+
+.sidebar.sidebar-light .sidebar-search i {
+    color: #a3afb8;
+}
+
+.sidebar.sidebar-light .sidebar-section-title {
+    color: #9aa7b0;
+}
+
+.sidebar.sidebar-light .sidebar-item {
+    color: #4a5660;
+}
+
+.sidebar.sidebar-light .sidebar-item i {
+    color: #6b7884;
+}
+
+.sidebar.sidebar-light .sidebar-item:hover {
+    background: #f4f6f8;
+    color: var(--cor-texto, #2c3e50);
+}
+
+.sidebar.sidebar-light .sidebar-item:hover i {
+    color: var(--cor-texto, #2c3e50);
+}
+
+.sidebar.sidebar-light .sidebar-item.ativo {
+    background: transparent;
+    color: var(--cor-texto, #2c3e50);
+    font-weight: 700;
+}
+
+.sidebar.sidebar-light .sidebar-item.ativo i {
+    color: var(--cor-perigo, #dc3545);
+}
+
+.sidebar.sidebar-light .sidebar-footer {
+    border-top: 1px solid #eef1f3;
+}
+
+.sidebar.sidebar-light .sidebar-sair {
+    color: var(--cor-perigo, #dc3545) !important;
+}
+.sidebar.sidebar-light .sidebar-sair:hover {
+    background: #fdecea !important;
+    color: #c0392b !important;
+}
+
+.sidebar.sidebar-light .sidebar-toggle {
+    background: #f4f6f8;
+    color: #6b7884;
+}
+.sidebar.sidebar-light .sidebar-toggle:hover {
+    background: #e9edf0;
+    color: var(--cor-texto, #2c3e50);
+}
+
+.sidebar.sidebar-light.collapsed .sidebar-item[data-tooltip]:hover::after {
+    background: #2c3e50;
 }
