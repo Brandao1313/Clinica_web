@@ -52,13 +52,10 @@ $inicial_admin = mb_strtoupper(mb_substr($_SESSION['nome_cliente'] ?? 'A', 0, 1)
 <div class="painel-wrapper">
 
     <!-- Sidebar Admin -->
-    <aside class="sidebar sidebar-light" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-avatar" style="background:#007b83;"><?php echo $inicial_admin; ?></div>
-            <div class="sidebar-info">
-                <div class="sidebar-nome"><?php echo htmlspecialchars($_SESSION['nome_cliente'] ?? ''); ?></div>
-                <div class="sidebar-cargo">Administrador</div>
-            </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <img src="<?php echo $base_url; ?>assets/imagens/logo.png" alt="Logo Clínica">
+            <span class="sidebar-logo-text">Clínica Saúde<br>&amp; Bem-Estar</span>
         </div>
 
         <div class="sidebar-search">

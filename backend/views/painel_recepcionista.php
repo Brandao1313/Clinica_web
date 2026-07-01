@@ -44,12 +44,9 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- Sidebar colapsável -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-avatar" style="background:#6a1b9a;"><?php echo mb_strtoupper(mb_substr($nome_recep, 0, 1)); ?></div>
-            <div class="sidebar-info">
-                <div class="sidebar-nome"><?php echo htmlspecialchars($nome_recep); ?></div>
-                <div class="sidebar-cargo">Recepcionista</div>
-            </div>
+        <div class="sidebar-logo">
+            <img src="<?php echo $base_url; ?>assets/imagens/logo.png" alt="Logo Clínica">
+            <span class="sidebar-logo-text">Clínica Saúde<br>&amp; Bem-Estar</span>
         </div>
 
         <div class="sidebar-search">

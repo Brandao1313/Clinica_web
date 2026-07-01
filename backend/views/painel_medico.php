@@ -65,16 +65,9 @@ require_once __DIR__ . '/../includes/header.php';
 
     <!-- Sidebar colapsável -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <?php if (!empty($medico['foto'])): ?>
-                <img src="<?php echo htmlspecialchars($base_url . $medico['foto']); ?>" class="sidebar-avatar sidebar-avatar-img" alt="Foto">
-            <?php else: ?>
-                <div class="sidebar-avatar" style="background:#1565c0;"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
-            <?php endif; ?>
-            <div class="sidebar-info">
-                <div class="sidebar-nome"><?php echo htmlspecialchars($medico['nome'] ?? ''); ?></div>
-                <div class="sidebar-cargo"><?php echo htmlspecialchars($medico['nome_especialidade'] ?? 'Médico'); ?></div>
-            </div>
+        <div class="sidebar-logo">
+            <img src="<?php echo $base_url; ?>assets/imagens/logo.png" alt="Logo Clínica">
+            <span class="sidebar-logo-text">Clínica Saúde<br>&amp; Bem-Estar</span>
         </div>
 
         <div class="sidebar-search">

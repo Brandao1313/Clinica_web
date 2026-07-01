@@ -123,12 +123,9 @@ $inicial_cliente = mb_strtoupper(mb_substr($cliente['nome'] ?? 'C', 0, 1));
 
     <!-- Sidebar Cliente -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-avatar" style="background:#2e7d32;"><?php echo $inicial_cliente; ?></div>
-            <div class="sidebar-info">
-                <div class="sidebar-nome"><?php echo htmlspecialchars($cliente['nome'] ?? ''); ?></div>
-                <div class="sidebar-cargo">Paciente</div>
-            </div>
+        <div class="sidebar-logo">
+            <img src="<?php echo $base_url; ?>assets/imagens/logo.png" alt="Logo Clínica">
+            <span class="sidebar-logo-text">Clínica Saúde<br>&amp; Bem-Estar</span>
         </div>
 
         <div class="sidebar-search">
