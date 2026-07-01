@@ -65,36 +65,48 @@ elseif ($acao === 'concluir_agendamento') {
 
 // ====== CRIAR AGENDAMENTO ======
 elseif ($acao === 'criar_agendamento') {
-    $id_cliente      = intval($_POST['id_cliente'] ?? 0);
-    $tipo            = sanitizar_input($_POST['tipo'] ?? 'consulta');
-    $id_medico       = intval($_POST['id_medico'] ?? 0) ?: null;
-    $id_especialidade = intval($_POST['id_especialidade'] ?? 0) ?: null;
-    $data_hora       = sanitizar_input($_POST['data_hora'] ?? '');
-    $notas           = sanitizar_input($_POST['notas'] ?? '');
+    $id_cliente  = intval($_POST['id_cliente'] ?? 0);
+    $tipo        = sanitizar_input($_POST['tipo'] ?? 'consulta');
+    $id_medico   = intval($_POST['id_medico'] ?? 0) ?: null;
+    $id_exame    = intval($_POST['id_exame'] ?? 0) ?: null;
+    $data_hora   = sanitizar_input($_POST['data_hora'] ?? '');
+    $notas       = sanitizar_input($_POST['notas'] ?? '');
 
     $erros = [];
 
-    if ($id_cliente <= 0)       $erros[] = 'Selecione um paciente.';
-    if (empty($data_hora))      $erros[] = 'Informe a data e hora.';
+    if ($id_cliente <= 0)   $erros[] = 'Informe o paciente cadastrado.';
+    if (empty($data_hora))  $erros[] = 'Informe a data e hora.';
     if (!in_array($tipo, ['consulta','exame'])) $erros[] = 'Tipo inválido.';
+    if ($tipo === 'consulta' && !$id_medico) $erros[] = 'Selecione o médico para a consulta.';
+    if ($tipo === 'exame' && !$id_exame)     $erros[] = 'Selecione o exame.';
 
     if (empty($erros)) {
-        // Valor e médico
         $valor = 0;
-        if ($id_medico) {
-            $stmt = $conexao_db->prepare('SELECT valor_consulta FROM medicos WHERE id=?');
+        $id_especialidade = null;
+
+        if ($tipo === 'consulta' && $id_medico) {
+            $stmt = $conexao_db->prepare('SELECT valor_consulta, id_especialidade FROM medicos WHERE id=?');
             $stmt->bind_param('i', $id_medico);
             $stmt->execute();
             $row = $stmt->get_result()->fetch_assoc();
             $valor = $row['valor_consulta'] ?? 0;
+            $id_especialidade = $row['id_especialidade'] ?? null;
             $stmt->close();
+        } elseif ($tipo === 'exame' && $id_exame) {
+            $stmt = $conexao_db->prepare('SELECT preco FROM exames WHERE id=?');
+            $stmt->bind_param('i', $id_exame);
+            $stmt->execute();
+            $row = $stmt->get_result()->fetch_assoc();
+            $valor = $row['preco'] ?? 0;
+            $stmt->close();
+            $id_medico = null;
         }
 
         $stmt = $conexao_db->prepare(
-            'INSERT INTO agendamentos (id_cliente, tipo, id_especialidade, id_medico, data_hora, status, notas, valor_total)
-             VALUES (?, ?, ?, ?, ?, "pendente", ?, ?)'
+            'INSERT INTO agendamentos (id_cliente, tipo, id_especialidade, id_exame, id_medico, data_hora, status, notas, valor_total)
+             VALUES (?, ?, ?, ?, ?, ?, "pendente", ?, ?)'
         );
-        $stmt->bind_param('isiissd', $id_cliente, $tipo, $id_especialidade, $id_medico, $data_hora, $notas, $valor);
+        $stmt->bind_param('isiiissd', $id_cliente, $tipo, $id_especialidade, $id_exame, $id_medico, $data_hora, $notas, $valor);
 
         if ($stmt->execute()) {
             log_acao('RECEP_CRIAR_AGENDAMENTO', $_SESSION['id_cliente'], "Cliente: $id_cliente | $tipo | $data_hora");

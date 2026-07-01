@@ -133,7 +133,7 @@ $titulo_acao_recep = $titulos_recep[$acao] ?? 'Dashboard';
             $stmt = $conexao_db->prepare("SELECT COUNT(*) as t FROM agendamentos WHERE status = 'confirmado' AND data_hora >= datetime('now','localtime')");
             $stmt->execute(); $confirmados = $stmt->get_result()->fetch_assoc()['t']; $stmt->close();
 
-            $stmt = $conexao_db->prepare("SELECT COUNT(*) as t FROM clientes WHERE eh_admin = 0 AND eh_recepcionista = 0");
+            $stmt = $conexao_db->prepare("SELECT COUNT(*) as t FROM clientes WHERE tipo = 'cliente'");
             $stmt->execute(); $total_clientes = $stmt->get_result()->fetch_assoc()['t']; $stmt->close();
 
             // Próximas do dia
@@ -334,56 +334,75 @@ $titulo_acao_recep = $titulos_recep[$acao] ?? 'Dashboard';
 
         <?php /* ===== NOVO AGENDAMENTO ===== */ elseif ($acao === 'novo_agendamento'): ?>
             <?php
-            $stmt = $conexao_db->prepare("SELECT id, nome, email FROM clientes WHERE eh_admin=0 AND eh_recepcionista=0 AND ativo=1 ORDER BY nome");
-            $stmt->execute(); $lista_clientes = $stmt->get_result()->fetch_all() ?? []; $stmt->close();
+            $lista_clientes_json = [];
+            $stmt = $conexao_db->prepare("SELECT id, nome FROM clientes WHERE tipo = 'cliente' AND ativo=1 ORDER BY nome");
+            $stmt->execute();
+            while ($row = $stmt->get_result()->fetch_assoc()) { $lista_clientes_json[] = $row; }
+            $stmt->close();
 
             $stmt = $conexao_db->prepare("SELECT m.id, m.nome, e.nome AS especialidade FROM medicos m LEFT JOIN especialidades e ON e.id=m.id_especialidade WHERE m.ativo=1 ORDER BY m.nome");
             $stmt->execute(); $lista_medicos = $stmt->get_result()->fetch_all() ?? []; $stmt->close();
 
-            $stmt = $conexao_db->prepare("SELECT id, nome FROM especialidades WHERE ativo=1 ORDER BY nome");
-            $stmt->execute(); $lista_esp = $stmt->get_result()->fetch_all() ?? []; $stmt->close();
+            $stmt = $conexao_db->prepare("SELECT id, nome, preco FROM exames WHERE ativo=1 ORDER BY nome");
+            $stmt->execute(); $lista_exames = $stmt->get_result()->fetch_all() ?? []; $stmt->close();
             ?>
 
             <h2>Novo Agendamento</h2>
 
-            <form method="POST" action="../../backend/controllers/recepcionista_controller.php" style="max-width:560px;">
+            <form method="POST" action="../../backend/controllers/recepcionista_controller.php" style="max-width:560px;" id="form-agendamento">
                 <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
                 <input type="hidden" name="acao" value="criar_agendamento">
 
                 <div class="form-grupo">
                     <div class="form-grupo-titulo"><i class="fa-solid fa-user"></i> Paciente</div>
-                    <label>Paciente *</label>
-                    <select name="id_cliente" required style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
-                        <option value="">-- Selecione o paciente --</option>
-                        <?php foreach ($lista_clientes as $cl): ?>
-                            <option value="<?php echo $cl['id']; ?>"><?php echo htmlspecialchars($cl['nome']); ?> (<?php echo htmlspecialchars($cl['email']); ?>)</option>
+                    <label>Nome do Paciente *</label>
+                    <input type="text" id="busca-paciente" list="datalist-pacientes"
+                           placeholder="Digite o nome do paciente..."
+                           autocomplete="off" required
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:4px;box-sizing:border-box;">
+                    <datalist id="datalist-pacientes">
+                        <?php foreach ($lista_clientes_json as $cl): ?>
+                            <option value="<?php echo htmlspecialchars($cl['nome']); ?>">
                         <?php endforeach; ?>
-                    </select>
+                    </datalist>
+                    <input type="hidden" name="id_cliente" id="id-cliente-hidden">
+                    <div id="aviso-paciente" style="display:none;margin-top:6px;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span style="color:#e74c3c;font-size:0.82rem;"><i class="fa-solid fa-circle-exclamation"></i> Paciente não encontrado no cadastro.</span>
+                        <button type="button" onclick="abrirModalCadastro()" style="background:#0f7675;color:#fff;border:none;border-radius:6px;padding:4px 12px;font-size:0.8rem;cursor:pointer;">+ Cadastrar novo</button>
+                    </div>
                 </div>
 
                 <div class="form-grupo">
                     <div class="form-grupo-titulo"><i class="fa-solid fa-calendar-days"></i> Agendamento</div>
+
                     <label>Tipo *</label>
-                    <select name="tipo" required style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
+                    <select name="tipo" id="tipo-select" required onchange="toggleTipo(this.value)"
+                            style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
                         <option value="consulta">Consulta</option>
                         <option value="exame">Exame</option>
                     </select>
 
-                    <label>Médico</label>
-                    <select name="id_medico" style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
-                        <option value="">-- Sem médico específico --</option>
-                        <?php foreach ($lista_medicos as $m): ?>
-                            <option value="<?php echo $m['id']; ?>"><?php echo htmlspecialchars($m['nome']); ?> — <?php echo htmlspecialchars($m['especialidade'] ?? ''); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div id="secao-consulta">
+                        <label>Médico *</label>
+                        <select name="id_medico" id="select-medico" required
+                                style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
+                            <option value="">-- Selecione o médico --</option>
+                            <?php foreach ($lista_medicos as $m): ?>
+                                <option value="<?php echo $m['id']; ?>"><?php echo htmlspecialchars($m['nome']); ?> — <?php echo htmlspecialchars($m['especialidade'] ?? ''); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
-                    <label>Especialidade</label>
-                    <select name="id_especialidade" style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
-                        <option value="">-- Nenhuma --</option>
-                        <?php foreach ($lista_esp as $esp): ?>
-                            <option value="<?php echo $esp['id']; ?>"><?php echo htmlspecialchars($esp['nome']); ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div id="secao-exame" style="display:none;">
+                        <label>Exame *</label>
+                        <select name="id_exame" id="select-exame"
+                                style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:5px;margin-bottom:12px;">
+                            <option value="">-- Selecione o exame --</option>
+                            <?php foreach ($lista_exames as $ex): ?>
+                                <option value="<?php echo $ex['id']; ?>"><?php echo htmlspecialchars($ex['nome']); ?> — R$ <?php echo number_format($ex['preco'], 2, ',', '.'); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
 
                     <label>Data e Hora *</label>
                     <input type="datetime-local" name="data_hora" required
@@ -398,10 +417,169 @@ $titulo_acao_recep = $titulos_recep[$acao] ?? 'Dashboard';
                 <a href="?acao=dashboard" class="btn-action secondary">Cancelar</a>
             </form>
 
+            <!-- Modal: Cadastro Rápido de Paciente -->
+            <div id="modal-cadastro" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;">
+                <div style="background:#fff;border-radius:12px;padding:28px 32px;width:460px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+                        <h3 style="margin:0;color:#1a2332;font-size:1.1rem;"><i class="fa-solid fa-user-plus"></i> Cadastrar Novo Paciente</h3>
+                        <button type="button" onclick="fecharModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;line-height:1;">&times;</button>
+                    </div>
+                    <div id="modal-erros" style="display:none;background:#fdecea;border:1px solid #f44336;border-radius:6px;padding:10px;margin-bottom:14px;font-size:0.84rem;color:#c62828;"></div>
+
+                    <label style="font-size:0.85rem;font-weight:600;color:#4a5660;display:block;margin-bottom:4px;">Nome Completo *</label>
+                    <input type="text" id="m-nome" placeholder="Nome completo do paciente"
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:12px;box-sizing:border-box;font-size:0.9rem;">
+
+                    <label style="font-size:0.85rem;font-weight:600;color:#4a5660;display:block;margin-bottom:4px;">Data de Nascimento *</label>
+                    <input type="date" id="m-nascimento"
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:12px;box-sizing:border-box;font-size:0.9rem;">
+
+                    <label style="font-size:0.85rem;font-weight:600;color:#4a5660;display:block;margin-bottom:4px;">CPF *</label>
+                    <input type="text" id="m-cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)"
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:12px;box-sizing:border-box;font-size:0.9rem;">
+
+                    <label style="font-size:0.85rem;font-weight:600;color:#4a5660;display:block;margin-bottom:4px;">Telefone / WhatsApp *</label>
+                    <input type="text" id="m-telefone" placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTel(this)"
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:12px;box-sizing:border-box;font-size:0.9rem;">
+
+                    <label style="font-size:0.85rem;font-weight:600;color:#4a5660;display:block;margin-bottom:4px;">E-mail <span style="font-weight:400;color:#999;">(opcional)</span></label>
+                    <input type="email" id="m-email" placeholder="email@exemplo.com"
+                           style="width:100%;padding:10px;border:1px solid #e0e0e0;border-radius:6px;margin-bottom:18px;box-sizing:border-box;font-size:0.9rem;">
+
+                    <div style="display:flex;gap:10px;">
+                        <button type="button" id="btn-salvar-modal" onclick="salvarPaciente()"
+                                style="flex:1;background:#0f7675;color:#fff;border:none;border-radius:8px;padding:11px;font-size:0.95rem;font-weight:600;cursor:pointer;">
+                            <i class="fa-solid fa-floppy-disk"></i> Salvar e Continuar
+                        </button>
+                        <button type="button" onclick="fecharModal()"
+                                style="flex:1;background:#f4f6f8;color:#4a5660;border:1px solid #dde1e4;border-radius:8px;padding:11px;font-size:0.95rem;cursor:pointer;">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+            const _pacientes  = <?php echo json_encode($lista_clientes_json); ?>;
+            const _csrfToken  = '<?php echo htmlspecialchars(gerar_token_csrf()); ?>';
+
+            document.getElementById('busca-paciente').addEventListener('input', function() {
+                const val   = this.value.trim().toLowerCase();
+                const match = _pacientes.find(c => c.nome.toLowerCase() === val);
+                const aviso = document.getElementById('aviso-paciente');
+                const hidden = document.getElementById('id-cliente-hidden');
+                if (match) {
+                    hidden.value = match.id;
+                    aviso.style.display = 'none';
+                } else {
+                    hidden.value = '';
+                    aviso.style.display = val.length > 0 ? 'flex' : 'none';
+                }
+            });
+
+            function toggleTipo(val) {
+                const secConsulta = document.getElementById('secao-consulta');
+                const secExame    = document.getElementById('secao-exame');
+                const selMedico   = document.getElementById('select-medico');
+                const selExame    = document.getElementById('select-exame');
+                if (val === 'consulta') {
+                    secConsulta.style.display = '';
+                    secExame.style.display    = 'none';
+                    selMedico.required = true;
+                    selExame.required  = false;
+                    selExame.value     = '';
+                } else {
+                    secConsulta.style.display = 'none';
+                    secExame.style.display    = '';
+                    selMedico.required = false;
+                    selExame.required  = true;
+                    selMedico.value    = '';
+                }
+            }
+
+            function abrirModalCadastro() {
+                document.getElementById('m-nome').value      = document.getElementById('busca-paciente').value.trim();
+                document.getElementById('m-nascimento').value = '';
+                document.getElementById('m-cpf').value       = '';
+                document.getElementById('m-telefone').value  = '';
+                document.getElementById('m-email').value     = '';
+                document.getElementById('modal-erros').style.display = 'none';
+                document.getElementById('modal-cadastro').style.display = 'flex';
+                document.getElementById('m-nome').focus();
+            }
+
+            function fecharModal() {
+                document.getElementById('modal-cadastro').style.display = 'none';
+            }
+
+            async function salvarPaciente() {
+                const btn = document.getElementById('btn-salvar-modal');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+                const fd = new FormData();
+                fd.append('csrf_token',      _csrfToken);
+                fd.append('nome',            document.getElementById('m-nome').value.trim());
+                fd.append('data_nascimento', document.getElementById('m-nascimento').value);
+                fd.append('cpf',             document.getElementById('m-cpf').value.replace(/\D/g, ''));
+                fd.append('telefone',        document.getElementById('m-telefone').value.replace(/\D/g, ''));
+                fd.append('email',           document.getElementById('m-email').value.trim());
+
+                try {
+                    const resp = await fetch('../../backend/controllers/cadastrar_paciente_rapido.php', {
+                        method: 'POST', body: fd
+                    });
+                    const data = await resp.json();
+
+                    if (data.sucesso) {
+                        _pacientes.push({ id: data.id, nome: data.nome });
+                        const opt = document.createElement('option');
+                        opt.value = data.nome;
+                        document.getElementById('datalist-pacientes').appendChild(opt);
+                        document.getElementById('busca-paciente').value       = data.nome;
+                        document.getElementById('id-cliente-hidden').value    = data.id;
+                        document.getElementById('aviso-paciente').style.display = 'none';
+                        fecharModal();
+                    } else {
+                        const el = document.getElementById('modal-erros');
+                        el.innerHTML = (data.erros || ['Erro desconhecido.']).join('<br>');
+                        el.style.display = 'block';
+                    }
+                } catch (e) {
+                    const el = document.getElementById('modal-erros');
+                    el.textContent = 'Erro de conexão. Tente novamente.';
+                    el.style.display = 'block';
+                }
+
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Salvar e Continuar';
+            }
+
+            function mascaraCPF(el) {
+                let v = el.value.replace(/\D/g, '').slice(0, 11);
+                if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+                else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1.$2.$3');
+                else if (v.length > 3) v = v.replace(/(\d{3})(\d{0,3})/, '$1.$2');
+                el.value = v;
+            }
+
+            function mascaraTel(el) {
+                let v = el.value.replace(/\D/g, '').slice(0, 11);
+                if (v.length > 10)     v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                else if (v.length > 6) v = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+                else if (v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+                el.value = v;
+            }
+
+            document.getElementById('modal-cadastro').addEventListener('click', function(e) {
+                if (e.target === this) fecharModal();
+            });
+            </script>
+
         <?php /* ===== PACIENTES ===== */ elseif ($acao === 'clientes'): ?>
             <?php
             $busca = sanitizar_input($_GET['busca'] ?? '');
-            $where = "eh_admin = 0 AND eh_recepcionista = 0";
+            $where = "tipo = 'cliente'";
             $params = []; $tipos = '';
             if (!empty($busca)) {
                 $where .= " AND (nome LIKE ? OR email LIKE ? OR cpf LIKE ?)";
