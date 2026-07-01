@@ -389,9 +389,6 @@ $inicial_cliente = mb_strtoupper(mb_substr($cliente['nome'] ?? 'C', 0, 1));
                         <?php if ($filtro_status || $filtro_tipo): ?>
                             <a href="?acao=agendamentos" class="btn-action secondary">Limpar</a>
                         <?php endif; ?>
-                        <a href="../../backend/controllers/exportar_controller.php?tipo=agendamentos" class="btn-action secondary" title="Exportar CSV">
-                            <i class="fa-solid fa-file-csv"></i> CSV
-                        </a>
                     </div>
                 </form>
 
