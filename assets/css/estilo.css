@@ -151,7 +151,7 @@ nav img {
     border-radius: var(--raio);
     border: none;
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
     box-shadow: 0 4px 6px rgba(0, 123, 131, 0.15);
 }
 
@@ -162,7 +162,6 @@ nav img {
 .btn-sobre:hover,
 .admin-btn:hover {
     background: var(--cor-primaria-escura);
-    transform: translateY(-2px);
 }
 
 .btn-secondary,
@@ -367,7 +366,6 @@ nav img {
 
 .btn-hero:hover {
     background: rgba(255, 255, 255, 0.92);
-    transform: translateY(-2px);
 }
 
 .btn-hero-outline {
@@ -1025,7 +1023,7 @@ table tr:hover {
     transition: background 0.15s;
     margin-right: 8px;
 }
-.btn-action:hover { background: var(--cor-secundaria); }
+.btn-action:hover { background: var(--cor-primaria-escura); }
 .btn-action.secondary {
     background: transparent;
     color: var(--cor-primaria);
