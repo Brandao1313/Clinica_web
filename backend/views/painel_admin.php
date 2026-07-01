@@ -248,7 +248,7 @@ $inicial_admin = mb_strtoupper(mb_substr($_SESSION['nome_cliente'] ?? 'A', 0, 1)
             <h3>Clientes Cadastrados</h3>
 
             <?php
-                $stmt = $conexao_db->prepare('SELECT COUNT(*) as total FROM clientes WHERE eh_admin = 0');
+                $stmt = $conexao_db->prepare("SELECT COUNT(*) as total FROM clientes WHERE tipo = 'cliente'");
                 $stmt->execute();
                 $total = $stmt->get_result()->fetch_assoc()['total'];
                 $stmt->close();
@@ -256,7 +256,7 @@ $inicial_admin = mb_strtoupper(mb_substr($_SESSION['nome_cliente'] ?? 'A', 0, 1)
                 $total_paginas = ceil($total / $itens_por_pagina);
 
                 $stmt = $conexao_db->prepare(
-                    'SELECT id, nome, email, cpf, telefone, data_cadastro, ativo FROM clientes WHERE eh_admin = 0 ORDER BY data_cadastro DESC LIMIT ? OFFSET ?'
+                    "SELECT id, nome, email, cpf, telefone, data_cadastro, ativo FROM clientes WHERE tipo = 'cliente' ORDER BY data_cadastro DESC LIMIT ? OFFSET ?"
                 );
                 $stmt->bind_param('ii', $itens_por_pagina, $offset);
                 $stmt->execute();
