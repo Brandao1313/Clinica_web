@@ -1514,6 +1514,17 @@ body:has(.bottom-nav) .painel-container {
     overflow-x: hidden;
 }
 
+/* Reset: anula os estilos do seletor "nav" global neste elemento */
+nav.sidebar-nav {
+    position: static;
+    top: auto;
+    left: auto;
+    width: auto;
+    z-index: auto;
+    background: transparent;
+    box-shadow: none;
+}
+
 /* Títulos de seção (agrupamento do menu) */
 .sidebar-section-title {
     padding: 16px 12px 6px;
