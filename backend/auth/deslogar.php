@@ -21,6 +21,6 @@ session_destroy();
 set_flash_message('logout', SUCESSO_LOGOUT, 'sucesso');
 
 // Redirecionar para index
-redirect('index.html');
+redirect('index.php');
 
 ?>

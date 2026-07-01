@@ -1,7 +1,10 @@
 # Configurações sensíveis
-backend/config/config.php
 .env
 .env.local
+
+# Banco de dados local (SQLite)
+database/*.sqlite
+database/*.sqlite-journal
 
 # Arquivos de sistema
 .DS_Store
@@ -16,9 +19,18 @@ Thumbs.db
 *.code-workspace
 
 # Logs
+logs/*.log
+logs/*.txt
 *.log
 error.log
+
+# Uploads de imagens de médicos (rastreia o diretório, ignora os arquivos)
+assets/imagens/medicos/*
+!assets/imagens/medicos/.gitkeep
 
 # Cache
 __pycache__/
 *.pyc
+
+# Configurações locais do Claude Code (permissões específicas da máquina)
+.claude/settings.local.json

@@ -71,12 +71,40 @@ function is_autenticado() {
     return isset($_SESSION['id_cliente']) && !empty($_SESSION['id_cliente']);
 }
 
-/**
- * Verificar se usuário é admin
- * @return bool
- */
 function is_admin() {
-    return is_autenticado() && isset($_SESSION['eh_admin']) && $_SESSION['eh_admin'] == 1;
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'admin';
+}
+
+function is_medico() {
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'medico';
+}
+
+function is_recepcionista() {
+    return is_autenticado() && ($_SESSION['tipo_usuario'] ?? '') === 'recepcionista';
+}
+
+function require_cliente() {
+    require_login();
+    $tipo = $_SESSION['tipo_usuario'] ?? 'cliente';
+    switch ($tipo) {
+        case 'admin':         redirect('backend/views/painel_admin.php');
+        case 'medico':        redirect('backend/views/painel_medico.php');
+        case 'recepcionista': redirect('backend/views/painel_recepcionista.php');
+    }
+}
+
+function require_medico() {
+    require_login();
+    if (!is_medico()) {
+        redirect('backend/views/painel_cliente.php');
+    }
+}
+
+function require_recepcionista() {
+    require_login();
+    if (!is_recepcionista()) {
+        redirect('backend/views/painel_cliente.php');
+    }
 }
 
 /**
@@ -90,7 +118,7 @@ function require_login($pagina_retorno = null) {
         if ($pagina_retorno) {
             $_SESSION['pagina_retorno'] = $pagina_retorno;
         }
-        header('Location: ' . SITE_URL . '/cadastro/login.html');
+        header('Location: ' . SITE_URL . '/cadastro/login.php');
         exit;
     }
 }
@@ -103,7 +131,7 @@ function require_admin() {
     require_login();
     if (!is_admin()) {
         $_SESSION['mensagem_erro'] = ERRO_NAO_ADMIN;
-        header('Location: ' . SITE_URL . '/index.html');
+        header('Location: ' . SITE_URL . '/index.php');
         exit;
     }
 }

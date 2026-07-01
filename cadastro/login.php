@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // ====================================================
 // ARQUIVO: cadastro/login.php
 // Descrição: Página de login
@@ -7,206 +7,97 @@
 require_once __DIR__ . '/../backend/config/config.php';
 require_once __DIR__ . '/../backend/utils/seguranca.php';
 
+$base_url = '../';
+$titulo_pagina = 'Login - Clínica Saúde & Bem-Estar';
+require_once __DIR__ . '/../backend/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Clínica</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <div class="auth-page">
+        <div class="auth-card">
+            <h1>Entrar</h1>
+            <h2>Faça login para acessar sua conta</h2>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #81f1d5 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+            <?php
+                $erros_login      = $_SESSION['erros_login'] ?? [];
+                unset($_SESSION['erros_login']);
+                $flash            = get_flash_message('registro');
+                $flash_logout     = get_flash_message('logout');
+                $flash_reset      = get_flash_message('reset');
+                $flash_expirada   = get_flash_message('sessao_expirada');
+            ?>
+            <?php if (!empty($erros_login) || $flash || $flash_logout || $flash_reset || $flash_expirada): ?>
+                <div class="flash-container" role="status" aria-live="polite">
+                    <?php foreach ($erros_login as $erro): ?>
+                        <div class="flash-toast flash-erro">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-xmark"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($erro); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if ($flash): ?>
+                        <div class="flash-toast flash-sucesso">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($flash_logout): ?>
+                        <div class="flash-toast flash-sucesso">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_logout['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($flash_reset): ?>
+                        <div class="flash-toast flash-sucesso">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-circle-check"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_reset['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso"></span>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($flash_expirada): ?>
+                        <div class="flash-toast" style="border-left-color: var(--cor-aviso);">
+                            <span class="flash-toast-icone"><i class="fa-solid fa-clock"></i></span>
+                            <span class="flash-toast-texto"><?php echo htmlspecialchars($flash_expirada['mensagem']); ?></span>
+                            <button type="button" class="flash-toast-fechar" aria-label="Fechar">&times;</button>
+                            <span class="flash-toast-progresso" style="background: var(--cor-aviso);"></span>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
 
-        .container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
+            <form method="POST" action="../backend/auth/logar.php">
+                <input type="hidden" name="csrf_token" value="<?php echo gerar_token_csrf(); ?>">
+                <div class="form-grupo">
+                    <div class="form-grupo-titulo"><i class="fa-solid fa-key"></i> Dados de acesso</div>
 
-        h1 {
-            color: #0e9c1e;
-            margin-bottom: 10px;
-            font-size: 32px;
-        }
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($_SESSION['email_login'] ?? ''); ?>" required>
+                        <?php if (!empty($erros_login)): ?>
+                            <div class="campo-erro">Verifique seu email e senha</div>
+                        <?php endif; ?>
+                    </div>
 
-        h2 {
-            color: #555;
-            font-size: 16px;
-            font-weight: 400;
-            margin-bottom: 30px;
-        }
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                </div>
 
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
+                <div class="button-group">
+                    <button type="submit">Entrar</button>
+                    <a class="link-button" href="esqueci_senha.php">Esqueci minha senha</a>
+                    <a class="link-button" href="criar_conta.php">Criar conta</a>
+                </div>
+            </form>
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #2ef76e;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.2);
-        }
-
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 30px;
-        }
-
-        button {
-            padding: 12px;
-            font-size: 14px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        button[type="submit"] {
-            background: linear-gradient(135deg, #667eea 0%, #864ba2 100%);
-            color: white;
-        }
-
-        button[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        button[type="button"] {
-            background: #cecdcd;
-            color: #333;
-        }
-
-        button[type="button"]:hover {
-            background: #d1f1e9;
-            transform: translateY(-2px);
-        }
-
-        .link-button {
-            display: inline-block;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 5px;
-            background: #f0f0f0;
-            color: #333;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .link-button:hover {
-            background: #e0e0e0;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .alert {
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border: 1px solid;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-            color: #721c24;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-            color: #155724;
-        }
-
-        .alert p {
-            margin: 5px 0;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <h1>Entrar</h1>
-        <h2>Faça login para acessar sua conta</h2>
-
-        <?php if (isset($_SESSION['erros_login']) && !empty($_SESSION['erros_login'])): ?>
-            <div class="alert alert-danger">
-                <?php foreach ($_SESSION['erros_login'] as $erro): ?>
-                    <p>❌ <?php echo htmlspecialchars($erro); ?></p>
-                <?php endforeach; ?>
-                <?php unset($_SESSION['erros_login']); ?>
-            </div>
-        <?php endif; ?>
-
-        <?php
-            $flash = get_flash_message('registro');
-            if ($flash):
-        ?>
-            <div class="alert alert-success">
-                ✅ <?php echo htmlspecialchars($flash['mensagem']); ?>
-            </div>
-        <?php endif; ?>
-
-        <form method="POST" action="../backend/auth/logar.php">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($_SESSION['email_login'] ?? ''); ?>" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-
-            <div class="button-group">
-                <button type="submit">Entrar</button>
-                <a class="link-button" href="esqueci_senha.php">Esqueci minha senha</a>
-                <a class="link-button" href="criar_conta.php">Criar conta</a>
-            </div>
-        </form>
-
-        <?php unset($_SESSION['email_login']); ?>
+            <?php unset($_SESSION['email_login']); ?>
+        </div>
     </div>
-</body>
 
-</html>
+<?php require_once __DIR__ . '/../backend/includes/footer.php'; ?>

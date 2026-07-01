@@ -1,0 +1,103 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/flash.css
+   Descrição: Mensagens flash flutuantes (toasts)
+   ==================================================== */
+
+.flash-container {
+    position: fixed;
+    top: calc(var(--nav-altura) + 16px);
+    right: 16px;
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(360px, calc(100vw - 32px));
+}
+
+.flash-toast {
+    position: relative;
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-hover);
+    padding: 14px 16px;
+    padding-right: 36px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    overflow: hidden;
+    border-left: 4px solid var(--cor-primaria);
+    animation: flash-entrar 0.25s ease;
+}
+
+@keyframes flash-entrar {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.flash-toast.flash-sucesso {
+    border-left-color: var(--cor-destaque);
+}
+
+.flash-toast.flash-erro {
+    border-left-color: var(--cor-perigo);
+}
+
+.flash-toast-icone {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.flash-toast-texto {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--cor-texto);
+    line-height: 1.4;
+}
+
+.flash-toast-texto p {
+    margin: 4px 0;
+}
+
+.flash-toast-fechar {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    color: var(--cor-texto-claro);
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.flash-toast-progresso {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: var(--cor-primaria);
+    transform-origin: left;
+    animation: flash-progresso 5s linear forwards;
+}
+
+.flash-toast.flash-sucesso .flash-toast-progresso {
+    background: var(--cor-destaque);
+}
+
+.flash-toast.flash-erro .flash-toast-progresso {
+    background: var(--cor-perigo);
+}
+
+@keyframes flash-progresso {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+@media (max-width: 480px) {
+    .flash-container {
+        left: 16px;
+        right: 16px;
+        width: auto;
+    }
+}

@@ -1,0 +1,158 @@
+/* ====================================================
+   ARQUIVO: assets/css/components/menu.css
+   Descrição: Sidebar do painel do cliente e menu do
+              painel administrativo
+   ==================================================== */
+
+/* ---------- Sidebar (painel cliente) ---------- */
+.painel-sidebar {
+    background: var(--cor-card);
+    border-radius: var(--raio);
+    padding: 20px;
+    box-shadow: var(--sombra);
+    height: fit-content;
+    position: sticky;
+    top: calc(var(--nav-altura) + 20px);
+}
+
+.painel-sidebar h3 {
+    color: var(--cor-primaria);
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: var(--cor-texto);
+    font-weight: 600;
+    border-radius: var(--raio);
+    background: #f5f5f5;
+    border: 1px solid transparent;
+    border-left: 4px solid transparent;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.menu-item-icone {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    border-radius: 50%;
+    background: var(--cor-card);
+    transition: background 0.2s ease;
+}
+
+.menu-item-seta {
+    margin-left: auto;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.menu-item:hover .menu-item-seta {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.menu-item:hover {
+    transform: translateX(4px);
+    box-shadow: var(--sombra);
+    border-color: var(--cor-primaria);
+}
+
+.menu-item:hover,
+.menu-item.active {
+    background: var(--cor-primaria);
+    color: white;
+}
+
+.menu-item.active {
+    border-left-color: var(--cor-destaque);
+    box-shadow: var(--sombra);
+}
+
+.menu-item:hover .menu-item-icone,
+.menu-item.active .menu-item-icone {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-item-sair {
+    margin-top: 16px;
+    border-top: 1px solid var(--cor-borda);
+    padding-top: 12px;
+    color: var(--cor-perigo);
+}
+
+.menu-item-sair:hover {
+    background: var(--cor-perigo);
+    border-color: var(--cor-perigo);
+}
+
+/* ---------- Menu do painel administrativo ---------- */
+.admin-menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.admin-menu .admin-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 18px 10px;
+    background: var(--cor-card);
+    color: var(--cor-texto);
+    text-align: center;
+    border-radius: var(--raio-grande);
+    border: 1px solid var(--cor-borda);
+    border-left: 4px solid var(--cor-primaria);
+    border-top: none;
+    box-shadow: var(--sombra);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.admin-menu .admin-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+    background: var(--cor-card);
+}
+
+.admin-menu .admin-btn.active {
+    background: var(--cor-primaria);
+    color: #ffffff;
+    border-left-color: var(--cor-destaque);
+}
+
+.admin-menu .admin-btn.active .admin-btn-icone {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.admin-menu .admin-btn-voltar {
+    border-left-color: var(--cor-texto-claro);
+}
+
+.admin-btn-icone {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    border-radius: 50%;
+    background: var(--cor-primaria-clara);
+}
