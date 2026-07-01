@@ -45,11 +45,16 @@ require_once __DIR__ . '/../includes/header.php';
     <!-- Sidebar colapsável -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-avatar"><?php echo mb_strtoupper(mb_substr($nome_recep, 0, 1)); ?></div>
+            <div class="sidebar-avatar" style="background:#6a1b9a;"><?php echo mb_strtoupper(mb_substr($nome_recep, 0, 1)); ?></div>
             <div class="sidebar-info">
                 <div class="sidebar-nome"><?php echo htmlspecialchars($nome_recep); ?></div>
                 <div class="sidebar-cargo">Recepcionista</div>
             </div>
+        </div>
+
+        <div class="sidebar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="sidebar-search-input" placeholder="Buscar..." autocomplete="off">
         </div>
 
         <nav class="sidebar-nav">
@@ -86,8 +91,29 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </aside>
 
+<?php
+$titulos_recep = [
+    'dashboard'        => 'Dashboard',
+    'agendamentos'     => 'Agendamentos',
+    'novo_agendamento' => 'Novo Agendamento',
+    'clientes'         => 'Pacientes',
+    'medicos'          => 'Médicos',
+];
+$titulo_acao_recep = $titulos_recep[$acao] ?? 'Dashboard';
+?>
+
     <!-- Main -->
     <main class="sidebar-main">
+        <div class="breadcrumb-bar">
+            <button class="breadcrumb-toggle" onclick="document.getElementById('sidebarToggle').click()" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="breadcrumb-path">
+                <span class="breadcrumb-root">Painel Recepcionista</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="breadcrumb-current"><?php echo htmlspecialchars($titulo_acao_recep); ?></span>
+            </span>
+        </div>
         <div class="painel-main">
 
         <?php if (!empty($_SESSION['erros_recep'])): ?>
@@ -479,12 +505,19 @@ require_once __DIR__ . '/../includes/header.php';
         try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
     }
 
-    // Restaurar estado salvo
-    try { var saved = localStorage.getItem(key); if (saved === '1') aplicar(true); } catch(e){}
-
     btn.addEventListener('click', function(){
         aplicar(!sidebar.classList.contains('collapsed'));
     });
+
+    var searchInput = document.getElementById('sidebar-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(){
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(function(el){
+                el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    }
 })();
 </script>
 

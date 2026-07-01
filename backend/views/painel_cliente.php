@@ -105,37 +105,83 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-    <div class="painel-container">
-        <!-- SIDEBAR COM MENU -->
-        <aside class="painel-sidebar">
-            <h3>Menu</h3>
-            <a href="?acao=dashboard" class="menu-item <?php echo $acao === 'dashboard' ? 'active' : ''; ?>">
-                <span class="menu-item-icone"><i class="fa-solid fa-chart-bar"></i></span><span>Dashboard</span><span class="menu-item-seta">›</span>
+<?php
+$titulos_cliente = [
+    'dashboard'    => 'Dashboard',
+    'perfil'       => 'Meu Perfil',
+    'editar_perfil'=> 'Meu Perfil',
+    'alterar_senha'=> 'Meu Perfil',
+    'agendamentos' => 'Agendamentos',
+    'agendar'      => 'Novo Agendamento',
+    'exames'       => 'Solicitar Exame',
+];
+$titulo_acao_cliente = $titulos_cliente[$acao] ?? 'Dashboard';
+$inicial_cliente = mb_strtoupper(mb_substr($cliente['nome'] ?? 'C', 0, 1));
+?>
+
+<div class="painel-wrapper">
+
+    <!-- Sidebar Cliente -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar" style="background:#2e7d32;"><?php echo $inicial_cliente; ?></div>
+            <div class="sidebar-info">
+                <div class="sidebar-nome"><?php echo htmlspecialchars($cliente['nome'] ?? ''); ?></div>
+                <div class="sidebar-cargo">Paciente</div>
+            </div>
+        </div>
+
+        <div class="sidebar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="sidebar-search-input" placeholder="Buscar..." autocomplete="off">
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="?acao=dashboard" class="sidebar-item <?php echo $acao === 'dashboard' ? 'ativo' : ''; ?>" data-tooltip="Dashboard">
+                <i class="fa-solid fa-chart-bar"></i><span>Dashboard</span>
             </a>
-            <a href="?acao=perfil" class="menu-item <?php echo in_array($acao, ['perfil', 'editar_perfil', 'alterar_senha']) ? 'active' : ''; ?>">
-                <span class="menu-item-icone"><i class="fa-solid fa-user"></i></span><span>Meu Perfil</span><span class="menu-item-seta">›</span>
+            <a href="?acao=perfil" class="sidebar-item <?php echo in_array($acao, ['perfil', 'editar_perfil', 'alterar_senha']) ? 'ativo' : ''; ?>" data-tooltip="Meu Perfil">
+                <i class="fa-solid fa-user"></i><span>Meu Perfil</span>
             </a>
-            <a href="?acao=agendamentos" class="menu-item <?php echo $acao === 'agendamentos' ? 'active' : ''; ?>">
-                <span class="menu-item-icone"><i class="fa-solid fa-calendar-days"></i></span><span>Agendamentos</span><span class="menu-item-seta">›</span>
+            <a href="?acao=agendamentos" class="sidebar-item <?php echo $acao === 'agendamentos' ? 'ativo' : ''; ?>" data-tooltip="Agendamentos">
+                <i class="fa-solid fa-calendar-days"></i><span>Agendamentos</span>
             </a>
-            <a href="?acao=agendar" class="menu-item <?php echo $acao === 'agendar' ? 'active' : ''; ?>">
-                <span class="menu-item-icone"><i class="fa-solid fa-plus"></i></span><span>Agendar Consulta</span><span class="menu-item-seta">›</span>
+            <a href="?acao=agendar" class="sidebar-item <?php echo $acao === 'agendar' ? 'ativo' : ''; ?>" data-tooltip="Agendar Consulta">
+                <i class="fa-solid fa-plus"></i><span>Agendar Consulta</span>
             </a>
-            <a href="?acao=exames" class="menu-item <?php echo $acao === 'exames' ? 'active' : ''; ?>">
-                <span class="menu-item-icone"><i class="fa-solid fa-dna"></i></span><span>Solicitar Exame</span><span class="menu-item-seta">›</span>
+            <a href="?acao=exames" class="sidebar-item <?php echo $acao === 'exames' ? 'ativo' : ''; ?>" data-tooltip="Solicitar Exame">
+                <i class="fa-solid fa-dna"></i><span>Solicitar Exame</span>
             </a>
             <?php if (is_admin()): ?>
-                <a href="painel_admin.php" class="menu-item">
-                    <span class="menu-item-icone"><i class="fa-solid fa-gear"></i></span><span>Painel Admin</span><span class="menu-item-seta">›</span>
+                <a href="painel_admin.php" class="sidebar-item" data-tooltip="Painel Admin">
+                    <i class="fa-solid fa-gear"></i><span>Painel Admin</span>
                 </a>
             <?php endif; ?>
-            <a href="../auth/deslogar.php" class="menu-item menu-item-sair">
-                <span class="menu-item-icone"><i class="fa-solid fa-right-from-bracket"></i></span><span>Sair</span>
-            </a>
-        </aside>
+        </nav>
 
-        <!-- CONTEÚDO PRINCIPAL -->
-        <main class="painel-conteudo">
+        <div class="sidebar-footer">
+            <a href="../auth/deslogar.php" class="sidebar-item sidebar-sair" data-tooltip="Sair">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Sair</span>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="Recolher barra lateral" title="Recolher barra lateral">
+                <i class="fa-solid fa-angles-left" id="toggleIcon"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="sidebar-main">
+        <div class="breadcrumb-bar">
+            <button class="breadcrumb-toggle" onclick="document.getElementById('sidebarToggle').click()" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="breadcrumb-path">
+                <span class="breadcrumb-root">Meu Painel</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="breadcrumb-current"><?php echo htmlspecialchars($titulo_acao_cliente); ?></span>
+            </span>
+        </div>
+        <div class="painel-main">
             <?php if ($acao === 'dashboard'): ?>
                 <!-- DASHBOARD -->
                 <h2>🏠 Bem-vindo, <?php echo htmlspecialchars($cliente['nome']); ?>!</h2>
@@ -713,7 +759,38 @@ require_once __DIR__ . '/../includes/header.php';
                     <i class="fa-solid fa-circle-xmark"></i> Ação não encontrada.
                 </div>
             <?php endif; ?>
-        </main>
-    </div>
+        </div><!-- /.painel-main -->
+    </main>
+</div><!-- /.painel-wrapper -->
+
+<script>
+(function(){
+    var sidebar = document.getElementById('sidebar');
+    var btn     = document.getElementById('sidebarToggle');
+    var icon    = document.getElementById('toggleIcon');
+    var key     = 'sidebar_cliente_collapsed';
+
+    function aplicar(collapsed) {
+        sidebar.classList.toggle('collapsed', collapsed);
+        icon.className = collapsed ? 'fa-solid fa-angles-right' : 'fa-solid fa-angles-left';
+        btn.title = collapsed ? 'Expandir barra lateral' : 'Recolher barra lateral';
+        try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
+    }
+
+    btn.addEventListener('click', function(){
+        aplicar(!sidebar.classList.contains('collapsed'));
+    });
+
+    var searchInput = document.getElementById('sidebar-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(){
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(function(el){
+                el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    }
+})();
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

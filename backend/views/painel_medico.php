@@ -69,12 +69,17 @@ require_once __DIR__ . '/../includes/header.php';
             <?php if (!empty($medico['foto'])): ?>
                 <img src="<?php echo htmlspecialchars($base_url . $medico['foto']); ?>" class="sidebar-avatar sidebar-avatar-img" alt="Foto">
             <?php else: ?>
-                <div class="sidebar-avatar"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
+                <div class="sidebar-avatar" style="background:#1565c0;"><?php echo mb_strtoupper(mb_substr($medico['nome'] ?? 'M', 0, 1)); ?></div>
             <?php endif; ?>
             <div class="sidebar-info">
                 <div class="sidebar-nome"><?php echo htmlspecialchars($medico['nome'] ?? ''); ?></div>
                 <div class="sidebar-cargo"><?php echo htmlspecialchars($medico['nome_especialidade'] ?? 'Médico'); ?></div>
             </div>
+        </div>
+
+        <div class="sidebar-search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="sidebar-search-input" placeholder="Buscar..." autocomplete="off">
         </div>
 
         <nav class="sidebar-nav">
@@ -107,8 +112,28 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </aside>
 
+<?php
+$titulos_medico = [
+    'dashboard' => 'Dashboard',
+    'agenda'    => 'Minha Agenda',
+    'historico' => 'Histórico',
+    'perfil'    => 'Meu Perfil',
+];
+$titulo_acao_medico = $titulos_medico[$acao] ?? 'Dashboard';
+?>
+
     <!-- Conteúdo principal -->
     <main class="sidebar-main">
+        <div class="breadcrumb-bar">
+            <button class="breadcrumb-toggle" onclick="document.getElementById('sidebarToggle').click()" title="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="breadcrumb-path">
+                <span class="breadcrumb-root">Painel Médico</span>
+                <i class="fa-solid fa-chevron-right"></i>
+                <span class="breadcrumb-current"><?php echo htmlspecialchars($titulo_acao_medico); ?></span>
+            </span>
+        </div>
         <div class="painel-main">
 
         <?php if ($acao === 'dashboard'): ?>
@@ -381,11 +406,19 @@ require_once __DIR__ . '/../includes/header.php';
         try { localStorage.setItem(key, collapsed ? '1' : '0'); } catch(e){}
     }
 
-    try { var saved = localStorage.getItem(key); if (saved === '1') aplicar(true); } catch(e){}
-
     btn.addEventListener('click', function(){
         aplicar(!sidebar.classList.contains('collapsed'));
     });
+
+    var searchInput = document.getElementById('sidebar-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(){
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('.sidebar-nav .sidebar-item').forEach(function(el){
+                el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        });
+    }
 })();
 </script>
 

@@ -25,7 +25,7 @@ if (!isset($titulo_pagina)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($titulo_pagina); ?></title>
-    <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/estilo.css">
+    <link rel="stylesheet" href="<?php echo $base_url; ?>assets/css/estilo.css?v=5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous">
 </head>
 <body data-base-url="<?php echo $base_url; ?>">
